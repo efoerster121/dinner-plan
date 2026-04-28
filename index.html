@@ -94,6 +94,9 @@ header h1 em{font-style:italic;color:var(--amber-text);}
 .ctag.eric{background:rgba(212,132,58,.14);color:var(--amber-text);}
 .ctag.julie{background:rgba(61,158,140,.14);color:var(--teal-text);}
 .ctag.both{background:var(--plum-dim);color:var(--plum-text);}
+.tj-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px 2px 5px;border-radius:999px;margin-left:4px;background:rgba(185,30,30,.15);color:#e05555;border:1px solid rgba(185,30,30,.25);vertical-align:middle;flex-shrink:0;}
+.tj-badge svg{flex-shrink:0;}
+.modal-tj-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(185,30,30,.12);border:1px solid rgba(185,30,30,.25);color:#e05555;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:6px;}
 .cell-btns{display:flex;gap:5px;margin-top:auto;padding-top:5px;opacity:0;transform:translateY(3px);transition:opacity .15s,transform .15s;}
 .meal-cell:hover .cell-btns{opacity:1;transform:none;}
 .cbtn{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:3px 8px;border-radius:4px;cursor:pointer;border:1px solid var(--border2);background:transparent;transition:all .12s;}
@@ -242,6 +245,10 @@ footer em{font-style:italic;font-family:'Libre Baskerville',serif;color:var(--te
   <div class="litem" style="border-left:1px solid var(--border);padding-left:1.25rem"><div class="ldot" style="background:var(--amber)"></div> Eric's pick</div>
   <div class="litem"><div class="ldot" style="background:var(--teal)"></div> Julie's pick</div>
   <div class="litem"><div class="ldot" style="background:var(--plum)"></div> Both</div>
+  <div class="litem" style="border-left:1px solid var(--border);padding-left:1.25rem">
+    <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:rgba(185,30,30,.15);color:#e05555;border:1px solid rgba(185,30,30,.25)">TJ</span>
+    Trader Joe's
+  </div>
 </div>
 
 <div id="weeks-container"><div class="week-view active" id="week-0">
@@ -442,11 +449,11 @@ footer em{font-style:italic;font-family:'Libre Baskerville',serif;color:var(--te
   </div>
   <div class="meals-row" id="mr-0-3"><div class="meal-cell">
   <div class="ctype main">Main</div>
-  <div class="cname">Grilled Chicken Fajitas</div>
-  <div class="cnote">Caramelized peppers &amp; onions + air-fried chicken for tacos</div>
+  <div class="cname">One-Pot Egg Roll Bowl<span class="tj-badge"><svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"></path></svg> Trader Joe's</span></div>
+  <div class="cnote">Ground turkey + TJ's cruciferous slaw mix + Soyaki in one pot — 20 min</div>
   <span class="ctag both">Both</span>
   <div class="cell-btns">
-    <button class="cbtn recipe" onclick="openRecipe('grilled-chicken-fajitas')">Recipe →</button>
+    <button class="cbtn recipe" onclick="openRecipe('tj-egg-roll-bowl')">Recipe →</button>
     <button class="cbtn swap" onclick="openAlts(0,3,0)">Swap</button>
   </div>
 </div><div class="meal-cell">
@@ -610,11 +617,11 @@ footer em{font-style:italic;font-family:'Libre Baskerville',serif;color:var(--te
   </div>
   <div class="meals-row" id="mr-1-1"><div class="meal-cell">
   <div class="ctype main">Main</div>
-  <div class="cname">Spaghetti Squash &amp; Meatballs</div>
-  <div class="cnote">Roasted squash strands + lean beef meatballs in marinara</div>
+  <div class="cname">Teriyaki Chicken Meatball Bowls<span class="tj-badge"><svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"></path></svg> Trader Joe's</span></div>
+  <div class="cnote">Baked ground chicken meatballs drenched in TJ's Soyaki over rice — 25 min</div>
   <span class="ctag both">Both</span>
   <div class="cell-btns">
-    <button class="cbtn recipe" onclick="openRecipe('spaghetti-squash')">Recipe →</button>
+    <button class="cbtn recipe" onclick="openRecipe('tj-teriyaki-meatball-bowl')">Recipe →</button>
     <button class="cbtn swap" onclick="openAlts(1,1,0)">Swap</button>
   </div>
 </div><div class="meal-cell">
@@ -946,11 +953,11 @@ footer em{font-style:italic;font-family:'Libre Baskerville',serif;color:var(--te
   </div>
   <div class="meals-row" id="mr-2-2"><div class="meal-cell">
   <div class="ctype main">Main</div>
-  <div class="cname">Ground Turkey Taco Bowl</div>
-  <div class="cnote">Seasoned ground turkey over rice with classic taco toppings — 20 min</div>
+  <div class="cname">One-Pot Egg Roll Bowl<span class="tj-badge"><svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"></path></svg> Trader Joe's</span></div>
+  <div class="cnote">Ground turkey + TJ's cruciferous slaw mix + Soyaki in one pot — 20 min</div>
   <span class="ctag both">Both</span>
   <div class="cell-btns">
-    <button class="cbtn recipe" onclick="openRecipe('ground-turkey-taco-bowl')">Recipe →</button>
+    <button class="cbtn recipe" onclick="openRecipe('tj-egg-roll-bowl')">Recipe →</button>
     <button class="cbtn swap" onclick="openAlts(2,2,0)">Swap</button>
   </div>
 </div><div class="meal-cell">
@@ -1338,11 +1345,11 @@ footer em{font-style:italic;font-family:'Libre Baskerville',serif;color:var(--te
   </div>
   <div class="meals-row" id="mr-3-4"><div class="meal-cell">
   <div class="ctype main">Main</div>
-  <div class="cname">Crispy Black Bean &amp; Cheese Tacos</div>
-  <div class="cnote">Crispy pan-fried tacos stuffed with spiced black beans and melted cheese</div>
+  <div class="cname">One-Pot Egg Roll Bowl<span class="tj-badge"><svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"></path></svg> Trader Joe's</span></div>
+  <div class="cnote">Ground turkey + TJ's cruciferous slaw mix + Soyaki in one pot — 20 min</div>
   <span class="ctag both">Both</span>
   <div class="cell-btns">
-    <button class="cbtn recipe" onclick="openRecipe('black-bean-tacos')">Recipe →</button>
+    <button class="cbtn recipe" onclick="openRecipe('tj-egg-roll-bowl')">Recipe →</button>
     <button class="cbtn swap" onclick="openAlts(3,4,0)">Swap</button>
   </div>
 </div><div class="meal-cell">
@@ -1372,34 +1379,18 @@ footer em{font-style:italic;font-family:'Libre Baskerville',serif;color:var(--te
 <div class="overlay" id="recipe-modal" onclick="overlayClose(event,'recipe-modal')">
   <div class="modal">
     <div class="mhead">
-      <div class="mbadge veg" id="rm-badge">Vegetable</div>
-      <div class="mtitle" id="rm-title">Garlic Parmesan Brussels Sprouts</div>
-      <div class="mmeta" id="rm-meta">Whole recipe</div>
+      <div class="mbadge" id="rm-badge"></div>
+      <div class="mtitle" id="rm-title"></div>
+      <div class="mmeta" id="rm-meta"></div>
       <div id="rm-video-wrap"></div>
       <button class="mclose" onclick="closeModal('recipe-modal')">✕</button>
     </div>
     <div class="mbody">
-      <div class="macro-row" id="rm-macros"><div class="mcard">
-  <span class="mval">61</span>
-  <span class="mlbl">Cal</span>
-  <span class="macro-label-sub">30.5 each</span>
-</div><div class="mcard">
-  <span class="mval">2g</span>
-  <span class="mlbl">Fat</span>
-  <span class="macro-label-sub">1g each</span>
-</div><div class="mcard">
-  <span class="mval">10g</span>
-  <span class="mlbl">Carbs</span>
-  <span class="macro-label-sub">5g each</span>
-</div><div class="mcard">
-  <span class="mval">4g</span>
-  <span class="mlbl">Protein</span>
-  <span class="macro-label-sub">2g each</span>
-</div></div>
+      <div class="macro-row" id="rm-macros"></div>
       <div class="stitle">Ingredients</div>
-      <ul class="ing-list" id="rm-ings"><li><span>fresh Brussels sprouts</span><span class="iamt">12 (400g)</span></li><li><span>parmesan cheese</span><span class="iamt">5g</span></li><li><span>garlic powder, sea salt, everything bagel seasoning</span><span class="iamt">to taste</span></li><li><span>non-stick olive oil spray</span><span class="iamt">as needed</span></li></ul>
+      <ul class="ing-list" id="rm-ings"></ul>
       <div class="stitle">Directions</div>
-      <ol class="steps-list" id="rm-steps"><li class="step"><span class="stepn">1</span><span class="stept">Slice Brussels sprouts in half.</span></li><li class="step"><span class="stepn">2</span><span class="stept">Bowl, spray with oil spray, add seasonings, toss.</span></li><li class="step"><span class="stepn">3</span><span class="stept">Add to air fryer, sprinkle remaining parmesan on top.</span></li><li class="step"><span class="stepn">4</span><span class="stept">Air fry at 400°F for 4–6 min until golden.</span></li></ol>
+      <ol class="steps-list" id="rm-steps"></ol>
       <div class="tip-box" id="rm-tip" style="display:none"></div>
     </div>
   </div>
@@ -1942,6 +1933,89 @@ const R = {
     steps:['Mix honey, adobo sauce, chipotle, lime juice, garlic powder, cumin, and paprika together.','Season chicken with salt. Heat oil in a skillet over medium-high. Cook chicken 4–5 min per side until cooked through.','Pour sauce over chicken in the last 2 min of cooking. Toss to coat until sticky and caramelized.','Make corn salsa: mix all ingredients together.','Build bowls: rice → chicken → corn salsa → avocado → toppings.'],
     tip:'The chipotle heat is adjustable — use just the adobo sauce and no chipotle pepper for a milder version.'},
 
+  // ── TRADER JOE'S RECIPES ─────────────────────────────
+  // tj:true flags these for the red badge on the meal card
+
+  // 1. TJ Hot Honey Chicken Meatball Bowls (broccyourbody.com)
+  'tj-hot-honey-meatball-bowl':{title:'Hot Honey Chicken Meatball Bowls',type:'main',tag:'eric',tj:true,
+    video:'https://broccyourbody.com/hot-honey-chicken-meatball-bowls/',
+    note:'Ground chicken meatballs in a sticky sriracha-honey glaze over rice — 20 min',
+    macros:[{v:'480',l:'Cal'},{v:'12g',l:'Fat'},{v:'52g',l:'Carbs'},{v:'40g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1 lb','ground chicken (TJ\'s fresh ground chicken)'],['1','egg'],['½ cup','almond flour or breadcrumbs'],['2 cloves','garlic, minced'],['1','green onion, chopped'],['½ tsp','kosher salt, ¼ tsp black pepper'],['1 tbsp','avocado oil'],['hot honey sauce: ⅓ cup sriracha, ⅓ cup honey, 2 tbsp low-sodium soy sauce, 2 cloves garlic minced, 1 tbsp white wine vinegar',''],['2 cups','cooked rice (TJ\'s frozen brown rice, microwaved)'],['2 cups','roasted broccoli or veggie of choice']],
+    steps:['Whisk all sauce ingredients in a small bowl until smooth. Set aside.','Mix ground chicken, egg, almond flour, garlic, green onion, salt, and pepper until combined. Form into golf ball-size meatballs.','Heat avocado oil in a large skillet over medium. Cook meatballs 3–4 min per side until cooked through.','Pour sauce over meatballs. Simmer 2 min until sauce thickens and glazes everything.','Serve over rice with roasted broccoli. Garnish with green onion and extra sauce.'],
+    tip:'TJ\'s frozen brown rice microwaves in 3 minutes and is genuinely great — have it ready before the meatballs are done.'},
+
+  // 2. TJ Teriyaki Chicken Meatballs with Soyaki (broccyourbody.com)
+  'tj-teriyaki-meatball-bowl':{title:'Teriyaki Chicken Meatball Bowls',type:'main',tag:'both',tj:true,
+    video:'https://broccyourbody.com/teriyaki-chicken-meatballs/',
+    note:'Baked ground chicken meatballs drenched in TJ\'s Soyaki over rice — 25 min',
+    macros:[{v:'445',l:'Cal'},{v:'10g',l:'Fat'},{v:'50g',l:'Carbs'},{v:'38g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1 lb','ground chicken (TJ\'s fresh ground chicken)'],['1','egg'],['½ cup','almond flour or breadcrumbs'],['2 cloves','garlic, minced'],['1','green onion, chopped'],['½ tsp','salt, ¼ tsp pepper'],['⅓–½ cup',"TJ's Soyaki sauce"],['2 cups','cooked rice (TJ\'s frozen brown rice)'],['broccolini or zucchini','sautéed, to serve']],
+    steps:['Preheat oven to 400°F. Line a baking sheet with parchment paper.','Mix ground chicken, egg, almond flour, garlic, green onion, salt, and pepper. Form into 16–18 small meatballs.','Bake 15 min (20 min for larger meatballs) until cooked through.','Transfer to a bowl and toss generously with TJ\'s Soyaki sauce.','Serve over rice with sautéed broccolini or zucchini. Top with sesame seeds and scallions.'],
+    tip:'While the meatballs bake, sauté your veg — everything finishes at the same time with almost zero cleanup.'},
+
+  // 3. TJ Beef & Broccoli (broccyourbody.com)
+  'tj-beef-broccoli':{title:'Better-Than-Takeout Beef & Broccoli',type:'main',tag:'eric',tj:true,
+    video:'https://broccyourbody.com/better-than-takeout-beef-broccoli/',
+    note:'Shaved beef + broccoli in a garlicky soy-honey sauce — one pan, 20 min',
+    macros:[{v:'410',l:'Cal'},{v:'11g',l:'Fat'},{v:'43g',l:'Carbs'},{v:'35g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1 lb',"TJ's shaved beef steak (or any steak cut into bite-size pieces)"],['8 oz','broccoli florets'],['1 tbsp','avocado oil'],['1 tbsp','sesame oil'],['sauce: ½ cup soy sauce, ½ cup water, 1 tbsp fresh ginger grated, 3 cloves garlic minced, 1 tbsp honey, 1 tsp chili onion crunch or sriracha, 1 tbsp cornstarch',''],['cooked rice','to serve'],['sesame seeds','to garnish']],
+    steps:['Whisk all sauce ingredients together until cornstarch dissolves. Set aside.','Heat avocado oil in a large deep skillet over medium. Add broccoli and 2 tbsp water. Sauté 5 min. Remove and set aside.','Add sesame oil to the pan over medium-high. Season beef with salt and pepper. Brown 2 min per side.','Turn heat to medium, pour in sauce. Simmer until beef is cooked through.','Stir in broccoli. Serve over rice with sesame seeds.'],
+    tip:"TJ's shaved beef is the shortcut here — it cooks in literally 2 minutes per side and absorbs the sauce beautifully."},
+
+  // 4. TJ Egg Roll Bowls (broccyourbody.com)
+  'tj-egg-roll-bowl':{title:'One-Pot Egg Roll Bowl',type:'main',tag:'both',tj:true,
+    video:'https://broccyourbody.com/one-pot-egg-roll-bowls/',
+    note:'Ground turkey + TJ\'s cruciferous slaw mix + Soyaki in one pot — 20 min',
+    macros:[{v:'395',l:'Cal'},{v:'9g',l:'Fat'},{v:'42g',l:'Carbs'},{v:'35g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1 lb','lean ground turkey (or beef/chicken)'],['1 bag',"TJ's cruciferous crunch or broccoli slaw mix"],['¾ cup','shredded carrots'],['½','yellow onion, diced'],['2 green onions','chopped'],['1 tbsp','fresh ginger, grated (or TJ\'s frozen ginger cubes)'],['1 bag',"TJ's frozen brown rice"],['sauce: ½ cup low-sodium soy sauce, 3 tbsp water, 3 cloves garlic minced, 2 tsp honey, 1 tsp sesame oil, 1 tsp sriracha or TJ\'s chili onion crunch',''],['sesame seeds, TJ\'s sweet chili sauce, TJ\'s chili onion crunch','to serve']],
+    steps:['Whisk all sauce ingredients together. Set aside.','Brown ground turkey in a large deep skillet over medium. Season with salt and pepper. Break into crumbles.','Add ginger, onion, green onion, and carrots. Stir 3–4 min.','Add cabbage/slaw mix, stir 1 min. Add cooked rice and sauce. Stir to combine.','Cook 5 min, stirring occasionally, until cabbage is tender. Top with sesame seeds and a drizzle of sweet chili sauce.'],
+    tip:"Use TJ's Soyaki as a quick swap for the homemade sauce if you're really in a pinch — about ⅓–½ cup does the job."},
+
+  // 5. TJ Sheet Pan Panko Salmon & Crispy Broccoli (broccyourbody.com)
+  'tj-panko-salmon':{title:'Sheet Pan Panko Salmon & Crispy Broccoli',type:'main',tag:'julie',tj:true,
+    video:'https://broccyourbody.com/sheet-pan-panko-salmon-crispy-broccoli/',
+    note:'Dijon-panko crusted salmon + roasted broccoli on one sheet pan — 425°F, 15 min',
+    macros:[{v:'480',l:'Cal'},{v:'18g',l:'Fat'},{v:'22g',l:'Carbs'},{v:'52g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1–1.5 lbs','salmon fillet (TJ\'s wild Atlantic salmon)'],['2 tbsp','dijon mustard'],['juice of ½ lemon',''],['seasoning mix: 2 tsp coconut sugar, 1 tsp paprika, ½ tsp each kosher salt, garlic powder, black pepper, dried oregano',''],['panko crust: ½ cup panko breadcrumbs, 3 tbsp fresh parsley chopped, 2 tbsp olive oil, 1 tbsp parmesan',''],['12 oz','broccoli florets'],['1 tbsp','olive oil'],['juice of ½ lemon','for broccoli'],['TJ\'s frozen brown rice','to serve']],
+    steps:['Preheat oven to 425°F.','Whisk dijon mustard + lemon juice together. In another bowl mix the seasoning blend. In a third bowl combine panko, parsley, olive oil, and parmesan.','Place salmon skin-side down on one half of a large sheet pan. Coat with dijon mixture, sprinkle seasoning, then press panko crust on top.','Add broccoli to the other half of the pan, toss with olive oil, lemon juice, salt, and pepper.','Bake 15–17 min until salmon flakes easily. Serve with TJ\'s microwaved brown rice.'],
+    tip:"Each serving has 40g protein with a 6oz portion. TJ's microwaveable brown rice takes 3 minutes and makes this a complete one-pan-plus-one-bag meal."},
+
+  // 6. TJ Green Goddess Salmon & Potatoes (broccyourbody.com)
+  'tj-green-goddess-salmon':{title:'Green Goddess Sheet Pan Salmon & Potatoes',type:'main',tag:'julie',tj:true,
+    video:'https://broccyourbody.com/green-goddess-sheet-pan-salmon-potatoes/',
+    note:'TJ\'s Green Goddess dressing glazed salmon with crispy potatoes — 30 min',
+    macros:[{v:'510',l:'Cal'},{v:'22g',l:'Fat'},{v:'38g',l:'Carbs'},{v:'42g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1–1.5 lbs','salmon fillet (TJ\'s wild Atlantic salmon)'],['1 lb','baby potatoes, halved'],['¼ cup',"TJ's Green Goddess Salad Dressing (plus more to serve)"],['2 tbsp','olive oil'],['salt and pepper','to taste'],['fresh dill and lemon wedges','to serve']],
+    steps:['Preheat oven to 425°F.','Toss halved potatoes with olive oil, salt, and pepper. Spread on a sheet pan. Roast 15 min.','Push potatoes to the edges. Add salmon to center. Spoon TJ\'s Green Goddess dressing generously over the salmon.','Roast another 12–15 min until salmon flakes easily and potatoes are golden.','Serve with extra Green Goddess on the side and fresh dill and lemon wedges.'],
+    tip:"TJ's Green Goddess dressing is the only sauce you need here — don't skip the extra drizzle at the end."},
+
+  // 7. TJ Mediterranean Salmon Bite Bowls (broccyourbody.com)
+  'tj-med-salmon-bowls':{title:'Mediterranean Salmon Bite Bowls',type:'main',tag:'julie',tj:true,
+    video:'https://broccyourbody.com/mediterranean-inspired-salmon-bite-bowls/',
+    note:'Pan-seared salmon bites over couscous with cucumber, olives & feta — fresh & light',
+    macros:[{v:'490',l:'Cal'},{v:'20g',l:'Fat'},{v:'38g',l:'Carbs'},{v:'40g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1.5 lbs','salmon fillet, cut into 1-inch cubes (TJ\'s wild Atlantic salmon)'],['1 tbsp','olive oil'],['1 tsp each','garlic powder, smoked paprika, dried oregano, salt'],['1 cup',"TJ's pearl couscous, cooked per package"],['1','cucumber, diced'],['½ cup','kalamata olives, halved'],['½ cup','cherry tomatoes, halved'],['¼ cup','crumbled feta'],['lemon juice + olive oil dressing','(2 tbsp olive oil, 1 tbsp lemon juice, salt, dried oregano)'],["TJ's tzatziki","to serve"]],
+    steps:['Cook pearl couscous per package. Fluff and set aside.','Make cucumber-olive-tomato salad: toss with lemon-olive oil dressing. Set aside.','Pat salmon cubes dry. Season with garlic powder, paprika, oregano, and salt.','Heat olive oil in a skillet over medium-high. Sear salmon cubes 2–3 min per side until golden.','Build bowls: couscous → salmon bites → cucumber salad → feta → a big scoop of tzatziki.'],
+    tip:"TJ's pearl couscous and tzatziki are both regulars on the shelves — they transform this into a 25-minute restaurant-quality meal."},
+
+  // 8. TJ Cheesesteak Skillet (broccyourbody.com / Eric pick)
+  'tj-cheesesteak-skillet':{title:'Cheesesteak Skillet',type:'main',tag:'eric',tj:true,
+    video:'https://broccyourbody.com/cheesesteak-skillet/',
+    note:'TJ\'s shaved beef + peppers + onions + provolone in one skillet — 20 min',
+    macros:[{v:'420',l:'Cal'},{v:'16g',l:'Fat'},{v:'28g',l:'Carbs'},{v:'40g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1 lb',"TJ's shaved beef steak"],['2','bell peppers (any color), thinly sliced'],['1','large yellow onion, thinly sliced'],['2 cloves','garlic, minced'],['1 tbsp','avocado oil'],['1 tbsp','Worcestershire sauce'],['salt, pepper, garlic powder, onion powder','to season'],['4 slices','provolone cheese'],['hoagie rolls or rice or low-carb tortillas','to serve']],
+    steps:['Heat avocado oil in a large cast iron or skillet over medium-high. Add peppers and onions. Season with salt, pepper, garlic powder, and onion powder. Cook 8–10 min, stirring, until soft and beginning to caramelize.','Add garlic. Cook 1 min.','Push veg to sides. Add shaved beef to center. Season and cook, breaking up, 2–3 min until browned.','Drizzle Worcestershire sauce over everything. Mix it all together.','Lay provolone slices on top, cover with a lid for 1–2 min until melted. Serve in hoagie rolls, over rice, or in tortillas.'],
+    tip:'TJ\'s shaved beef is perfect for this — no slicing required and it cooks in 2 minutes. The Worcestershire is small but mighty.'},
+
   // ── SIDES ────────────────────────────────────────────
   'mozz-sticks':{title:'Flamin Hot Cheetos Mozzarella Sticks',type:'side',tag:'eric',video:null,
     note:'Freeze earlier in the day — air fry while mains rest',
@@ -1993,113 +2067,113 @@ const WEEKS = [
   // ── WEEK 1 ───────────────────────────────────────────
   { label:'Week 1 — Current', days:[
     { name:'Sunday', pref:50, slots:[
-      { eric:'buffalo-wings',            julie:'honey-sriracha-salmon-bowl', both:'ebf-greek-turkey-meatballs' },
-      { eric:'buffalo-cauliflower',      julie:'sweet-potato-bites',         both:'garlic-brussels' },
-      { eric:'mozz-sticks',              julie:'sweet-potato-fries',         both:'onion-rings' }
+      { eric:'tj-hot-honey-meatball-bowl',    julie:'honey-sriracha-salmon-bowl', both:'ebf-greek-turkey-meatballs' },
+      { eric:'buffalo-cauliflower',           julie:'sweet-potato-bites',         both:'garlic-brussels' },
+      { eric:'mozz-sticks',                   julie:'sweet-potato-fries',         both:'onion-rings' }
     ]},
     { name:'Monday', pref:50, slots:[
-      { eric:'crunch-wrap-pizza',        julie:'ebf-shrimp-tacos',           both:'ground-turkey-taco-bowl' },
-      { eric:'garlic-brussels',          julie:'roasted-carrots',            both:'smash-brussels' },
-      { eric:'onion-rings',              julie:'tuna-salad',                 both:'pizza-fries' }
+      { eric:'crunch-wrap-pizza',             julie:'ebf-shrimp-tacos',           both:'ground-turkey-taco-bowl' },
+      { eric:'garlic-brussels',               julie:'roasted-carrots',            both:'smash-brussels' },
+      { eric:'onion-rings',                   julie:'tuna-salad',                 both:'pizza-fries' }
     ]},
     { name:'Tuesday', pref:50, slots:[
-      { eric:'crunchwrap',               julie:'salmon-burger',              both:'ebf-fish-tacos' },
-      { eric:'smash-brussels',           julie:'cauliflower-mac',            both:'garlic-brussels' },
-      { eric:'pizza-fries',              julie:'sweet-potato-fries',         both:'pizza-rolls' }
+      { eric:'tj-beef-broccoli',              julie:'salmon-burger',              both:'ebf-fish-tacos' },
+      { eric:'smash-brussels',               julie:'cauliflower-mac',            both:'garlic-brussels' },
+      { eric:'pizza-fries',                   julie:'sweet-potato-fries',         both:'pizza-rolls' }
     ]},
     { name:'Wednesday', pref:50, slots:[
-      { eric:'marry-me-chicken',         julie:'ebf-salmon-orzo',            both:'grilled-chicken-fajitas' },
-      { eric:'garlic-brussels',          julie:'sweet-potato-bites',         both:'roasted-carrots' },
-      { eric:'mozz-sticks',              julie:'tuna-salad',                 both:'onion-rings' }
+      { eric:'marry-me-chicken',              julie:'ebf-salmon-orzo',            both:'tj-egg-roll-bowl' },
+      { eric:'garlic-brussels',               julie:'sweet-potato-bites',         both:'roasted-carrots' },
+      { eric:'mozz-sticks',                   julie:'tuna-salad',                 both:'onion-rings' }
     ]},
     { name:'Thursday', pref:50, slots:[
-      { eric:'korean-beef-bowl',         julie:'ebf-air-fryer-salmon',       both:'spicy-shrimp-tacos-lime-slaw' },
-      { eric:'buffalo-cauliflower',      julie:'cauliflower-mac',            both:'smash-brussels' },
-      { eric:'pizza-rolls',              julie:'sweet-potato-fries',         both:'pizza-fries' }
+      { eric:'korean-beef-bowl',              julie:'tj-panko-salmon',            both:'spicy-shrimp-tacos-lime-slaw' },
+      { eric:'buffalo-cauliflower',           julie:'cauliflower-mac',            both:'smash-brussels' },
+      { eric:'pizza-rolls',                   julie:'sweet-potato-fries',         both:'pizza-fries' }
     ]},
   ]},
   // ── WEEK 2 ───────────────────────────────────────────
   { label:'Week 2 — Coming up', days:[
     { name:'Sunday', pref:50, slots:[
-      { eric:'buffalo-chicken-sliders',  julie:'ebf-salmon-burrito-bowl',    both:'honey-garlic-shrimp' },
-      { eric:'buffalo-cauliflower',      julie:'sweet-potato-bites',         both:'garlic-brussels' },
-      { eric:'mozz-sticks',              julie:'sweet-potato-fries',         both:'onion-rings' }
+      { eric:'buffalo-chicken-sliders',       julie:'tj-med-salmon-bowls',        both:'honey-garlic-shrimp' },
+      { eric:'buffalo-cauliflower',           julie:'sweet-potato-bites',         both:'garlic-brussels' },
+      { eric:'mozz-sticks',                   julie:'sweet-potato-fries',         both:'onion-rings' }
     ]},
     { name:'Monday', pref:50, slots:[
-      { eric:'kfc-popcorn-chicken',      julie:'spicy-peanut-noodles-shrimp',both:'spaghetti-squash' },
-      { eric:'smash-brussels',           julie:'cauliflower-mac',            both:'roasted-carrots' },
-      { eric:'onion-rings',              julie:'tuna-salad',                 both:'pizza-fries' }
+      { eric:'kfc-popcorn-chicken',           julie:'spicy-peanut-noodles-shrimp',both:'tj-teriyaki-meatball-bowl' },
+      { eric:'smash-brussels',               julie:'cauliflower-mac',            both:'roasted-carrots' },
+      { eric:'onion-rings',                   julie:'tuna-salad',                 both:'pizza-fries' }
     ]},
     { name:'Tuesday', pref:50, slots:[
-      { eric:'tuscan-chicken-pasta',     julie:'ebf-salmon-orzo',            both:'ebf-greek-turkey-meatballs' },
-      { eric:'garlic-brussels',          julie:'sweet-potato-bites',         both:'smash-brussels' },
-      { eric:'pizza-fries',              julie:'sweet-potato-fries',         both:'pizza-rolls' }
+      { eric:'tuscan-chicken-pasta',          julie:'ebf-salmon-orzo',            both:'ebf-greek-turkey-meatballs' },
+      { eric:'garlic-brussels',               julie:'sweet-potato-bites',         both:'smash-brussels' },
+      { eric:'pizza-fries',                   julie:'sweet-potato-fries',         both:'pizza-rolls' }
     ]},
     { name:'Wednesday', pref:50, slots:[
-      { eric:'chicken-chalupas',         julie:'chicken-birria-ramen',       both:'ebf-shrimp-stir-fry' },
-      { eric:'buffalo-cauliflower',      julie:'cauliflower-mac',            both:'garlic-brussels' },
-      { eric:'pizza-rolls',              julie:'tuna-salad',                 both:'onion-rings' }
+      { eric:'tj-cheesesteak-skillet',        julie:'chicken-birria-ramen',       both:'ebf-shrimp-stir-fry' },
+      { eric:'buffalo-cauliflower',           julie:'cauliflower-mac',            both:'garlic-brussels' },
+      { eric:'pizza-rolls',                   julie:'tuna-salad',                 both:'onion-rings' }
     ]},
     { name:'Thursday', pref:50, slots:[
-      { eric:'triple-burger-wrap',       julie:'blackened-salmon-tacos',     both:'black-bean-tacos' },
-      { eric:'smash-brussels',           julie:'sweet-potato-bites',         both:'roasted-carrots' },
-      { eric:'mozz-sticks',              julie:'sweet-potato-fries',         both:'pizza-fries' }
+      { eric:'triple-burger-wrap',            julie:'blackened-salmon-tacos',     both:'black-bean-tacos' },
+      { eric:'smash-brussels',               julie:'sweet-potato-bites',         both:'roasted-carrots' },
+      { eric:'mozz-sticks',                   julie:'sweet-potato-fries',         both:'pizza-fries' }
     ]},
   ]},
   // ── WEEK 3 ───────────────────────────────────────────
   { label:'Week 3 — Ahead', days:[
     { name:'Sunday', pref:50, slots:[
-      { eric:'jalapeno-honey-chicken-sandwich', julie:'honey-sriracha-salmon-bowl', both:'cauliflower-fried-rice' },
-      { eric:'buffalo-cauliflower',      julie:'cauliflower-mac',            both:'garlic-brussels' },
-      { eric:'pizza-fries',              julie:'sweet-potato-fries',         both:'mozz-sticks' }
+      { eric:'tj-hot-honey-meatball-bowl',    julie:'tj-green-goddess-salmon',    both:'cauliflower-fried-rice' },
+      { eric:'buffalo-cauliflower',           julie:'cauliflower-mac',            both:'garlic-brussels' },
+      { eric:'pizza-fries',                   julie:'sweet-potato-fries',         both:'mozz-sticks' }
     ]},
     { name:'Monday', pref:50, slots:[
-      { eric:'buffalo-chicken-tenders',  julie:'pesto-salmon',               both:'ebf-shrimp-stir-fry' },
-      { eric:'smash-brussels',           julie:'sweet-potato-bites',         both:'roasted-carrots' },
-      { eric:'onion-rings',              julie:'tuna-salad',                 both:'pizza-rolls' }
+      { eric:'buffalo-chicken-tenders',       julie:'pesto-salmon',               both:'ebf-shrimp-stir-fry' },
+      { eric:'smash-brussels',               julie:'sweet-potato-bites',         both:'roasted-carrots' },
+      { eric:'onion-rings',                   julie:'tuna-salad',                 both:'pizza-rolls' }
     ]},
     { name:'Tuesday', pref:50, slots:[
-      { eric:'honey-chipotle-chicken-bowl', julie:'spicy-peanut-noodles-shrimp', both:'ground-turkey-taco-bowl' },
-      { eric:'garlic-brussels',          julie:'cauliflower-mac',            both:'smash-brussels' },
-      { eric:'pizza-rolls',              julie:'sweet-potato-fries',         both:'onion-rings' }
+      { eric:'honey-chipotle-chicken-bowl',   julie:'spicy-peanut-noodles-shrimp',both:'tj-egg-roll-bowl' },
+      { eric:'garlic-brussels',               julie:'cauliflower-mac',            both:'smash-brussels' },
+      { eric:'pizza-rolls',                   julie:'sweet-potato-fries',         both:'onion-rings' }
     ]},
     { name:'Wednesday', pref:50, slots:[
-      { eric:'ebf-greek-chicken',        julie:'ebf-salmon-orzo',            both:'ebf-fish-tacos' },
-      { eric:'buffalo-cauliflower',      julie:'sweet-potato-bites',         both:'garlic-brussels' },
-      { eric:'pizza-fries',              julie:'tuna-salad',                 both:'sweet-potato-fries' }
+      { eric:'ebf-greek-chicken',             julie:'tj-med-salmon-bowls',        both:'ebf-fish-tacos' },
+      { eric:'buffalo-cauliflower',           julie:'sweet-potato-bites',         both:'garlic-brussels' },
+      { eric:'pizza-fries',                   julie:'tuna-salad',                 both:'sweet-potato-fries' }
     ]},
     { name:'Thursday', pref:50, slots:[
-      { eric:'pizza-sliders',            julie:'ebf-shrimp-tacos',           both:'smash-turkey-burgers' },
-      { eric:'smash-brussels',           julie:'cauliflower-mac',            both:'roasted-carrots' },
-      { eric:'mozz-sticks',              julie:'sweet-potato-fries',         both:'pizza-fries' }
+      { eric:'pizza-sliders',                 julie:'ebf-shrimp-tacos',           both:'smash-turkey-burgers' },
+      { eric:'smash-brussels',               julie:'cauliflower-mac',            both:'roasted-carrots' },
+      { eric:'mozz-sticks',                   julie:'sweet-potato-fries',         both:'pizza-fries' }
     ]},
   ]},
   // ── WEEK 4 ───────────────────────────────────────────
   { label:'Week 4 — Next month', days:[
     { name:'Sunday', pref:50, slots:[
-      { eric:'marry-me-chicken',         julie:'ebf-salmon-burrito-bowl',    both:'ebf-greek-turkey-meatballs' },
-      { eric:'buffalo-cauliflower',      julie:'sweet-potato-bites',         both:'garlic-brussels' },
-      { eric:'pizza-fries',              julie:'sweet-potato-fries',         both:'onion-rings' }
+      { eric:'tj-cheesesteak-skillet',        julie:'ebf-salmon-burrito-bowl',    both:'ebf-greek-turkey-meatballs' },
+      { eric:'buffalo-cauliflower',           julie:'sweet-potato-bites',         both:'garlic-brussels' },
+      { eric:'pizza-fries',                   julie:'sweet-potato-fries',         both:'onion-rings' }
     ]},
     { name:'Monday', pref:50, slots:[
-      { eric:'korean-beef-bowl',         julie:'blackened-salmon-tacos',     both:'honey-garlic-shrimp' },
-      { eric:'smash-brussels',           julie:'cauliflower-mac',            both:'roasted-carrots' },
-      { eric:'onion-rings',              julie:'tuna-salad',                 both:'pizza-rolls' }
+      { eric:'tj-beef-broccoli',              julie:'blackened-salmon-tacos',     both:'honey-garlic-shrimp' },
+      { eric:'smash-brussels',               julie:'cauliflower-mac',            both:'roasted-carrots' },
+      { eric:'onion-rings',                   julie:'tuna-salad',                 both:'pizza-rolls' }
     ]},
     { name:'Tuesday', pref:50, slots:[
-      { eric:'chicken-chalupas',         julie:'spicy-peanut-noodles-shrimp',both:'fdl-12in-pizza' },
-      { eric:'garlic-brussels',          julie:'sweet-potato-bites',         both:'smash-brussels' },
-      { eric:'mozz-sticks',              julie:'tuna-salad',                 both:'pizza-fries' }
+      { eric:'chicken-chalupas',              julie:'spicy-peanut-noodles-shrimp',both:'fdl-12in-pizza' },
+      { eric:'garlic-brussels',               julie:'sweet-potato-bites',         both:'smash-brussels' },
+      { eric:'mozz-sticks',                   julie:'tuna-salad',                 both:'pizza-fries' }
     ]},
     { name:'Wednesday', pref:50, slots:[
-      { eric:'tuscan-chicken-pasta',     julie:'pesto-salmon',               both:'grilled-chicken-fajitas' },
-      { eric:'buffalo-cauliflower',      julie:'cauliflower-mac',            both:'garlic-brussels' },
-      { eric:'pizza-rolls',              julie:'sweet-potato-fries',         both:'sweet-potato-fries' }
+      { eric:'tuscan-chicken-pasta',          julie:'tj-panko-salmon',            both:'grilled-chicken-fajitas' },
+      { eric:'buffalo-cauliflower',           julie:'cauliflower-mac',            both:'garlic-brussels' },
+      { eric:'pizza-rolls',                   julie:'sweet-potato-fries',         both:'sweet-potato-fries' }
     ]},
     { name:'Thursday', pref:50, slots:[
-      { eric:'crispy-taco-pockets',      julie:'ebf-air-fryer-salmon',       both:'black-bean-tacos' },
-      { eric:'smash-brussels',           julie:'sweet-potato-bites',         both:'roasted-carrots' },
-      { eric:'pizza-fries',              julie:'tuna-salad',                 both:'onion-rings' }
+      { eric:'tj-teriyaki-meatball-bowl',     julie:'ebf-air-fryer-salmon',       both:'tj-egg-roll-bowl' },
+      { eric:'smash-brussels',               julie:'sweet-potato-bites',         both:'roasted-carrots' },
+      { eric:'pizza-fries',                   julie:'tuna-salad',                 both:'onion-rings' }
     ]},
   ]},
 ];
@@ -2186,14 +2260,17 @@ function renderDay(wi, di, day) {
 </div>`;
 }
 
+const TJ_SVG = `<svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg>`;
+
 function renderSlot(wi, di, si, rid) {
   const r = R[rid];
   if (!r) return '';
   const typeLbl = {main:'Main',veg:'Vegetable',side:'Side'}[r.type];
   const tagLbl = {eric:"Eric's pick",julie:"Julie's pick",both:'Both'}[r.tag]||r.tag;
+  const tjBadge = r.tj ? `<span class="tj-badge">${TJ_SVG} Trader Joe's</span>` : '';
   return `<div class="meal-cell">
   <div class="ctype ${r.type}">${typeLbl}</div>
-  <div class="cname">${r.title}</div>
+  <div class="cname">${r.title}${tjBadge}</div>
   <div class="cnote">${r.note}</div>
   <span class="ctag ${r.tag}">${tagLbl}</span>
   <div class="cell-btns">
@@ -2295,6 +2372,21 @@ function openRecipe(rid) {
   badge.className='mbadge '+r.type;
   badge.textContent=tLbl;
   document.getElementById('rm-title').textContent=r.title;
+
+  // ── TJ badge ──────────────────────────────────────────
+  let tjEl = document.getElementById('rm-tj-badge');
+  if (!tjEl) {
+    tjEl = document.createElement('div');
+    tjEl.id = 'rm-tj-badge';
+    document.getElementById('rm-title').after(tjEl);
+  }
+  if (r.tj) {
+    tjEl.className = 'modal-tj-badge';
+    tjEl.innerHTML = `${TJ_SVG} Uses Trader Joe's ingredients`;
+    tjEl.style.display = 'inline-flex';
+  } else {
+    tjEl.style.display = 'none';
+  }
 
   // ── Serving / portion info ──────────────────────────
   const total = r.totalServings || 1;
