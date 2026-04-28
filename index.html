@@ -1458,7 +1458,7 @@ footer em{font-style:italic;font-family:'Libre Baskerville',serif;color:var(--te
               Publish →
             </button>
           </div>
-          <div id="gh-status" style="font-size:11px;color:var(--text3);margin-top:8px;min-height:16px"></div>
+          <div id="gh-status" style="font-size: 11px; color: var(--text3); margin-top: 8px; min-height: 16px;"></div>
         </div>
 
         <!-- Result -->
@@ -2649,34 +2649,45 @@ async function doGitHub() {
     } catch(e) { /* file doesn't exist yet */ }
 
     // 4. Capture clean HTML — close all modals and clear the token first
-    // so the published page opens to the main view with no sensitive data
     ['share-modal','recipe-modal','alt-modal','grocery-modal'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.classList.remove('open');
     });
     document.body.style.overflow = '';
-    document.getElementById('gh-token').value = '';  // don't publish the token
+    document.getElementById('gh-token').value = '';
     document.getElementById('gh-status').textContent = '';
 
-    // Small delay to let the DOM update before capturing
     await new Promise(r => setTimeout(r, 50));
-    const cleanHtml = document.documentElement.outerHTML;
 
-    // Restore the modal so we can show the result
+    // 5. Build the HTML string and inject a unique build timestamp
+    // This ensures GitHub always sees a content change, preventing "revert" behaviour
+    const buildTime = new Date().toISOString();
+    let cleanHtml = document.documentElement.outerHTML;
+
+    // Replace or inject the build comment just inside <head>
+    const buildComment = `<!-- built:2026-04-28T13:49:17.196Z -->`;
+    if (cleanHtml.includes('<!-- built:')) {
+      cleanHtml = cleanHtml.replace(/<!-- built:[^>]+ -->/, buildComment);
+    } else {
+      cleanHtml = cleanHtml.replace('<head>', `<head>\n${buildComment}`);
+    }
+
+    // Restore the modal
     document.getElementById('share-modal').classList.add('open');
     document.body.style.overflow = 'hidden';
     setStatus('Uploading…');
 
-    // 5. Upload index.html
+    // 6. Upload index.html
     const content = btoa(unescape(encodeURIComponent(cleanHtml)));
+    const commitMsg = `Update dinner plan — ${new Date().toLocaleString('en-US', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}`;
     const body = {
-      message: 'Update dinner plan',
+      message: commitMsg,
       content,
       ...(sha ? { sha } : {})
     };
     await ghFetch(`${repoUrl}/contents/index.html`, token, 'PUT', body);
 
-    // 6. Enable GitHub Pages on main branch if not already on
+    // 7. Enable GitHub Pages on main branch if not already on
     setStatus('Enabling GitHub Pages…');
     try {
       await ghFetch(`${repoUrl}/pages`, token, 'POST', {
@@ -2686,7 +2697,7 @@ async function doGitHub() {
       // May already be enabled — that's fine
     }
 
-    // 7. Show the result URL
+    // 8. Show the result URL
     const pageUrl = `https://${username}.github.io/${REPO_NAME}/`;
     document.getElementById('gh-step1').style.display = 'none';
     document.getElementById('gh-result').style.display = 'block';
@@ -2697,6 +2708,16 @@ async function doGitHub() {
     console.error(e);
     if (e.message.includes('401') || e.message.includes('403')) {
       setStatus('Token invalid or expired — make sure "repo" scope is checked', 'var(--amber-text)');
+    } else if (e.message.includes('422')) {
+      setStatus('No changes detected — the page is already up to date', 'var(--teal-text)');
+      // Still show the result URL if we know the username
+      try {
+        const me2 = await ghFetch('https://api.github.com/user', token);
+        const pageUrl = `https://${me2.login}.github.io/${REPO_NAME}/`;
+        document.getElementById('gh-step1').style.display = 'none';
+        document.getElementById('gh-result').style.display = 'block';
+        document.getElementById('gh-url-out').value = pageUrl;
+      } catch(_) {}
     } else {
       setStatus('Error: ' + e.message, 'var(--amber-text)');
     }
