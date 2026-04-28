@@ -2746,7 +2746,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 </div>
 
 <!-- ── TOAST ──────────────────────────────────── -->
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast">✓ Link copied!</div>
 <script>
 // ═══════════════════════════════════════════════════════════════════
 // RECIPE DATABASE & WEEKS — injected from extracted data below
@@ -4704,7 +4704,7 @@ async function doGitHub() {
     // Inject unique build timestamp to guarantee GitHub sees a diff every time
     const buildTime = new Date().toISOString();
     let cleanHtml = document.documentElement.outerHTML;
-    const buildComment = `<!-- built:2026-04-28T19:31:00.521Z -->`;
+    const buildComment = `<!-- built:2026-04-28T19:31:59.340Z -->`;
     if (cleanHtml.includes('<!-- built:')) cleanHtml = cleanHtml.replace(/<!-- built:[^>]+ -->/, buildComment);
     else cleanHtml = cleanHtml.replace('<head>', `<head>\n${buildComment}`);
 
