@@ -361,15 +361,20 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   padding:1rem;
 }
 .overlay.open{display:flex;}
-.modal{position:relative;z-index:1;
+.modal{
+  position:relative;z-index:1;
   background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);
-  width:100%;max-width:520px;max-height:88vh;overflow-y:auto;
+  width:100%;max-width:520px;max-height:88vh;
+  display:flex;flex-direction:column;
+  overflow:hidden;
   box-shadow:0 24px 80px rgba(0,0,0,0.7),var(--glow);
 }
 .modal-head{
   padding:1.25rem 1.25rem 0.75rem;
   border-bottom:1px solid var(--border);
-  position:sticky;top:0;background:var(--surface);z-index:2;
+  flex-shrink:0;
+  background:var(--surface);
+  position:relative;z-index:2;
 }
 .modal-badge{
   display:inline-block;font-size:9px;font-weight:700;letter-spacing:0.1em;
@@ -387,7 +392,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   transition:color var(--transition);
 }
 .modal-close:hover{color:var(--text);}
-.modal-body{padding:1.25rem;}
+.modal-body{
+  padding:1.25rem;
+  overflow-y:auto;
+  flex:1;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+}
 .serving-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;}
 .serving-pill{
   display:inline-flex;align-items:center;gap:5px;padding:4px 10px;
@@ -491,7 +502,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 /* ── OVERLAY CLOSE ────────────────────────────── */
-.overlay-bg{position:absolute;inset:0;z-index:0;cursor:pointer;}
+.overlay-bg{position:absolute;inset:0;z-index:0;cursor:pointer;touch-action:none;}
 
 /* ── MOBILE ──────────────────────────────────────── */
 @media(max-width:768px){
@@ -504,8 +515,36 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   .days-grid{grid-template-columns:1fr;}
   .recipe-grid{grid-template-columns:1fr;}
   .macro-row{grid-template-columns:repeat(2,1fr);}
+
+  /* Sheet-style modals slide up from bottom */
   .overlay.open{align-items:flex-end;padding:0;}
-  .modal{position:relative;z-index:1;max-height:90vh;border-radius:var(--radius) var(--radius) 0 0;}
+  .modal{
+    max-height:92vh;
+    max-height:92dvh; /* dynamic viewport height avoids iOS address bar issues */
+    border-radius:var(--radius) var(--radius) 0 0;
+    /* iOS safe area padding at bottom */
+    padding-bottom:env(safe-area-inset-bottom, 0px);
+  }
+  /* Drag handle indicator on mobile sheet */
+  .modal-head::before{
+    content:'';
+    display:block;
+    width:36px;height:4px;
+    background:var(--border2);border-radius:999px;
+    margin:0 auto 12px;
+  }
+  /* Bigger close button tap target on mobile */
+  .modal-close{
+    font-size:20px;
+    padding:8px;
+    top:0.75rem;right:0.75rem;
+    min-width:44px;min-height:44px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  /* Ensure grocery/pantry items are easy to tap */
+  .gitem{padding:10px 8px;min-height:44px;}
+  .pantry-item{padding:10px 8px;min-height:44px;}
+
   .builder-grid{grid-template-columns:1fr;}
 }
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:150;}
@@ -2746,7 +2785,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 </div>
 
 <!-- ── TOAST ──────────────────────────────────── -->
-<div class="toast" id="toast">✓ Link copied!</div>
+<div class="toast" id="toast"></div>
 <script>
 // ═══════════════════════════════════════════════════════════════════
 // RECIPE DATABASE & WEEKS — injected from extracted data below
@@ -4704,7 +4743,7 @@ async function doGitHub() {
     // Inject unique build timestamp to guarantee GitHub sees a diff every time
     const buildTime = new Date().toISOString();
     let cleanHtml = document.documentElement.outerHTML;
-    const buildComment = `<!-- built:2026-04-28T19:31:59.340Z -->`;
+    const buildComment = `<!-- built:2026-04-28T19:36:50.403Z -->`;
     if (cleanHtml.includes('<!-- built:')) cleanHtml = cleanHtml.replace(/<!-- built:[^>]+ -->/, buildComment);
     else cleanHtml = cleanHtml.replace('<head>', `<head>\n${buildComment}`);
 
