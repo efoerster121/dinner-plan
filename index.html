@@ -209,7 +209,7 @@ footer em{font-style:italic;font-family:'Libre Baskerville',serif;color:var(--te
 .sopt-sub{font-size:11px;color:var(--text3);line-height:1.4;}
 </style>
 </head>
-<body style="overflow: hidden;">
+<body style="">
 
 <header>
   <div class="hgrid"></div>
@@ -1424,7 +1424,7 @@ footer em{font-style:italic;font-family:'Libre Baskerville',serif;color:var(--te
 </div>
 
 <!-- SHARE MODAL -->
-<div class="overlay open" id="share-modal" onclick="overlayClose(event,'share-modal')">
+<div class="overlay" id="share-modal" onclick="overlayClose(event,'share-modal')">
   <div class="modal" style="max-width:460px">
     <div class="mhead">
       <div class="mbadge" style="background:rgba(255,255,255,0.06);color:var(--text2)">Share</div>
@@ -1451,7 +1451,7 @@ footer em{font-style:italic;font-family:'Libre Baskerville',serif;color:var(--te
               Publish →
             </button>
           </div>
-          <div id="gh-status" style="font-size:11px;color:var(--text3);margin-top:8px;min-height:16px">Uploading page…</div>
+          <div id="gh-status" style="font-size: 11px; color: var(--text3); margin-top: 8px; min-height: 16px;"></div>
         </div>
 
         <!-- Result -->
@@ -2342,8 +2342,27 @@ async function doGitHub() {
       sha = existing.sha;
     } catch(e) { /* file doesn't exist yet */ }
 
-    // 4. Upload index.html
-    const content = btoa(unescape(encodeURIComponent(document.documentElement.outerHTML)));
+    // 4. Capture clean HTML — close all modals and clear the token first
+    // so the published page opens to the main view with no sensitive data
+    ['share-modal','recipe-modal','alt-modal','grocery-modal'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('open');
+    });
+    document.body.style.overflow = '';
+    document.getElementById('gh-token').value = '';  // don't publish the token
+    document.getElementById('gh-status').textContent = '';
+
+    // Small delay to let the DOM update before capturing
+    await new Promise(r => setTimeout(r, 50));
+    const cleanHtml = document.documentElement.outerHTML;
+
+    // Restore the modal so we can show the result
+    document.getElementById('share-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setStatus('Uploading…');
+
+    // 5. Upload index.html
+    const content = btoa(unescape(encodeURIComponent(cleanHtml)));
     const body = {
       message: 'Update dinner plan',
       content,
@@ -2351,7 +2370,7 @@ async function doGitHub() {
     };
     await ghFetch(`${repoUrl}/contents/index.html`, token, 'PUT', body);
 
-    // 5. Enable GitHub Pages on main branch if not already on
+    // 6. Enable GitHub Pages on main branch if not already on
     setStatus('Enabling GitHub Pages…');
     try {
       await ghFetch(`${repoUrl}/pages`, token, 'POST', {
@@ -2361,8 +2380,7 @@ async function doGitHub() {
       // May already be enabled — that's fine
     }
 
-    // 6. Show the result URL
-    // Pages takes ~30s to deploy but the URL is predictable
+    // 7. Show the result URL
     const pageUrl = `https://${username}.github.io/${REPO_NAME}/`;
     document.getElementById('gh-step1').style.display = 'none';
     document.getElementById('gh-result').style.display = 'block';
