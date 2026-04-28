@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eric & Julie's Dinner Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0F0E0C; --surface:#1A1916; --surface2:#222018; --surface3:#2A2823;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+  --text:#F0EDE8; --text2:#9E9A94; --text3:#5C5A56;
+  --amber:#D4843A; --amber-dim:rgba(212,132,58,0.15); --amber-text:#E8A060;
+  --teal:#3D9E8C; --teal-dim:rgba(61,158,140,0.15); --teal-text:#5DC4AF;
+  --plum:#9B5FA0; --plum-dim:rgba(155,95,160,0.15); --plum-text:#C088C6;
+  --radius:12px; --radius-sm:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-weight:300;}
+
+/* HEADER */
+header{padding:2.5rem 2rem 1.75rem;text-align:center;border-bottom:1px solid var(--border);position:relative;}
+.hgrid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse 80% 100% at 50% 0%,black 30%,transparent 100%);}
+.eyebrow{font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:.8rem;position:relative;}
+header h1{font-family:'Libre Baskerville',serif;font-size:clamp(1.7rem,4vw,2.6rem);font-weight:400;line-height:1.2;margin-bottom:.4rem;position:relative;}
+header h1 em{font-style:italic;color:var(--amber-text);}
+.hsub{font-size:12px;color:var(--text3);position:relative;margin-bottom:1.25rem;}
+.header-btns{display:flex;gap:10px;justify-content:center;position:relative;flex-wrap:wrap;}
+.hbtn{display:inline-flex;align-items:center;gap:7px;padding:.55rem 1.1rem;border-radius:999px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:none;letter-spacing:.03em;transition:opacity .15s,transform .1s;}
+.hbtn:active{transform:scale(.97);}
+.hbtn-amber{background:var(--amber);color:#0F0E0C;}
+.hbtn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2);}
+.hbtn-ghost:hover{background:var(--surface2);color:var(--text);}
+.hbtn.loading{opacity:.6;pointer-events:none;}
+
+/* WEEK NAV */
+.week-nav{display:flex;align-items:center;justify-content:center;gap:1rem;padding:1rem 2rem;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:50;}
+.wnbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.wnbtn:hover{background:var(--surface3);color:var(--text);border-color:var(--amber);}
+.wnbtn:disabled{opacity:.3;cursor:default;pointer-events:none;}
+.wlabel{font-family:'Libre Baskerville',serif;font-size:.95rem;font-style:italic;color:var(--text);min-width:160px;text-align:center;}
+.wdots{display:flex;gap:6px;align-items:center;}
+.wdot{width:6px;height:6px;border-radius:50%;background:var(--border2);cursor:pointer;transition:all .2s;}
+.wdot.active{background:var(--amber);width:18px;border-radius:3px;}
+
+/* LEGEND */
+.legend{display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap;padding:.8rem 2rem;background:var(--surface);border-bottom:1px solid var(--border);}
+.litem{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:var(--text2);}
+.ldot{width:7px;height:7px;border-radius:50%;}
+
+/* WEEK VIEW */
+.week-view{display:none;max-width:1180px;margin:1.5rem auto;padding:0 1.25rem 3rem;flex-direction:column;gap:10px;}
+.week-view.active{display:flex;animation:fadeUp .3s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* DAY BLOCK */
+.day-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .2s;}
+.day-block:hover{border-color:var(--border2);}
+
+/* PREF HEADER — prominent row at top of each day */
+.pref-header{display:grid;grid-template-columns:80px 1fr;border-bottom:1px solid var(--border);background:var(--surface2);}
+.day-name-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem .5rem;border-right:1px solid var(--border);background:var(--surface3);}
+.day-name{font-family:'Libre Baskerville',serif;font-size:.95rem;color:var(--text);}
+.pref-controls{display:flex;align-items:center;gap:12px;padding:.9rem 1.1rem;}
+.person-chip{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+.avatar.e{background:rgba(212,132,58,.18);color:var(--amber-text);border:1.5px solid rgba(212,132,58,.35);}
+.avatar.j{background:rgba(61,158,140,.18);color:var(--teal-text);border:1.5px solid rgba(61,158,140,.35);}
+.pname{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
+.pname.e{color:var(--amber-text);}
+.pname.j{color:var(--teal-text);}
+.slider-col{flex:1;display:flex;flex-direction:column;gap:5px;}
+.track-wrap{position:relative;height:6px;}
+.track-bg{position:absolute;inset:0;border-radius:3px;background:var(--surface3);}
+.track-fill{position:absolute;top:0;bottom:0;border-radius:3px;transition:left .05s,right .05s,background .2s;}
+.thumb{width:18px;height:18px;border-radius:50%;background:var(--text);border:2.5px solid var(--bg);box-shadow:0 0 0 3px rgba(255,255,255,.1);position:absolute;top:50%;transform:translate(-50%,-50%);pointer-events:none;transition:left .05s;}
+.pref-range{position:absolute;inset:-10px 0;opacity:0;cursor:pointer;width:100%;-webkit-appearance:none;height:26px;}
+.mood-row{display:flex;justify-content:space-between;align-items:center;}
+.mood-label{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;transition:opacity .2s;}
+.mood-label.e{color:var(--amber-text);}
+.mood-label.j{color:var(--teal-text);}
+.mood-center{font-size:10px;color:var(--text3);font-weight:400;text-align:center;min-width:80px;}
+
+/* MEALS ROW */
+.meals-row{display:grid;grid-template-columns:repeat(3,1fr);}
+.meal-cell{padding:1rem 1rem .85rem;border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:125px;transition:background .15s;cursor:default;}
+.meal-cell:last-child{border-right:none;}
+.meal-cell:hover{background:var(--surface2);}
+.ctype{font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;margin-bottom:4px;}
+.ctype.main{color:var(--amber);}
+.ctype.veg{color:var(--teal-text);}
+.ctype.side{color:var(--plum-text);}
+.cname{font-family:'Libre Baskerville',serif;font-size:.87rem;line-height:1.3;color:var(--text);margin-bottom:4px;flex:1;}
+.cnote{font-size:11px;color:var(--text3);line-height:1.45;margin-bottom:6px;}
+.ctag{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:999px;margin-bottom:6px;}
+.ctag.eric{background:rgba(212,132,58,.14);color:var(--amber-text);}
+.ctag.julie{background:rgba(61,158,140,.14);color:var(--teal-text);}
+.ctag.both{background:var(--plum-dim);color:var(--plum-text);}
+.tj-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px 2px 5px;border-radius:999px;margin-left:4px;background:rgba(185,30,30,.15);color:#e05555;border:1px solid rgba(185,30,30,.25);vertical-align:middle;flex-shrink:0;}
+.tj-badge svg{flex-shrink:0;}
+.modal-tj-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(185,30,30,.12);border:1px solid rgba(185,30,30,.25);color:#e05555;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:6px;}
+.cell-btns{display:flex;gap:5px;margin-top:auto;padding-top:5px;opacity:0;transform:translateY(3px);transition:opacity .15s,transform .15s;}
+.meal-cell:hover .cell-btns{opacity:1;transform:none;}
+.cbtn{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:3px 8px;border-radius:4px;cursor:pointer;border:1px solid var(--border2);background:transparent;transition:all .12s;}
+.cbtn.recipe{color:var(--amber-text);border-color:rgba(212,132,58,.3);}
+.cbtn.recipe:hover{background:var(--amber-dim);}
+.cbtn.swap{color:var(--text2);}
+.cbtn.swap:hover{background:var(--surface3);color:var(--text);}
+
+/* MODALS */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:100;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(6px);}
+.overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:16px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;position:relative;animation:mIn .22s ease;}
+.modal.wide{max-width:720px;}
+@keyframes mIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.mhead{padding:1.6rem 1.6rem 1.1rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:1;border-radius:16px 16px 0 0;}
+.mbadge{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;padding:3px 10px;border-radius:999px;margin-bottom:7px;}
+.mbadge.main{background:var(--amber-dim);color:var(--amber-text);}
+.mbadge.veg{background:var(--teal-dim);color:var(--teal-text);}
+.mbadge.side{background:var(--plum-dim);color:var(--plum-text);}
+.mbadge.grocery{background:rgba(255,255,255,.06);color:var(--text2);}
+.mtitle{font-family:'Libre Baskerville',serif;font-size:1.45rem;font-weight:400;color:var(--text);line-height:1.2;margin-bottom:3px;}
+.mmeta{font-size:12px;color:var(--text3);}
+.mclose{position:absolute;top:1.1rem;right:1.1rem;width:29px;height:29px;border-radius:50%;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .12s;}
+.mclose:hover{background:var(--surface3);color:var(--text);}
+.mbody{padding:1.4rem 1.6rem 1.8rem;}
+.macro-row{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:1.4rem;}
+.mcard{background:var(--surface2);border-radius:var(--radius-sm);padding:.7rem;text-align:center;border:1px solid var(--border);}
+.mval{font-family:'Libre Baskerville',serif;font-size:1.1rem;color:var(--text);display:block;}
+.mlbl{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-top:2px;display:block;}
+.stitle{font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:.65rem;padding-bottom:.45rem;border-bottom:1px solid var(--border);}
+.ing-list{list-style:none;margin-bottom:1.4rem;}
+.ing-list li{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;font-weight:300;color:var(--text2);}
+.ing-list li:last-child{border-bottom:none;}
+.iamt{font-weight:500;color:var(--text);white-space:nowrap;font-size:12px;}
+.steps-list{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:1.4rem;}
+.step{display:flex;gap:11px;align-items:flex-start;}
+.stepn{width:21px;height:21px;border-radius:50%;background:var(--amber-dim);border:1px solid rgba(212,132,58,.3);color:var(--amber-text);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.stept{font-size:13px;font-weight:300;color:var(--text2);line-height:1.6;}
+.tip-box{background:rgba(212,132,58,.08);border-left:2px solid var(--amber);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:.9rem 1rem;font-size:13px;font-weight:300;color:var(--text2);line-height:1.6;}
+.tip-box strong{display:block;font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:3px;}
+
+/* ALT CARDS */
+.alt-grid{display:flex;flex-direction:column;gap:9px;margin-bottom:1rem;}
+.alt-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.9rem 1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;transition:all .15s;}
+.alt-card:hover,.alt-card.sel{border-color:var(--amber);background:var(--amber-dim);}
+.aname{font-family:'Libre Baskerville',serif;font-size:.93rem;color:var(--text);margin-bottom:2px;}
+.anote{font-size:11px;color:var(--text3);line-height:1.4;}
+.atag{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:999px;white-space:nowrap;flex-shrink:0;}
+.atag.eric{background:rgba(212,132,58,.14);color:var(--amber-text);}
+.atag.julie{background:rgba(61,158,140,.14);color:var(--teal-text);}
+.atag.both{background:var(--plum-dim);color:var(--plum-text);}
+
+/* GROCERY LIST */
+.grocery-day{margin-bottom:1.4rem;}
+.gday-title{font-family:'Libre Baskerville',serif;font-size:1rem;font-weight:400;color:var(--text);margin-bottom:.6rem;display:flex;align-items:center;gap:8px;}
+.gday-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.grocery-items{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;}
+.gitem{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;cursor:pointer;transition:background .12s;user-select:none;}
+.gitem:hover{background:var(--surface2);}
+.gitem.checked .gtext{text-decoration:line-through;color:var(--text3);}
+.gitem.checked .gamt{color:var(--text3);}
+.gcheck{width:16px;height:16px;border-radius:4px;border:1px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s;background:transparent;}
+.gitem.checked .gcheck{background:var(--teal);border-color:var(--teal);}
+.gtext{font-size:12px;color:var(--text2);font-weight:400;flex:1;}
+.gamt{font-size:11px;color:var(--text3);font-weight:400;white-space:nowrap;}
+.grocery-actions{display:flex;gap:8px;margin-bottom:1.25rem;}
+.gaction-btn{font-size:11px;font-weight:500;padding:5px 12px;border-radius:6px;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:all .12s;}
+.gaction-btn:hover{background:var(--surface2);color:var(--text);}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border2);color:var(--text);font-size:12px;padding:8px 16px;border-radius:8px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;z-index:200;}
+.toast.show{opacity:1;}
+
+/* RESPONSIVE */
+@media(max-width:660px){
+  .pref-header{grid-template-columns:1fr;}
+  .day-name-cell{flex-direction:row;justify-content:flex-start;padding:.6rem .9rem;border-right:none;border-bottom:1px solid var(--border);}
+  .meals-row{grid-template-columns:1fr;}
+  .meal-cell{border-right:none;border-bottom:1px solid var(--border);}
+  .meal-cell:last-child{border-bottom:none;}
+  .cell-btns{opacity:1;transform:none;}
+  .macro-row{grid-template-columns:repeat(2,1fr);}
+  .grocery-items{grid-template-columns:1fr;}
+}
+
+footer{text-align:center;padding:1.75rem;font-size:11px;color:var(--text3);border-top:1px solid var(--border);}
+footer em{font-style:italic;font-family:'Libre Baskerville',serif;color:var(--text2);}
+.watch-btn{display:inline-flex;align-items:center;gap:6px;margin-top:.75rem;padding:.55rem 1rem;border-radius:999px;background:rgba(255,255,255,0.06);border:1px solid var(--border2);color:var(--text2);font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;cursor:pointer;text-decoration:none;transition:all .15s;}
+.watch-btn:hover{background:rgba(255,255,255,0.1);color:var(--text);border-color:var(--amber);}
+.watch-btn svg{flex-shrink:0;}
+.serving-row{display:flex;align-items:center;gap:10px;margin-top:.6rem;flex-wrap:wrap;}
+.serving-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);font-size:11px;font-weight:500;color:var(--text2);}
+.serving-pill svg{flex-shrink:0;}
+.portion-note{font-size:11px;color:var(--amber-text);font-weight:500;}
+.macro-label-sub{font-size:9px;color:var(--text3);display:block;margin-top:1px;text-align:center;letter-spacing:.04em;}
+.share-step-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1.1rem 1.1rem 1rem;}
+.share-step-num{font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--amber-text);margin-bottom:5px;}
+.share-step-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:10px;line-height:1.3;}
+.share-step-body{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.share-step-row{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--text2);line-height:1.5;}
+.share-step-row em{font-style:italic;color:var(--text);}
+.share-step-row strong{font-weight:600;color:var(--text);}
+.share-num{width:20px;height:20px;border-radius:50%;background:var(--amber-dim);border:1px solid rgba(212,132,58,.3);color:var(--amber-text);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.share-go-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:.75rem;border-radius:var(--radius-sm);background:var(--amber);color:#0F0E0C;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:opacity .15s;}
+.share-go-btn:hover{opacity:.85;}
+.share-divider{text-align:center;font-size:11px;color:var(--text3);position:relative;}
+.share-divider::before,.share-divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:var(--border);}
+.share-divider::before{left:0;} .share-divider::after{right:0;}
+.share-option-btn{display:flex;align-items:center;gap:14px;width:100%;padding:.9rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;text-align:left;transition:all .15s;color:var(--text);}
+.share-option-btn:hover{border-color:var(--border2);background:var(--surface3);}
+.sopt-icon{font-size:20px;flex-shrink:0;width:32px;text-align:center;}
+.sopt-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.sopt-sub{font-size:11px;color:var(--text3);line-height:1.4;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hgrid"></div>
+  <div class="eyebrow">Weekly Dinner Planner</div>
+  <h1>Eric &amp; <em>Julie's</em> Dinner Plan</h1>
+  <p class="hsub">Tap any dish for the recipe · swap alternatives · tune each night</p>
+  <div class="header-btns">
+    <button class="hbtn hbtn-amber" id="grocery-btn" onclick="openGrocery()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      Grocery List
+    </button>
+    <button class="hbtn hbtn-ghost" id="share-btn" onclick="openModal('share-modal')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      Share
+    </button>
+  </div>
+</header>
+
+<nav class="week-nav">
+  <button class="wnbtn" id="prev-btn" onclick="changeWeek(-1)">&#8592;</button>
+  <div class="wdots" id="wdots"></div>
+  <span class="wlabel" id="wlabel"></span>
+  <button class="wnbtn" id="next-btn" onclick="changeWeek(1)">&#8594;</button>
+</nav>
+
+<div class="legend">
+  <div class="litem"><div class="ldot" style="background:var(--amber)"></div> Main</div>
+  <div class="litem"><div class="ldot" style="background:var(--teal)"></div> Veggie</div>
+  <div class="litem"><div class="ldot" style="background:var(--plum)"></div> Side</div>
+  <div class="litem" style="border-left:1px solid var(--border);padding-left:1.25rem"><div class="ldot" style="background:var(--amber)"></div> Eric's pick</div>
+  <div class="litem"><div class="ldot" style="background:var(--teal)"></div> Julie's pick</div>
+  <div class="litem"><div class="ldot" style="background:var(--plum)"></div> Both</div>
+  <div class="litem" style="border-left:1px solid var(--border);padding-left:1.25rem">
+    <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:rgba(185,30,30,.15);color:#e05555;border:1px solid rgba(185,30,30,.25)">TJ</span>
+    Trader Joe's
+  </div>
+</div>
+
+<div id="weeks-container"></div>
+
+<footer>All recipes from <em>Food That Smacks</em></footer>
+
+<!-- RECIPE MODAL -->
+<div class="overlay" id="recipe-modal" onclick="overlayClose(event,'recipe-modal')">
+  <div class="modal">
+    <div class="mhead">
+      <div class="mbadge" id="rm-badge"></div>
+      <div class="mtitle" id="rm-title"></div>
+      <div class="mmeta" id="rm-meta"></div>
+      <div id="rm-video-wrap"></div>
+      <button class="mclose" onclick="closeModal('recipe-modal')">✕</button>
+    </div>
+    <div class="mbody">
+      <div class="macro-row" id="rm-macros"></div>
+      <div class="stitle">Ingredients</div>
+      <ul class="ing-list" id="rm-ings"></ul>
+      <div class="stitle">Directions</div>
+      <ol class="steps-list" id="rm-steps"></ol>
+      <div class="tip-box" id="rm-tip" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ALT MODAL -->
+<div class="overlay" id="alt-modal" onclick="overlayClose(event,'alt-modal')">
+  <div class="modal">
+    <div class="mhead">
+      <div class="mbadge" id="am-badge"></div>
+      <div class="mtitle">Choose an alternative</div>
+      <div class="mmeta" id="am-meta"></div>
+      <button class="mclose" onclick="closeModal('alt-modal')">✕</button>
+    </div>
+    <div class="mbody">
+      <div class="alt-grid" id="am-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- GROCERY MODAL -->
+<div class="overlay" id="grocery-modal" onclick="overlayClose(event,'grocery-modal')">
+  <div class="modal wide">
+    <div class="mhead">
+      <div class="mbadge grocery">Week <span id="gm-week"></span></div>
+      <div class="mtitle">Grocery List</div>
+      <div class="mmeta" id="gm-meta"></div>
+      <button class="mclose" onclick="closeModal('grocery-modal')">✕</button>
+    </div>
+    <div class="mbody">
+      <div class="grocery-actions">
+        <button class="gaction-btn" onclick="checkAll(true)">Check all</button>
+        <button class="gaction-btn" onclick="checkAll(false)">Clear all</button>
+      </div>
+      <div id="gm-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="overlay" id="share-modal" onclick="overlayClose(event,'share-modal')">
+  <div class="modal" style="max-width:460px">
+    <div class="mhead">
+      <div class="mbadge" style="background:rgba(255,255,255,0.06);color:var(--text2)">Share</div>
+      <div class="mtitle">Publish to the web</div>
+      <div class="mmeta">Pick a method — both give a real HTTPS link that works on any device</div>
+      <button class="mclose" onclick="closeModal('share-modal')">✕</button>
+    </div>
+    <div class="mbody" style="display:flex;flex-direction:column;gap:14px">
+
+      <!-- GITHUB OPTION -->
+      <div class="share-step-card" id="gh-card">
+        <div class="share-step-num" style="color:var(--teal-text)">✓ Recommended — permanent link, update any time</div>
+        <div class="share-step-title">Publish via GitHub Pages</div>
+
+        <!-- Step 1: token input -->
+        <div id="gh-step1">
+          <div class="share-step-body" style="margin-bottom:10px">
+            <div class="share-step-row"><span class="share-num">1</span><span>Go to <a href="https://github.com/settings/tokens/new?scopes=repo&description=DinnerPlan" target="_blank" style="color:var(--teal-text)">github.com/settings/tokens/new</a> — make sure <strong>repo</strong> is checked, click Generate</span></div>
+            <div class="share-step-row"><span class="share-num">2</span><span>Paste the token below — it never leaves your browser</span></div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <input id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+              style="flex:1;background:var(--surface3);border:1px solid var(--border2);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;font-family:'Outfit',sans-serif;outline:none">
+            <button class="share-go-btn" style="width:auto;padding:8px 16px;flex-shrink:0" onclick="doGitHub()">
+              Publish →
+            </button>
+          </div>
+          <div id="gh-status" style="font-size:11px;color:var(--text3);margin-top:8px;min-height:16px"></div>
+        </div>
+
+        <!-- Result -->
+        <div id="gh-result" style="display:none">
+          <div class="share-step-row" style="margin-bottom:8px"><span style="color:var(--teal-text);font-size:18px">✓</span><span style="font-size:13px">Published! Your link:</span></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="gh-url-out" readonly style="flex:1;background:var(--surface3);border:1px solid var(--teal);border-radius:6px;padding:8px 10px;color:var(--teal-text);font-size:12px;font-family:monospace;outline:none">
+            <button class="share-go-btn" style="width:auto;padding:8px 14px;flex-shrink:0;background:var(--teal)" onclick="copyGhUrl()">Copy</button>
+          </div>
+          <div style="font-size:11px;color:var(--text3);margin-top:8px">Send this link to Julie — works on any phone, no app needed. To update later, just press Publish again.</div>
+        </div>
+      </div>
+
+      <div class="share-divider">or without a GitHub account</div>
+
+      <!-- NETLIFY OPTION -->
+      <div class="share-step-card">
+        <div class="share-step-num">Free, no account needed</div>
+        <div class="share-step-title">Drag & drop on Netlify</div>
+        <div class="share-step-body">
+          <div class="share-step-row"><span class="share-num">1</span><span>Click below — downloads the file <em>and</em> opens Netlify Drop</span></div>
+          <div class="share-step-row"><span class="share-num">2</span><span>Drag <strong>dinner-plan.html</strong> onto the Netlify page</span></div>
+          <div class="share-step-row"><span class="share-num">3</span><span>Netlify gives you a link like <em>lucky-xyz.netlify.app</em> — send to Julie</span></div>
+        </div>
+        <button class="share-go-btn" style="background:var(--surface3);color:var(--text);border:1px solid var(--border2)" onclick="doNetlifyDrop()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download + Open Netlify Drop
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// RECIPE DATABASE — expanded with all books
+// tag: 'eric' = bar food / fried / cheesy / spicy
+//      'julie' = seafood / lighter / more diverse
+//      'both' = works for either
+// ═══════════════════════════════════════════════════════
+const R = {
+
+  // ── MAINS: ERIC ──────────────────────────────────────
+  'buffalo-wings':{title:'Buffalo Chicken Wings',type:'main',tag:'eric',video:null,
+    note:'Frozen wings, Frank\'s, air fryer — barely any effort',
+    macros:[{v:'100',l:'Cal'},{v:'7g',l:'Fat'},{v:'0g',l:'Carbs'},{v:'9g',l:'Protein'}],serving:'Per wing · 18 wings',totalServings:18,unitLabel:'wing',portionFor2:9,
+    ings:[['2 lbs','frozen chicken wings'],['to taste','sea salt, garlic powder, black pepper'],['as needed',"Frank's Red Hot Buffalo Sauce"]],
+    steps:['Air fry at 390°F for 5 min to thaw. Remove to a bowl.','Toss with sea salt, garlic powder, black pepper.','Return to air fryer at 390°F for 15 min (18–20 for bigger wings).','Toss in buffalo sauce. Air fry 2 more min at 390°F to set the sauce.'],
+    tip:"Don't over-season before frying — the buffalo sauce handles all the flavor."},
+
+  'crunch-wrap-pizza':{title:'Pepperoni Pizza Crunch Wrap',type:'main',tag:'eric',video:null,
+    note:'Fold, air fry, done — fastest dinner of the week',
+    macros:[{v:'350',l:'Cal'},{v:'15g',l:'Fat'},{v:'27g',l:'Carbs'},{v:'25g',l:'Protein'}],serving:'Whole wrap',totalServings:1,unitLabel:'crunch wrap',portionFor2:1,
+    ings:[['1 large','flour tortilla'],['24','turkey pepperonis'],['42g','part-skim mozzarella']],
+    steps:['Small slit in center of tortilla.','Quarter 1: 12 pepperoni. Quarter 2: 21g mozzarella. Quarter 3: 12 more pepperoni. Quarter 4: rest of mozzarella.','Fold 1st→2nd→3rd→4th.','Air fry at 400°F for 6 min with a small cast iron on top to hold it shut.'],
+    tip:'Skip the sauce inside for max crispiness — dip in marinara on the side.'},
+
+  'crunchwrap':{title:'Crunchwrap Supremes',type:'main',tag:'eric',video:null,
+    note:'Ground beef, tostada, avocado, sriracha — the crowd pleaser',
+    macros:[{v:'535',l:'Cal'},{v:'22g',l:'Fat'},{v:'40g',l:'Carbs'},{v:'36g',l:'Protein'}],serving:'1 wrap · 2 total',totalServings:2,unitLabel:'crunchwrap',portionFor2:2,
+    ings:[['2 large','flour tortillas'],['2','tostadas'],['10 oz','96/4 lean ground beef'],['42g','2% Mexican cheese'],['42g','avocado'],['as desired','lettuce, fresh tomatoes'],['10g','sriracha'],['to taste','yellow mustard, sea salt, garlic powder']],
+    steps:['Cook beef 6/10 heat, season with salt, garlic powder, yellow mustard. Brown and set aside.','Microwave tortillas ~10 sec to soften.','Layer center: beef + cheese, tostada, avocado, sriracha, tomato, lettuce. Fold crunchwrap style.','Spray both sides, air fry seam-down at 400°F for 4–6 min, flip once golden.'],
+    tip:'Yellow mustard in the beef sounds wrong, tastes invisible — keeps lean beef juicy.'},
+
+  'buffalo-chicken-tenders':{title:'Buffalo Chicken Tenders',type:'main',tag:'eric',video:null,
+    note:'Panko-crusted tenders tossed in Frank\'s — CRUNCHY CRUNCHY',
+    macros:[{v:'135',l:'Cal'},{v:'1.5g',l:'Fat'},{v:'6g',l:'Carbs'},{v:'20g',l:'Protein'}],serving:'Per tender · 17 total',totalServings:17,unitLabel:'tender',portionFor2:8,
+    ings:[['40 oz','chicken breast'],['100g','all-purpose flour'],['20g','corn starch'],['to taste','salt, garlic powder'],['1 large','egg'],['50g','egg whites'],['as needed',"Frank's Red Hot Buffalo Sauce"],['150g','panko bread crumbs']],
+    steps:['Slice chicken into even tenders.','3 bowls: flour+cornstarch+seasoning / egg+egg whites+buffalo sauce / panko.','Double-dredge each tender: flour→egg→panko→egg→panko for extra crunch.','Spray fryer, add tenders, spray tops. Air fry 360°F for 10 min, flip at 5 min.'],
+    tip:'The double dredge makes them CRUNCHY CRUNCHY — worth every second.'},
+
+  'chicken-smash':{title:'Chicken Smash Burgers',type:'main',tag:'eric',video:'https://vimeo.com/585505618/513b050ab4',
+    note:'Hand-minced chicken with cheddar, avocado, sriracha',
+    macros:[{v:'450',l:'Cal'},{v:'14g',l:'Fat'},{v:'35g',l:'Carbs'},{v:'44g',l:'Protein'}],serving:'Per burger · 4 total',totalServings:4,unitLabel:'burger',portionFor2:2,
+    ings:[['20 oz','boneless skinless chicken breast'],['50g','red pepper, diced'],['50g','green onion, diced'],['to taste','sea salt, black pepper, garlic powder'],['21g','2% sharp cheddar (per burger)'],['28g','avocado (per burger)'],['10g','sriracha (per burger)'],['1','brioche bun (per burger)']],
+    steps:['Dice red pepper and green onion.','Thinly slice then mince chicken to ground turkey consistency.','Mix with red pepper, green onion, seasonings. Form 4 patties.','Cast iron 6/10 heat, spray, press to 1in. Cook 4–5 min per side.','Add cheese + splash of water + cover to melt.','Build: avocado on bottom, patty, sriracha, top bun.'],
+    tip:null},
+
+  'triple-burger-wrap':{title:'Triple Cheeseburger Crunch Wrap',type:'main',tag:'eric',video:null,
+    note:'Three smash patties + cheddar folded in a tortilla',
+    macros:[{v:'445',l:'Cal'},{v:'18g',l:'Fat'},{v:'24g',l:'Carbs'},{v:'47g',l:'Protein'}],serving:'1 wrap · 2 total',totalServings:2,unitLabel:'wrap',portionFor2:2,
+    ings:[['2 large','flour tortillas'],['12 oz','96/4 lean ground beef'],['3 slices','2% sharp cheddar cheese']],
+    steps:['Form 6 x 2oz burger balls. Press flat between parchment.','Pan 5/10 heat, salt both sides. Cook until brown on sides.','Add yellow mustard to top, flip. Cook 1–2 more min. Repeat all 6.','Layer tortilla: 2 cheese pieces, patty x3. Fold crunchwrap style.','Air fry at 400°F for 4–5 min. Slice and serve.'],
+    tip:'Yellow mustard on the flip side is the secret to juicy lean burgers.'},
+
+  'chicken-chalupas':{title:'Buffalo Chicken Chalupas',type:'main',tag:'eric',video:'https://vimeo.com/923744431/f8da52c3df',
+    note:'Buffalo chicken + two cheeses in a pita, air fried crispy',
+    macros:[{v:'455',l:'Cal'},{v:'14g',l:'Fat'},{v:'37g',l:'Carbs'},{v:'43g',l:'Protein'}],serving:'1 chalupa · 2 total',totalServings:2,unitLabel:'chalupa',portionFor2:2,
+    ings:[["2 Joseph's pitas",''],['8 oz','chicken breast'],['21g','2% sharp cheddar'],['21g','part-skim mozzarella'],['as needed',"Frank's Red Hot Buffalo Sauce"],['to taste','green onion, parsley, cilantro, 21 Seasoning Salute']],
+    steps:['Season and air fry chicken at 360°F for 12–15 min until 160–165°F.','Cube chicken, toss with buffalo sauce, green onion, parsley, cilantro.','Lay pita flat. Add both cheeses to one half, then buffalo chicken.','Fold pita shut, press firmly. Spray both sides.','Air fry at 400°F for ~5 min, flipping once golden. Slice and serve.'],
+    tip:null},
+
+  'buffalo-chicken-sliders':{title:'Buffalo Chicken Dip Sliders',type:'main',tag:'eric',video:'https://vimeo.com/748354213/3799b925ac',
+    note:'Shredded buffalo chicken dip on brioche rolls, baked cheesy',
+    macros:[{v:'195',l:'Cal'},{v:'5g',l:'Fat'},{v:'22g',l:'Carbs'},{v:'17g',l:'Protein'}],serving:'Per slider · 12 total',totalServings:12,unitLabel:'slider',portionFor2:6,
+    ings:[['1.5 lbs','chicken breast'],['1 cup','reduced sodium chicken broth'],['1 packet','ranch seasoning'],['170g','plain nonfat greek yogurt'],['113g','fat free cottage cheese'],['113g',"Frank's Red Hot Buffalo Sauce"],['handful','green onion'],['1 package','brioche dinner rolls'],['42g','part-skim mozzarella'],['42g','2% sharp cheddar']],
+    steps:['Instant pot: chicken broth + chicken + 2/3 ranch packet. Pressure cook 18 min, natural release 10 min.','Blend greek yogurt + cottage cheese + buffalo sauce till smooth for the dip.','Shred chicken. Mix with 2/3 of buffalo dip + green onion.','Slice rolls in half. Spread buffalo chicken on bottom halves. Drizzle more sauce. Add cheeses.','Replace top halves. Spray with butter spray, sprinkle ranch seasoning. Bake 400°F for 10 min.'],
+    tip:'Can sub instant pot for stovetop — just simmer chicken in broth for 25 min until shreddable.'},
+
+  'kfc-popcorn-chicken':{title:'KFC Popcorn Chicken',type:'main',tag:'eric',video:'https://vimeo.com/813320913/89f261937d',
+    note:'Bite-size crispy chicken with a 11-herb KFC-style seasoning blend',
+    macros:[{v:'313',l:'Cal'},{v:'3g',l:'Fat'},{v:'12g',l:'Carbs'},{v:'57g',l:'Protein'}],serving:'1/3 batch · 3 servings',totalServings:3,unitLabel:'serving',portionFor2:2,
+    ings:[['24 oz','chicken tenderloins'],['60g','egg whites'],['56g','all-purpose flour'],['5g','baking powder'],['8g salt, 5g black pepper, 5g oregano, 5g paprika, 5g garlic powder','KFC seasoning blend'],['3g thyme, 3g celery salt, 3g white pepper, 3g mustard powder, 3g ginger powder, 3g basil','KFC seasoning blend (cont.)']],
+    steps:['Cut chicken into bite-size pieces. Combine with egg whites in a bowl.','In another bowl mix flour, baking powder, and full KFC seasoning blend.','Add a handful of chicken to the flour bowl, coat well.','Add coated pieces to air fryer in a single layer (none touching). I needed 2 batches.','Spray with non-stick cooking spray. Air fry at 400°F for 9 min.'],
+    tip:null},
+
+  'jalapeno-honey-chicken-sandwich':{title:'Jalapeño Honey Crispy Chicken Sandwich',type:'main',tag:'eric',video:'https://vimeo.com/748355710/53b296b043',
+    note:'Spicy crispy chicken with homemade jalapeño honey drizzle',
+    macros:[{v:'467',l:'Cal'},{v:'6g',l:'Fat'},{v:'51g',l:'Carbs'},{v:'54g',l:'Protein'}],serving:'1 sandwich · 2 total',totalServings:4,unitLabel:'sandwich',portionFor2:2,
+    ings:[['28 oz (7oz per patty)','chicken breast, flattened'],['30g','all-purpose flour'],['8g','corn starch'],['to taste','seasoning mix: sea salt, black pepper, garlic powder, onion powder, paprika'],['1 large','egg'],['50g','egg whites'],['cholula','hot sauce (don\'t be shy)'],['40g','panko'],['300g raw honey + 3 jalapeños','jalapeño honey sauce'],['brioche bun, tomato, lettuce','for assembly']],
+    steps:['Jalapeño honey: bring honey + sliced jalapeños to a boil, reduce until jalapeños shrink. Cool overnight in fridge.','Flatten chicken to 7oz patties. Make 3 stations: flour+cornstarch+seasoning / egg+egg whites+cholula / panko.','Coat: flour→egg→panko. Repeat for all 4 patties.','Air fry at 400°F for 9–10 min. Flip at 6 min.','Build: bun, lettuce, tomato, chicken patty, 10g jalapeño honey on top. Enjoy!'],
+    tip:'Make the jalapeño honey the night before — it thickens beautifully overnight in the fridge.'},
+
+  'crispy-taco-pockets':{title:'Crispy Taco Pockets',type:'main',tag:'eric',video:'https://vimeo.com/902394301/d5f678f779',
+    note:'Ground beef taco filling sealed in low-carb tortillas, air fried',
+    macros:[{v:'125',l:'Cal'},{v:'5g',l:'Fat'},{v:'7g',l:'Carbs'},{v:'14g',l:'Protein'}],serving:'Per pocket · 10 total',totalServings:10,unitLabel:'pocket',portionFor2:4,
+    ings:[['16 oz','96/4 lean ground beef'],['1 packet','taco seasoning'],['56g','2% Mexican cheese'],['2 wedges','light Laughing Cow cheese'],['60g','reduced sodium chicken broth'],['6g','nutritional yeast'],['5 low-carb tortillas','cut in half']],
+    steps:['Brown ground beef 7/10 heat. Add taco seasoning + chicken broth. Keep juicy.','Lower heat. Add Mexican cheese, Laughing Cow, nutritional yeast. Mix together.','Fold pockets from each half-tortilla (see technique). Makes 10 pockets.','Air fry at 400°F for 4–5 min until golden.','Serve with avocado lime dipping sauce: blend 1 avocado + ½ cup water + cilantro + lime + salt + cumin.'],
+    tip:'Make these and freeze the extras — they reheat perfectly in the air fryer.'},
+
+  'pizza-pop-tarts':{title:'Pepperoni Pizza Pop Tarts',type:'main',tag:'eric',video:'https://vimeo.com/799250999/60ce4cc4b3',
+    note:'Rolled bread sealed with pepperoni & mozzarella inside, air fried',
+    macros:[{v:'217',l:'Cal'},{v:'8g',l:'Fat'},{v:'24g',l:'Carbs'},{v:'16g',l:'Protein'}],serving:'Per pop tart · 10 total',totalServings:10,unitLabel:'pop tart',portionFor2:4,
+    ings:[['10 slices','low-calorie bread (Nature\'s Own)'],['1.5 bags','turkey pepperonis, sliced in half'],['100g','part-skim mozzarella'],['to taste','oregano, basil'],['100g','egg whites (for wash)'],['30g per pop tart','pizza sauce (topping)'],['10g per pop tart','part-skim mozzarella (topping)']],
+    steps:['Mix halved pepperoni + mozzarella + oregano + basil in a bowl.','Roll 10 bread slices flat with a rolling pin.','Brush egg whites on edges of one slice. Add 1/10th filling in middle.','Brush bottom edges of second slice, press on top. Brush all outer edges. Crimp with fork, trim with pizza cutter.','Repeat for all 5 pop tarts. Spray tops with cooking spray, add garlic powder.','Bake at 400°F for 10–12 min. Add pizza sauce, cheese, pepperoni toppings and bake again until golden.'],
+    tip:null},
+
+  'pizza-sliders':{title:'Pepperoni Pizza Gameday Sliders',type:'main',tag:'eric',video:'https://vimeo.com/799250999/60ce4cc4b3',
+    note:'Brioche sliders loaded with pizza chicken, pepperoni, and mozzarella',
+    macros:[{v:'191',l:'Cal'},{v:'5g',l:'Fat'},{v:'21g',l:'Carbs'},{v:'16g',l:'Protein'}],serving:'Per slider · 12 total',totalServings:12,unitLabel:'slider',portionFor2:6,
+    ings:[['1 package (12)','slider rolls (Natures Own Brioche)'],['16 oz','chicken breast'],['120g','pizza sauce'],['36','turkey pepperonis (3 per slider)'],['56g','light mozzarella'],['8g','parmesan'],['pizza seasoning: 4 tbsp oregano, 2 tbsp basil, 1 tbsp each garlic powder/onion powder/sea salt/paprika/thyme, ½ tbsp black pepper + red pepper flakes','']],
+    steps:['Make pizza seasoning blend. Season chicken with it. Air fry at 400°F for 10 min.','Let chicken cool 5–10 min, then slice.','Slice rolls in half. Layer bottom halves: chicken, pizza sauce, 3 pepperonis per slider, mozzarella.','Add top halves. Mix remaining pizza seasoning with parmesan. Spray tops, sprinkle seasoning mix.','Bake at 400°F for 10 min (cover with foil first 6 min to protect tops). Cut and enjoy.'],
+    tip:'Cut the rolls into individual sliders before serving — the chicken overlaps and pulls otherwise.'},
+
+  // ── MAINS: JULIE ─────────────────────────────────────
+  'popcorn-shrimp':{title:'Crispy Popcorn Shrimp',type:'main',tag:'julie',video:'https://vimeo.com/585502938/376160c8c0',
+    note:'Air-fried panko shrimp — Julie\'s seafood love meets crispy bar food',
+    macros:[{v:'185',l:'Cal'},{v:'2g',l:'Fat'},{v:'20g',l:'Carbs'},{v:'23g',l:'Protein'}],serving:'Per 10 shrimp',totalServings:10,unitLabel:'10 shrimp',portionFor2:1,
+    ings:[['2 lbs','medium peeled deveined shrimp'],['100g (use 50g)','all-purpose flour'],['to taste','sea salt, garlic powder, black pepper, onion powder'],['1 large','egg'],['50g','egg whites'],['150g','panko bread crumbs']],
+    steps:['3 stations: flour+seasoning / egg+egg whites / panko.','Left hand dry, right hand wet. Coat 6–8 shrimp: flour → egg → panko.','Spray fryer tray, single layer, none touching, spray tops.','Air fry at 360°F for 9 min. Repeat in batches.'],
+    tip:'Bang bang sauce: light mayo + greek yogurt + sriracha + lime. Perfect pairing.'},
+
+  'salmon-burger':{title:'The Perfect Salmon Burger',type:'main',tag:'julie',video:null,
+    note:'Hand-minced salmon on an everything bagel',
+    macros:[{v:'590',l:'Cal'},{v:'19g',l:'Fat'},{v:'55g',l:'Carbs'},{v:'46g',l:'Protein'}],serving:'Per burger · 4 total',totalServings:4,unitLabel:'burger',portionFor2:2,
+    ings:[['21 oz','sockeye salmon fillets'],['30g','bread crumbs'],['1 large','shallot, finely chopped'],['to taste','dill, salt, pepper, garlic powder'],['1','everything bagel (per burger)'],['21g','avocado (per burger)'],['1 wedge','Laughing Cow cheese (per burger)']],
+    steps:['Finely chop shallot.','Mince salmon with knife to ground-meat consistency.','Mix with shallot and seasonings. Form 4 equal patties.','Cast iron 6/10 heat, spray, press patty to 1in. Cook 4–5 min per side.','Toast bagels. Build: avocado on bottom, salmon patty, Laughing Cow on top half.'],
+    tip:'Knife mince over food processor every time — better texture, better bite.'},
+
+  'fish-sticks':{title:'Crispy Fish Sticks',type:'main',tag:'julie',video:null,
+    note:'Air-fried cod strips — crispy outside, flaky inside',
+    macros:[{v:'62',l:'Cal'},{v:'0.5g',l:'Fat'},{v:'5g',l:'Carbs'},{v:'9g',l:'Protein'}],serving:'Per stick · 14 total',totalServings:14,unitLabel:'stick',portionFor2:7,
+    ings:[['18 oz','fresh cod'],['100g (use 50g)','all-purpose flour'],['to taste','sea salt, garlic powder, black pepper'],['1 large','egg'],['50g','egg whites'],['100g (use 75g)','panko bread crumbs']],
+    steps:['Slice cod into 14 equal strips.','3 bowls: flour+seasoning / egg+egg whites / panko.','Left hand dry, right hand wet. Coat each strip: flour → egg → panko.','Single layer in fryer (none touching), spray tops.','Air fry at 360°F for 9 min. Repeat batches.'],
+    tip:null},
+
+  'salmon-fish-sticks':{title:'Salmon Fish Sticks',type:'main',tag:'julie',video:'https://www.youtube.com/watch?v=DTB57FSCLKc',
+    note:'Panko-crusted Atlantic salmon strips — 110 cal each',
+    macros:[{v:'85',l:'Cal'},{v:'4g',l:'Fat'},{v:'4g',l:'Carbs'},{v:'9g',l:'Protein'}],serving:'Per stick · 19 total',totalServings:19,unitLabel:'stick',portionFor2:9,
+    ings:[['26 oz','fresh Atlantic salmon'],['50g','all-purpose flour'],['60g','panko bread crumbs'],['1 large','egg'],['to taste','21 Seasoning Salute (Trader Joe\'s)']],
+    steps:['Slice salmon into 19 even strips.','Set up 3 stations: flour / egg / panko.','Left hand dry, right hand wet. Dredge each strip: flour → egg → panko.','Air fryer tray sprayed. Add strips (none touching), spray tops.','Air fry at 360°F for 9 min. Flip at 5 min. Repeat in batches.'],
+    tip:null},
+
+  'shrimp-burger':{title:'The Perfect Shrimp Burger',type:'main',tag:'julie',video:null,
+    note:'Knife-minced shrimp patties with bang bang sauce',
+    macros:[{v:'471',l:'Cal'},{v:'15g',l:'Fat'},{v:'42g',l:'Carbs'},{v:'43g',l:'Protein'}],serving:'Per burger · 4 total',totalServings:4,unitLabel:'burger',portionFor2:2,
+    ings:[['1.5 lbs','deveined shrimp, tails removed'],['50g','red pepper, diced'],['50g','green onion, diced'],['to taste','salt, pepper, garlic powder'],['28g','panko bread crumbs'],['1 brioche bun','per burger'],['28g','avocado (per burger)'],['15g mayo + 45g greek yogurt + 10g sriracha','bang bang sauce per burger']],
+    steps:['Dice red pepper and green onion.','Mince shrimp with knife to ground-meat consistency.','Mix with red pepper, green onion, salt, pepper, garlic powder. Form 4 patties.','Cast iron 6/10 heat, spray, press to ~1in. Cook 4–5 min per side.','Make bang bang sauce: mix mayo, yogurt, sriracha.','Build: avocado on bottom bun, patty, bang bang sauce, top bun.'],
+    tip:'Knife-minced shrimp gives far better texture than a food processor.'},
+
+  'avocado-tuna-muffins':{title:'Avocado Tuna English Muffins',type:'main',tag:'julie',video:'https://vimeo.com/585502938/376160c8c0',
+    note:'Avocado tuna salad on toasted english muffins with pico & sriracha',
+    macros:[{v:'175',l:'Cal'},{v:'6g',l:'Fat'},{v:'18g',l:'Carbs'},{v:'11g',l:'Protein'}],serving:'Per muffin · 4 servings',totalServings:4,unitLabel:'muffin',portionFor2:2,
+    ings:[['2 cans','tuna in water (drain first)'],['1 medium (4oz)','avocado'],['2 light','Laughing Cow cheese wedges'],['to taste','Everything Bagel seasoning'],['2','English muffins (halved + toasted)'],['homemade pico','to taste'],['sriracha','to taste']],
+    steps:['Drain tuna thoroughly. Add to bowl with avocado and Laughing Cow cheese wedges.','Mash everything together. Add Everything Bagel seasoning to taste.','Toast English muffins.','Pile avocado tuna salad on each toasted half. Top with homemade pico and sriracha.'],
+    tip:'Drain the tuna all the way — any extra water makes the avocado tuna watery fast.'},
+
+  'chicken-birria-ramen':{title:'Chicken Birria Ramen',type:'main',tag:'julie',video:'https://vimeo.com/851264243/297557f8d0',
+    note:'Instant pot shredded chicken in a rich birria marinade over ramen',
+    macros:[{v:'508',l:'Cal'},{v:'12g',l:'Fat'},{v:'39g',l:'Carbs'},{v:'60g',l:'Protein'}],serving:'1/4 recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['2 lbs','chicken breast'],['1 tbsp each','paprika, oregano, cinnamon, black pepper, cumin'],['150g','green & red peppers'],['150g','onion'],['20g','jalapeños'],['2 packets','ramen noodles (no seasoning)'],['2 whole','red onions'],['6','garlic cloves'],['1 can','chipotle peppers in adobo sauce'],['450g','liquid from rehydrated peppers'],['2 whole each','pasilla + guajillo peppers'],['1 tbsp','red wine vinegar']],
+    steps:['Cut tops off pasilla and guajillo peppers, remove seeds. Soak in boiling water for 10 min to rehydrate.','Blend all birria marinade ingredients until smooth.','Cube chicken and season with spices. Add to instant pot with birria marinade. Pressure cook 40 min, natural release 10 min.','Shred chicken. Strain the consomé from the pot.','Sauté peppers, onions, jalapeños in a 7/10 pan using consomé to season.','Add chicken, ramen cooked al dente, and consomé as desired. Mix and enjoy.'],
+    tip:'Strain the consomé carefully — it becomes your flavor-packed broth and stir-fry liquid.'},
+
+  'cauliflower-fried-rice':{title:'Cauliflower Chicken Fried Rice',type:'main',tag:'julie',video:'https://vimeo.com/795312970/f2844b29f6',
+    note:'Low-carb fried rice with honey sriracha glazed chicken',
+    macros:[{v:'370',l:'Cal'},{v:'9g',l:'Fat'},{v:'22g',l:'Carbs'},{v:'42g',l:'Protein'}],serving:'1 bowl · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1.5 lbs','chicken breast, cubed'],['500g','frozen cauliflower rice'],['250g','frozen peas & carrots'],['½ cup','water'],['150g','sweet onion, chopped'],['3 cloves','minced garlic'],['65g','soy sauce'],['5g','sesame oil'],['3 large','eggs'],['20g','green onion'],['to taste','sea salt, black pepper, garlic powder, ginger powder'],['sauce: 20g sriracha, 20g honey, 14g soy sauce, 7g rice vinegar, 3g sesame oil, 3g corn starch','']],
+    steps:['Whisk sauce ingredients together. Set aside.','Season cubed chicken with salt + garlic powder. Cook in pan 7/10 heat until golden. Toss with half the sauce. Set aside.','Sauté onion + garlic until soft. Set aside.','Add frozen cauliflower + peas & carrots + ½ cup water to pan. Cover and steam until soft. CRITICAL: squeeze all liquid out through a towel before proceeding.','Return to pan with onions and garlic. Season with salt, pepper, garlic powder, ginger powder.','Push everything to one side, scramble 3 eggs on the other. Mix together.','Add soy sauce, sesame oil, chicken. Mix. Top with green onions.'],
+    tip:'Squeezing the cauliflower dry is non-negotiable — skip it and you get a soggy mess instead of fried rice.'},
+
+  // ── MAINS: BOTH ──────────────────────────────────────
+  'spaghetti-squash':{title:'Spaghetti Squash & Meatballs',type:'main',tag:'both',video:null,
+    note:'Roasted squash strands + lean beef meatballs in marinara',
+    macros:[{v:'281',l:'Cal'},{v:'8g',l:'Fat'},{v:'25g',l:'Carbs'},{v:'30g',l:'Protein'}],serving:'1 plate · 3 servings',totalServings:3,unitLabel:'plate',portionFor2:2,
+    ings:[['1 whole','spaghetti squash'],['to taste','sea salt, garlic powder'],['300g','pasta sauce'],['12 oz','96/4 lean ground beef'],['30g','fat free feta']],
+    steps:['Microwave squash 2 min each side. Preheat oven 400°F.','Cut off ends. Halve lengthwise. Scoop seeds.','Fill oven-safe pan with 1in water + salt + garlic. Place squash face-down. Bake 25 min.','Form beef into 0.75–1oz meatballs. Stovetop 6/10 heat with cover, flip every few min.','Fork squash to create strands. Top with warm sauce, meatballs, feta.'],
+    tip:'The inch of salted water while baking infuses the squash with flavor from the inside.'},
+
+  'pita-pizza':{title:'The Perfect Pita Pizza',type:'main',tag:'both',video:null,
+    note:'Golden egg-white-washed pita with classic toppings',
+    macros:[{v:'320',l:'Cal'},{v:'9g',l:'Fat'},{v:'41g',l:'Carbs'},{v:'21g',l:'Protein'}],serving:'Whole pizza',totalServings:1,unitLabel:'pizza',portionFor2:1,
+    ings:[['1','pita bread'],['60g','marinara sauce'],['28g','part-skim mozzarella'],['7','turkey pepperonis'],['10g','egg whites (for wash)'],['to taste','garlic powder, fresh cilantro, basil']],
+    steps:['Preheat oven to 450°F.','Brush pita with egg whites both sides, sprinkle garlic powder.','Bake 4–6 min until golden.','Add toppings. Bake until golden. Slice and serve.'],
+    tip:'Air fryer works at 360°F — watch toppings, the pepperonis like to fly around.'},
+
+  'smash-turkey-burgers':{title:'Roasted Red Pepper Smash Turkey Burgers',type:'main',tag:'both',video:null,
+    note:'99/1 lean turkey with roasted peppers — insanely macro-friendly',
+    macros:[{v:'152',l:'Cal'},{v:'2g',l:'Fat'},{v:'2g',l:'Carbs'},{v:'30g',l:'Protein'}],serving:'Per burger · 4 total',totalServings:4,unitLabel:'burger',portionFor2:2,
+    ings:[['16 oz','99/1 lean ground turkey'],['60g','roasted red peppers, finely diced'],['28g','part-skim mozzarella'],['to taste','fresh parsley, cilantro, sea salt, garlic powder']],
+    steps:['Finely chop roasted red peppers, parsley, and cilantro.','Mix turkey with peppers, parsley, salt, garlic powder. Form 4 balls.','Preheat pan 7/10 heat, spray. Add burger ball, smash with press.','Cook 90 sec with cover. Flip, add cheese, splash of water, cover.','Off heat after another 60–90 sec max — 99/1 turkey dries out instantly.'],
+    tip:'Cook time is everything — 99/1 turkey overcooks in seconds. Stay with it.'},
+
+  'egg-quesadilla':{title:'Egg White Omelette Quesadilla',type:'main',tag:'both',video:null,
+    note:'Egg white quesadilla with mozzarella + red peppers',
+    macros:[{v:'624',l:'Cal'},{v:'11g',l:'Fat'},{v:'82g',l:'Carbs'},{v:'48g',l:'Protein'}],serving:'Entire meal',totalServings:1,unitLabel:'meal',portionFor2:1,
+    ings:[['250g','egg whites'],['42g','part-skim mozzarella'],['to taste','roasted red peppers, green onions, everything bagel seasoning'],['300g','russet potatoes'],['to taste','sea salt']],
+    steps:['Air fry wedge-cut potatoes at 400°F for 17 min, flipping at 10 min.','Preheat pan 7/10 heat, spray. Pour egg whites, add everything bagel seasoning, cover.','Once tops set, add mozzarella, red peppers, green onions to one side. Fold.','Cook 3–4 min per side until golden. Slice and plate with fries.'],
+    tip:null},
+
+  'fdl-12in-pizza':{title:'FDL 12" Pepperoni Pizza',type:'main',tag:'both',video:'https://vimeo.com/799252961/592cd6c527',
+    note:'Homemade protein pizza dough — 649 cals for the whole thing',
+    macros:[{v:'778',l:'Cal'},{v:'22g',l:'Fat'},{v:'88g',l:'Carbs'},{v:'65g',l:'Protein'}],serving:'Whole pizza · 1 serving',totalServings:1,unitLabel:'pizza',portionFor2:1,
+    ings:[['70g','self-rising flour'],['12g','coconut flour'],['5g','nutritional yeast'],['150g','plain nonfat Greek yogurt'],['75g','egg whites'],['to taste','garlic powder, dried basil'],['120g','low-fat marinara'],['56g','part-skim mozzarella'],['25','turkey pepperonis']],
+    steps:['Mix dry ingredients. Add wet ingredients — mix to a thick paste.','Spread dough on parchment to 12–13in, spreading outward in a circle to keep edges thick.','Bake on pan with parchment at 450°F for 10 min until golden.','Remove from parchment, add back to pan. Add toppings. Bake until toppings are golden.','Slice, add parmesan + red pepper flakes if desired.'],
+    tip:'The spreading technique is a skill — always work outward from center to keep a thick crust edge.'},
+
+  'grilled-chicken-fajitas':{title:'Grilled Chicken Fajitas',type:'main',tag:'both',video:null,
+    note:'Caramelized peppers & onions + air-fried chicken for tacos',
+    macros:[{v:'475',l:'Cal'},{v:'14g',l:'Fat'},{v:'30g',l:'Carbs'},{v:'55g',l:'Protein'}],serving:'Veggies: 1/4 recipe (chicken macros separate)',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1 each','green, red, orange, yellow pepper'],['1','yellow onion'],['2 x 10oz','chicken breasts'],['to taste','sea salt, garlic powder, 21 Seasoning Salute'],['4','fajita-size flour tortillas'],['1 large','avocado'],['42g','2% Mexican cheese'],['sriracha','to taste']],
+    steps:['Thinly slice peppers and onions.','Very hot cast iron pan, spray. Sauté peppers and onions 10–12 min, stirring constantly until caramelized. Season halfway through.','Flatten chicken. Season all sides. Air fry at 360°F for 9 min.','Reheat peppers + onions. Slice chicken. Build tacos with tortillas, avocado, cheese, sriracha.'],
+    tip:'The pan must be VERY hot before adding peppers — that\'s what gets the caramelized edge.'},
+
+  // ── VEGETABLES ───────────────────────────────────────
+  'garlic-brussels':{title:'Garlic Parmesan Brussels Sprouts',type:'veg',tag:'both',video:null,
+    note:'Air fry at 400°F for 4–6 min — minimal cleanup',
+    macros:[{v:'61',l:'Cal'},{v:'2g',l:'Fat'},{v:'10g',l:'Carbs'},{v:'4g',l:'Protein'}],serving:'Whole recipe',totalServings:1,unitLabel:'batch',portionFor2:1,
+    ings:[['12 (400g)','fresh Brussels sprouts'],['5g','parmesan cheese'],['to taste','garlic powder, sea salt, everything bagel seasoning'],['as needed','non-stick olive oil spray']],
+    steps:['Slice Brussels sprouts in half.','Bowl, spray with oil spray, add seasonings, toss.','Add to air fryer, sprinkle remaining parmesan on top.','Air fry at 400°F for 4–6 min until golden.'],
+    tip:null},
+
+  'smash-brussels':{title:'Smash Brussels Sprouts',type:'veg',tag:'both',video:null,
+    note:'Boil, smash, roast — the crispy edges are worth it',
+    macros:[{v:'88',l:'Cal'},{v:'3g',l:'Fat'},{v:'11g',l:'Carbs'},{v:'6g',l:'Protein'}],serving:'6 sprouts · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1 bag','Brussels sprouts'],['30ml','vinegar'],['4g','sea salt'],['as needed','water + non-stick olive oil spray']],
+    steps:['Preheat oven 425°F. Boil water + vinegar + salt.','Boil sprouts 15 min until smashable. Ice bath 1–2 min.','Smash on a separate plate — pour off the water that comes out.','Spray tops with oil spray, season with salt. Lay on lined pan.','Bake 12 min. Flip, bake 12 more. Add parmesan to finish.'],
+    tip:'Smash on a separate plate first — tons of water comes out and soggy pan = soggy sprouts.'},
+
+  'buffalo-cauliflower':{title:'Buffalo Cauliflower Wings',type:'veg',tag:'eric',video:null,
+    note:"Frank's + panko cauliflower — the veggie that eats like bar food",
+    macros:[{v:'191',l:'Cal'},{v:'2g',l:'Fat'},{v:'31g',l:'Carbs'},{v:'13g',l:'Protein'}],serving:'1/4 recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1 head','cauliflower'],['8g','olive oil'],['150g',"Frank's Red Hot"],['100g','egg whites'],['100g','panko'],['20g','nutritional yeast']],
+    steps:['Preheat oven 475°F. Cut cauliflower into wing-size pieces with a flat side.','Wet bowl: egg whites + buffalo + olive oil. Dry bowl: panko + nutritional yeast.','Foil-lined pan, sprayed. Coat each piece wet then dry. Lay flat-side down.','Bake 13 min. Flip, pour remaining buffalo sauce on top. Bake 10–13 more min.'],
+    tip:'Flat side down = even bake and crispy bottom.'},
+
+  'cauliflower-mac':{title:'Cauliflower Mac & Cheese',type:'veg',tag:'julie',video:null,
+    note:'Almond milk cheese sauce over roasted cauliflower',
+    macros:[{v:'271',l:'Cal'},{v:'14g',l:'Fat'},{v:'20g',l:'Carbs'},{v:'18g',l:'Protein'}],serving:'1/4 recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1 head','cauliflower, thumb-size pieces'],['360ml','unsweetened almond milk'],['40g','all-purpose flour'],['40g','yellow mustard'],['10g','nutritional yeast'],['to taste','sea salt, garlic powder'],['112g','2% sharp cheddar'],['68g','part-skim mozzarella']],
+    steps:['Preheat oven 425°F. Toss cauliflower in cooking spray on parchment-lined pan. Bake 15 min.','In a pot on 5/10 heat: almond milk + flour + mustard + salt + garlic powder + nutritional yeast. Stir to thicken.','Add cheddar and mozzarella. Stir until thick cheese sauce.','Add roasted cauliflower and serve.'],
+    tip:null},
+
+  'roasted-carrots':{title:'Garlic Sea Salt Roasted Carrots',type:'veg',tag:'both',video:null,
+    note:'Oven roast while the air fryer runs other batches',
+    macros:[{v:'36',l:'Cal'},{v:'0.5g',l:'Fat'},{v:'8g',l:'Carbs'},{v:'1g',l:'Protein'}],serving:'Per carrot · 11 total',totalServings:11,unitLabel:'carrot',portionFor2:5,
+    ings:[['11 fresh','carrots'],['as needed','non-stick butter spray'],['to taste','sea salt, garlic powder']],
+    steps:['Preheat oven to 425°F. Line pan with foil and spray.','Add carrots and bake 25 min.','Slice each carrot lengthwise without cutting through. Open face up.','Spray cut sides, season with salt and garlic powder.','Flip face-down, bake 20–25 more min until bottoms are seared.'],
+    tip:null},
+
+  'sweet-potato-bites':{title:'Sweet Potato Bites',type:'veg',tag:'julie',video:null,
+    note:'Cube, salt, air fry — sweet and simple',
+    macros:[{v:'150',l:'Cal'},{v:'1g',l:'Fat'},{v:'33g',l:'Carbs'},{v:'3g',l:'Protein'}],serving:'1/3 recipe · 3 servings',totalServings:3,unitLabel:'serving',portionFor2:2,
+    ings:[['2 medium (~250g ea)','sweet potatoes'],['as needed','non-stick butter spray'],['to taste','sea salt']],
+    steps:['Cube sweet potatoes.','Bowl, spray with non-stick spray, toss with sea salt.','Air fry at 390°F for 15–17 min, shaking every 5 min.'],
+    tip:null},
+
+  // ── MAINS: FROM EATINGBIRDFOOD.COM ──────────────────
+  'ebf-shrimp-tacos':{title:'Shrimp Tacos with Mango Cabbage Slaw',type:'main',tag:'julie',
+    video:'https://www.eatingbirdfood.com/shrimp-tacos/',
+    note:'Spicy marinated shrimp + mango slaw + Greek yogurt crema — 30 min',
+    macros:[{v:'335',l:'Cal'},{v:'17g',l:'Fat'},{v:'24g',l:'Carbs'},{v:'22g',l:'Protein'}],
+    serving:'2 tacos · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1 lb','medium shrimp, peeled and deveined'],['2 tbsp','olive oil'],['1 lime, juiced + zested',''],['2 cloves','garlic, minced'],['1 tsp each','chili powder, cumin, smoked paprika'],['¼ tsp','cayenne pepper'],['2 cups','shredded cabbage'],['1 mango','diced'],['¼ cup','red onion, thinly sliced'],['¼ cup','cilantro, chopped'],['½ cup','Greek yogurt'],['1 tbsp','mayo (optional)'],['1 tbsp','hot sauce'],['8 small','flour or corn tortillas']],
+    steps:['Whisk together olive oil, lime juice, lime zest, garlic, chili powder, cumin, paprika, and cayenne. Toss shrimp in marinade. Marinate 15–20 min (no longer than 30).','Make crema: mix Greek yogurt, mayo, lime juice, hot sauce, garlic powder, smoked paprika, and salt. Set aside.','Make slaw: toss cabbage, mango, red onion, and cilantro with lime juice, olive oil, and salt. Set aside.','Heat skillet or grill over medium-high. Cook shrimp 2 min per side until pink and opaque.','Warm tortillas. Build tacos: shrimp, mango slaw, crema. Squeeze fresh lime over top.'],
+    tip:'Prep the slaw and crema up to a day ahead — the slaw gets better as it sits.'},
+
+  'ebf-salmon-orzo':{title:'Mediterranean Salmon & Orzo Skillet',type:'main',tag:'julie',
+    video:'https://www.eatingbirdfood.com/salmon-and-orzo-skillet/',
+    note:'One-skillet wonder — flaky salmon, orzo, roasted peppers & artichokes in 30 min',
+    macros:[{v:'626',l:'Cal'},{v:'37g',l:'Fat'},{v:'39g',l:'Carbs'},{v:'39g',l:'Protein'}],
+    serving:'½ recipe · 2 servings',totalServings:2,unitLabel:'bowl',portionFor2:2,
+    ings:[['2 x 6oz','salmon fillets'],['¾ cup','whole wheat orzo'],['2 tbsp','pine nuts'],['4 leaves','swiss chard, thick stems removed'],['½ cup','roasted red bell peppers, sliced'],['½ cup','artichoke hearts, quartered'],['2 cloves','garlic, minced'],['1','medjool date, finely chopped'],['2 tbsp','olive oil'],['salt and pepper','to taste'],['feta cheese','optional, to serve']],
+    steps:['Preheat oven to 400°F. Cook orzo in salted boiling water per package directions. Drain and drizzle with 1 tsp olive oil. Set aside.','Toast pine nuts in dry oven-safe skillet over medium heat 3–4 min. Transfer and roughly chop.','Pat salmon dry, season with salt and pepper. Sear skin-side up in same skillet with 1 tbsp oil, 4 min until golden. Flip, transfer skillet to oven for 6–8 min until cooked through. Remove and set aside.','In same skillet, heat remaining oil over medium. Add garlic and cook 30 seconds. Add chard, red peppers, artichokes, and date. Cook 2–3 min.','Add cooked orzo to skillet and toss. Top with salmon and pine nuts. Serve with feta if desired.'],
+    tip:'Don\'t skip the medjool date — that tiny amount of sweetness balances the briny artichokes and makes the whole dish.'},
+
+  'ebf-fish-tacos':{title:'Healthy Fish Tacos with Avocado Crema',type:'main',tag:'both',
+    video:'https://www.eatingbirdfood.com/clean-eating-grilled-fish-tacos/',
+    note:'Grilled white fish + honey dijon slaw + avocado crema — 30 min, high fiber',
+    macros:[{v:'311',l:'Cal'},{v:'10g',l:'Fat'},{v:'32g',l:'Carbs'},{v:'26g',l:'Protein'}],
+    serving:'2 tacos · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1 lb','white fish (tilapia, cod, mahi-mahi, or halibut)'],['1 lime, juiced',''],['1 tsp each','garlic powder, cumin'],['¼ tsp','cayenne, sea salt'],['2 cups','shredded cabbage'],['¼ cup','red onion, thinly sliced'],['2 tbsp each','cilantro, lime juice, honey, dijon mustard'],['1','avocado'],['¼ cup','Greek yogurt'],['¼ cup','cilantro'],['1 tbsp','lime juice'],['8 small','tortillas']],
+    steps:['Squeeze lime juice over fish. Mix garlic powder, cumin, cayenne, and salt. Rub over fish. Marinate 10 min.','Make slaw: toss cabbage, onion, cilantro, lime juice, honey, mustard, salt and pepper.','Make avocado crema: blend avocado, yogurt, cilantro, lime juice, salt, and a splash of water until smooth.','Grill or pan-sear fish over medium-high heat 3–4 min per side until flaky.','Break fish into chunks. Build tacos: fish, slaw, avocado crema. Add lime wedge.'],
+    tip:'Make the avocado crema first — it keeps in the fridge for up to 2 days and is great on everything.'},
+
+  'ebf-air-fryer-salmon':{title:'Air Fryer Salmon with Teriyaki Bites',type:'main',tag:'julie',
+    video:'https://www.eatingbirdfood.com/air-fryer-salmon-bites/',
+    note:'Teriyaki-marinated salmon bites — crispy in 8 min, serve over rice',
+    macros:[{v:'359',l:'Cal'},{v:'16g',l:'Fat'},{v:'1g',l:'Carbs'},{v:'49g',l:'Protein'}],
+    serving:'Per fillet · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1.5 lbs','salmon fillets (wild-caught preferred)'],['3 tbsp','tamari or soy sauce'],['2 tbsp','maple syrup'],['2 cloves','garlic, minced'],['1 tbsp','rice vinegar'],['1 tsp','sesame oil'],['1 tsp','fresh ginger, grated'],['1 tbsp','avocado or olive oil'],['cooked rice and veggies','to serve']],
+    steps:['Whisk together oil, tamari, maple syrup, garlic, vinegar, and ginger in a bowl.','Cut salmon into bite-size chunks. Add to marinade, toss to coat. Refrigerate 30 min (up to 4 hours).','Preheat air fryer. Place salmon chunks in a single layer in air fryer basket.','Air fry at 400°F for 6–8 min, flipping halfway through.','Serve over rice with roasted broccoli or veggies of choice.'],
+    tip:'These reheat perfectly — air fry at 350°F for 2–3 min. Great for meal prep bowls all week.'},
+
+  'ebf-greek-turkey-meatballs':{title:'Greek Turkey Meatballs with Tzatziki',type:'main',tag:'both',
+    video:'https://www.eatingbirdfood.com/greek-turkey-meatballs/',
+    note:'Herb-and-feta turkey meatballs baked on a sheet pan — Mediterranean bowl vibes',
+    macros:[{v:'575',l:'Cal'},{v:'28g',l:'Fat'},{v:'42g',l:'Carbs'},{v:'41g',l:'Protein'}],
+    serving:'¼ recipe (with rice + tzatziki) · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1 lb','ground turkey'],['⅓ cup','red onion, finely chopped'],['2-3 cloves','garlic, minced'],['⅓ cup','fresh parsley, chopped'],['2 tbsp','fresh dill, chopped'],['¼ cup','Italian breadcrumbs'],['1 large','egg'],['⅓ cup','crumbled feta'],['1 tbsp','lemon juice + 1 tsp zest'],['1 tsp','dried oregano'],['salt and pepper','to taste'],['store-bought or homemade tzatziki','to serve'],['brown rice or quinoa','to serve'],['cucumber-tomato salad','to serve']],
+    steps:['Preheat oven to 400°F. Line a baking sheet with parchment paper and spray with cooking spray.','Combine turkey, onion, garlic, parsley, dill, breadcrumbs, egg, feta, lemon juice, lemon zest, oregano, salt, and pepper in a large bowl. Mix until just combined — don\'t overmix.','Scoop and roll into 1.5-inch meatballs (about 20 total). Place on prepared baking sheet.','Bake 18–20 min until cooked through and lightly browned.','Serve over rice or quinoa with cucumber-tomato salad and a generous scoop of tzatziki.'],
+    tip:'These are even better the next day — make a double batch and use them in wraps or grain bowls all week.'},
+
+  'ebf-shrimp-stir-fry':{title:'Shrimp Stir Fry with Veggies',type:'main',tag:'both',
+    video:'https://www.eatingbirdfood.com/shrimp-stir-fry-salad/',
+    note:'Quick weeknight stir fry — shrimp + veggies + homemade sauce over rice in 30 min',
+    macros:[{v:'393',l:'Cal'},{v:'5g',l:'Fat'},{v:'47g',l:'Carbs'},{v:'40g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1.5 lbs','large shrimp, peeled and deveined'],['2 tbsp','avocado or sesame oil (divided)'],['1','yellow onion, sliced'],['2 bell peppers','sliced'],['2 cups','broccoli florets'],['1 cup','snap peas'],['sauce: 3 tbsp soy sauce, 2 tbsp honey, 1 tbsp rice vinegar, 2 tsp sesame oil, 1 tsp sriracha, 2 tsp corn starch, 2 garlic cloves minced, 1 tsp fresh ginger',''],['cooked rice','to serve'],['sesame seeds and green onion','to garnish']],
+    steps:['Whisk all sauce ingredients together in a small bowl. Set aside.','Heat 1 tbsp oil in a large skillet over medium-high. Add shrimp in a single layer. Cook 1–2 min per side until pink and opaque. Remove and set aside.','Add remaining oil to same skillet. Sauté onion 1–2 min. Add remaining veggies and cook 7–8 min until tender-crisp.','Return shrimp to skillet. Pour sauce over everything. Stir well.','Cook 2 min stirring until sauce thickens. Serve over rice, garnish with sesame seeds and green onion.'],
+    tip:'Prep all veggies and mix the sauce before you start — stir fry moves fast and you want everything ready to go.'},
+
+  'ebf-greek-chicken':{title:'Baked Greek Chicken',type:'main',tag:'eric',
+    video:'https://www.eatingbirdfood.com/greek-chicken/',
+    note:'Juicy oven-baked chicken with lemon, oregano & garlic — no marinating, 30 min',
+    macros:[{v:'205',l:'Cal'},{v:'7g',l:'Fat'},{v:'2g',l:'Carbs'},{v:'33g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1.5 lbs','chicken thighs or breasts (boneless, skinless)'],['2 tbsp','olive oil'],['3 cloves','garlic, minced'],['1 lemon','zested and juiced'],['1.5 tsp','dried oregano'],['1 tsp','garlic powder'],['½ tsp each','onion powder, smoked paprika'],['salt and pepper','to taste'],['fresh parsley','to serve']],
+    steps:['Preheat oven to 400°F. Pat chicken dry.','Whisk together olive oil, garlic, lemon juice, lemon zest, oregano, garlic powder, onion powder, paprika, salt and pepper.','Add chicken to a baking dish and pour marinade over. Rub to coat both sides.','Bake 22–25 min until internal temp reaches 165°F. For thicker breasts, add 3–5 min.','Optional: broil 2 min at the end for a golden top. Let rest 5 min. Garnish with parsley.'],
+    tip:'The lemon zest is the key — don\'t skip it. It adds a brightness that juice alone can\'t deliver.'},
+
+  'ebf-salmon-burrito-bowl':{title:'Salmon Burrito Bowl',type:'main',tag:'julie',
+    video:'https://www.eatingbirdfood.com/salmon-burrito-bowl/',
+    note:'Taco-spiced salmon over Mexican rice with pico, avocado & avocado crema',
+    macros:[{v:'560',l:'Cal'},{v:'22g',l:'Fat'},{v:'52g',l:'Carbs'},{v:'38g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1.5 lbs','salmon fillets (skin-on)'],['2 tsp','taco seasoning'],['1 tbsp','olive oil'],['1 lime, juiced',''],['1 cup','basmati or jasmine rice'],['1 tbsp','olive oil'],['½','yellow onion, diced'],['2 cloves','garlic, minced'],['½','green bell pepper, diced'],['1 can','black beans, rinsed'],['½ cup','corn'],['¼ cup','cilantro'],['1 tsp','taco seasoning'],['1','avocado'],['½ cup','Greek yogurt'],['pico de gallo and queso fresco','to serve']],
+    steps:['Cook rice per package. Heat oil in skillet, sauté onion, garlic, and bell pepper 5–6 min. Add beans, corn, cilantro, and taco seasoning. Stir to combine. Add cooked rice, fire-roasted tomatoes; stir. Reduce heat to low.','Preheat oven to 400°F. Line a baking sheet with parchment. Season salmon skin-side down with olive oil and taco seasoning. Rub in and drizzle with lime juice.','Bake salmon 15–18 min until flaky. Cook time depends on thickness.','Make avocado crema: blend avocado, Greek yogurt, cilantro, lime juice, salt, and a splash of water until smooth.','Build bowls: rice mixture, salmon fillet, pico de gallo, jalapeño, crema, queso fresco, and cilantro.'],
+    tip:'The avocado crema is the move — it ties everything together and takes 2 minutes to blend.'},
+
+  // ── MAINS: WEB ADDITIONS ─────────────────────────────
+  // Honey Sriracha Salmon Bowl (eatwithclarity.com)
+  'honey-sriracha-salmon-bowl':{title:'Honey Sriracha Salmon Bowl',type:'main',tag:'julie',
+    video:'https://eatwithclarity.com/honey-sriracha-salmon-bowls/',
+    note:'Crispy pan-seared salmon cubes in a sticky sweet-spicy sauce over rice — 20 min',
+    macros:[{v:'522',l:'Cal'},{v:'22g',l:'Fat'},{v:'41g',l:'Carbs'},{v:'43g',l:'Protein'}],
+    serving:'1 bowl · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1.5 lbs','salmon fillets, skin removed, cut into 1" cubes'],['3 tbsp','soy sauce or tamari'],['2 tbsp','honey'],['2 tbsp','sriracha (adjust to taste)'],['3 cloves','garlic, minced'],['2 tbsp','water'],['2 cups','jasmine rice, cooked'],['1','avocado, sliced'],['1 cup','cucumber, sliced'],['1 cup','edamame, shelled'],['sriracha mayo: 2 tbsp mayo + 1 tbsp sriracha',''],['sesame seeds + red pepper flakes','to garnish']],
+    steps:['Whisk together soy sauce, honey, sriracha, garlic, and water in a bowl. Set aside.','Pat salmon cubes dry. Heat oil in a large skillet over medium-high. Add salmon in a single layer. Cook 2–3 min undisturbed until crispy. Flip.','Pour sauce over salmon. Cook 2–3 more min, turning to coat, until sauce thickens and glazes the salmon.','Assemble bowls: rice, salmon, avocado, cucumber, edamame. Drizzle with sriracha mayo. Finish with sesame seeds and red pepper flakes.'],
+    tip:'Crispy on the outside is the move — don\'t move the salmon for the first 2-3 minutes so it actually sears.'},
+
+  // Marry Me Chicken (skinnytaste.com lightened up)
+  'marry-me-chicken':{title:'Marry Me Chicken',type:'main',tag:'eric',
+    video:'https://www.skinnytaste.com/marry-me-chicken/',
+    note:'Creamy sun-dried tomato + spinach chicken in one skillet — 30 min, 30g protein',
+    macros:[{v:'286',l:'Cal'},{v:'13g',l:'Fat'},{v:'12g',l:'Carbs'},{v:'30g',l:'Protein'}],
+    serving:'1 piece with sauce · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1.5 lbs','boneless skinless chicken breasts, sliced thin'],['2 tbsp','all-purpose flour'],['1 tbsp','olive oil'],['3 cloves','garlic, minced'],['1 shallot','finely chopped'],['½ cup','chicken broth'],['¼ cup','half-and-half or light cream'],['2 oz','cream cheese, softened'],['⅓ cup','sun-dried tomatoes, drained and chopped'],['2 cups','baby spinach'],['¼ cup','parmesan, grated'],['1 tsp','Italian seasoning'],['½ tsp','red pepper flakes'],['salt and pepper','to taste'],['fresh basil','to serve']],
+    steps:['Season chicken with salt and pepper. Coat in flour, shaking off excess.','Heat oil in large skillet over medium-high. Cook chicken 4–5 min per side until golden. Remove and set aside.','Add shallot and garlic to same pan. Cook 1 min. Add broth to deglaze, scraping up any bits.','Stir in cream cheese until melted. Add half-and-half, sun-dried tomatoes, parmesan, Italian seasoning, and red pepper flakes.','Return chicken to pan. Simmer 5 min. Add spinach and stir until wilted. Serve with fresh basil.'],
+    tip:'Double the sauce if serving over pasta — the leftovers are arguably better than day one.'},
+
+  // Korean Ground Beef Bowl (skinnytaste.com)
+  'korean-beef-bowl':{title:'Korean Ground Beef Rice Bowl',type:'main',tag:'eric',
+    video:'https://www.skinnytaste.com/korean-beef-rice-bowls/',
+    note:'Sticky-sweet gochujang beef over rice with cucumber + sesame — 20 min',
+    macros:[{v:'394',l:'Cal'},{v:'9g',l:'Fat'},{v:'47g',l:'Carbs'},{v:'30g',l:'Protein'}],
+    serving:'1 bowl · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1 lb','96/4 lean ground beef'],['½','onion, finely diced'],['3 cloves','garlic, minced'],['1 tsp','fresh ginger, grated'],['sauce: 3 tbsp soy sauce, 1 tbsp brown sugar or honey, 1 tbsp sesame oil, 1 tbsp gochujang, ½ tsp red pepper flakes',''],['2 cups','jasmine rice, cooked'],['1','cucumber, thinly sliced'],['2','green onions, sliced'],['sesame seeds','to garnish'],['extra gochujang or sriracha','to serve']],
+    steps:['Whisk together all sauce ingredients in a small bowl. Set aside.','Heat a large skillet over high heat, spray with oil. Brown ground beef, breaking into crumbles, about 5 min. Drain excess fat if needed.','Add onion, garlic, and ginger. Cook 1 min.','Pour in sauce. Simmer on low for 5–10 min until sauce thickens and glazes the beef.','Divide rice between bowls. Top with beef, cucumber, green onion, and sesame seeds. Drizzle with extra gochujang or sriracha.'],
+    tip:'Get that browning on the beef before adding sauce — caramelized bits = flavor. Don\'t stir constantly.'},
+
+  // Spicy Shrimp Tacos (pinchofyum.com)
+  'spicy-shrimp-tacos-lime-slaw':{title:'Spicy Shrimp Tacos with Garlic Cilantro Lime Slaw',type:'main',tag:'both',
+    video:'https://pinchofyum.com/spicy-shrimp-tacos-with-garlic-cilantro-lime-slaw',
+    note:'Spiced shrimp + creamy garlic-cilantro-lime slaw — 30 min crowd pleaser',
+    macros:[{v:'520',l:'Cal'},{v:'17g',l:'Fat'},{v:'48g',l:'Carbs'},{v:'34g',l:'Protein'}],
+    serving:'2 tacos · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1 lb','large shrimp, peeled and deveined'],['1 tsp each','chili powder, cumin, onion powder, garlic powder'],['¼ tsp','cayenne pepper'],['2 cups','shredded cabbage'],['sauce: ½ cup Greek yogurt or sour cream, 2 tbsp lime juice, 2 garlic cloves, ¼ cup cilantro, 2 green onions, 1 tbsp olive oil, salt',''],['8 small','tortillas'],['1','avocado, smashed'],['cotija cheese + lime wedges','to serve']],
+    steps:['Blend all sauce ingredients in a food processor or blender until mostly smooth. Add water to thin if needed.','Toss cabbage with about half the sauce. Set aside as slaw. Save the rest for topping.','Pat shrimp dry. Toss with spice mix to coat.','Heat oil in a skillet over medium-high. Cook shrimp 5–8 min, flipping occasionally, until cooked through and slightly charred.','Build tacos: smashed avocado → slaw → shrimp → extra sauce → cotija → lime.'],
+    tip:'The sauce is the star — make a double batch and use the leftover on grain bowls or as a dip all week.'},
+
+  // Tuscan Chicken Pasta (ground turkey lightened version)
+  'tuscan-chicken-pasta':{title:'Creamy Tuscan Chicken Pasta',type:'main',tag:'eric',
+    video:null,
+    note:'Sun-dried tomatoes, spinach, parmesan cream sauce over pasta — one pan, 30 min',
+    macros:[{v:'556',l:'Cal'},{v:'12g',l:'Fat'},{v:'52g',l:'Carbs'},{v:'58g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1.5 lbs','chicken breast, thin-sliced'],['8 oz','penne pasta'],['2 tbsp','olive oil'],['4 cloves','garlic, minced'],['1 shallot','chopped'],['½ cup','chicken broth'],['¾ cup','light cream or half-and-half'],['⅓ cup','sun-dried tomatoes, chopped'],['3 cups','baby spinach'],['½ cup','parmesan, grated'],['1 tsp each','Italian seasoning, smoked paprika'],['red pepper flakes, salt, pepper, fresh basil','to taste']],
+    steps:['Cook pasta al dente per package. Reserve ½ cup pasta water. Drain.','Season chicken with salt, pepper, paprika, Italian seasoning. Sear in oil 5–6 min per side until golden. Remove and slice.','Same pan, cook shallot and garlic 1 min. Add broth, scraping up bits. Add cream, sun-dried tomatoes, and parmesan. Stir until smooth.','Add pasta to sauce, toss to coat — add pasta water to loosen if needed. Add spinach and stir until wilted.','Top with sliced chicken and fresh basil. Finish with red pepper flakes.'],
+    tip:'Go al dente on the pasta — it keeps cooking in the sauce and will get soft fast.'},
+
+  // Honey Garlic Shrimp (simple pan-sear, 15 min)
+  'honey-garlic-shrimp':{title:'Honey Garlic Butter Shrimp',type:'main',tag:'both',
+    video:null,
+    note:'5-ingredient garlic butter shrimp done in 15 min — serve over rice or zoodles',
+    macros:[{v:'353',l:'Cal'},{v:'6g',l:'Fat'},{v:'36g',l:'Carbs'},{v:'35g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1.5 lbs','large shrimp, peeled and deveined'],['3 tbsp','honey'],['3 tbsp','soy sauce'],['1 tbsp','butter'],['4 cloves','garlic, minced'],['1 tsp','sriracha (optional)'],['juice of 1 lime',''],['cooked rice or noodles','to serve'],['green onion + sesame seeds','to garnish']],
+    steps:['Pat shrimp dry with paper towels. Season with salt and pepper.','Whisk together honey, soy sauce, and sriracha in a small bowl.','Melt butter in a large skillet over medium-high. Add garlic and cook 30 sec until fragrant.','Add shrimp in a single layer. Cook 1–2 min per side until pink. Don\'t crowd the pan — work in batches if needed.','Pour honey garlic sauce over shrimp. Toss to coat and cook 1 more min until sauce thickens slightly. Finish with lime juice.','Serve over rice. Top with green onion and sesame seeds.'],
+    tip:'Shrimp cook in literally 2 minutes per side — pull them right when they curl into a C shape. An O shape means overcooked.'},
+
+  // Black Bean Tacos (diversity / vegetarian-friendly)
+  'black-bean-tacos':{title:'Crispy Black Bean & Cheese Tacos',type:'main',tag:'both',
+    video:null,
+    note:'Crispy pan-fried tacos stuffed with spiced black beans and melted cheese',
+    macros:[{v:'416',l:'Cal'},{v:'15g',l:'Fat'},{v:'55g',l:'Carbs'},{v:'19g',l:'Protein'}],
+    serving:'2 tacos · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['2 cans','black beans, drained and rinsed'],['1 tsp each','cumin, chili powder, smoked paprika, garlic powder'],['½ tsp','oregano'],['½ cup','salsa or crushed tomatoes'],['8','corn or flour tortillas'],['1 cup','shredded Mexican cheese blend'],['1','avocado, sliced'],['salsa, Greek yogurt or sour cream, jalapeños, cilantro','toppings'],['cooking spray','for pan']],
+    steps:['Heat beans in a skillet with all spices + salsa over medium heat. Mash about half the beans with a fork until thick and spreadable, like chunky refried beans. Cook 5 min until heated through.','Lay tortillas flat. Spread bean mixture on one half. Top with cheese. Fold in half.','Heat a thin layer of oil or cooking spray in a skillet over medium-high. Cook folded tacos 2–3 min per side until crispy and golden and cheese is melted.','Serve with avocado, salsa, cilantro, lime, and jalapeños.'],
+    tip:'The trick is getting the beans thick enough to stay put — mash half of them so they act like glue inside the taco.'},
+
+  // Blackened Salmon Tacos (half baked harvest style)
+  'blackened-salmon-tacos':{title:'Blackened Salmon Tacos with Avocado Crema',type:'main',tag:'julie',
+    video:'https://www.halfbakedharvest.com/blackened-salmon-fish-tacos/',
+    note:'Bold blackening spice on salmon + cool avocado crema — 25 min',
+    macros:[{v:'469',l:'Cal'},{v:'27g',l:'Fat'},{v:'39g',l:'Carbs'},{v:'60g',l:'Protein'}],
+    serving:'2 tacos · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1.5 lbs','salmon fillets'],['blackening spice: 1 tsp each smoked paprika, garlic powder, onion powder, cumin, ½ tsp each cayenne, thyme, salt, black pepper',''],['1 tbsp','olive oil'],['8 small','tortillas'],['2 cups','shredded cabbage'],['1','avocado'],['½ cup','Greek yogurt'],['1','lime, juiced'],['¼ cup','cilantro'],['splash of water','for crema'],['cotija or feta cheese','to serve']],
+    steps:['Mix all blackening spices together. Rub generously on both sides of salmon.','Make avocado crema: blend avocado, Greek yogurt, cilantro, lime juice, water, and salt until smooth.','Heat oil in a cast iron skillet over medium-high. Sear salmon skin-side up 3–4 min. Flip and cook 3–4 more min until cooked through. Break into chunks.','Warm tortillas. Build tacos: cabbage → salmon chunks → avocado crema → cotija cheese → lime squeeze.'],
+    tip:'Cast iron is ideal for blackening — the high, even heat gives you that charred crust without burning.'},
+
+  // One-Pan Pesto Salmon
+  'pesto-salmon':{title:'One-Pan Pesto Salmon with Veggies',type:'main',tag:'julie',
+    video:null,
+    note:'3-ingredient pesto salmon + roasted veggies all on one sheet pan — 20 min',
+    macros:[{v:'549',l:'Cal'},{v:'32g',l:'Fat'},{v:'10g',l:'Carbs'},{v:'54g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['4 x 6oz','salmon fillets'],['4 tbsp','pesto (store-bought is fine)'],['2 cups','cherry tomatoes'],['1 bunch','asparagus or broccolini, trimmed'],['2 tbsp','olive oil'],['salt and pepper','to taste'],['parmesan and lemon','to serve']],
+    steps:['Preheat oven to 425°F. Line a large sheet pan with parchment.','Toss asparagus and tomatoes with olive oil, salt, and pepper. Spread on sheet pan. Roast 8 min.','Push veggies to the sides. Add salmon skin-side down to center. Spread 1 tbsp pesto on each fillet.','Roast 12–14 min until salmon is cooked through and flaky.','Serve topped with parmesan and a squeeze of lemon.'],
+    tip:'Don\'t overcrowd the pan — the veggies need space to roast, not steam.'},
+
+  // Ground Turkey Taco Bowl
+  'ground-turkey-taco-bowl':{title:'Ground Turkey Taco Bowl',type:'main',tag:'both',
+    video:null,
+    note:'Seasoned ground turkey over rice with classic taco toppings — 20 min',
+    macros:[{v:'450',l:'Cal'},{v:'12g',l:'Fat'},{v:'49g',l:'Carbs'},{v:'36g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1.5 lbs','99/1 or 93/7 lean ground turkey'],['1 packet or homemade taco seasoning','(cumin, chili powder, garlic powder, onion powder, paprika, oregano, salt)'],['½ cup','chicken broth or water'],['2 cups','rice, cooked'],['1 can','black beans, rinsed'],['1 cup','corn (frozen is fine)'],['1','avocado, diced'],['1 cup','pico de gallo or fresh salsa'],['shredded cheese, Greek yogurt, jalapeños, lime, cilantro','toppings']],
+    steps:['Brown ground turkey in a skillet over medium-high heat, breaking into crumbles, 5–7 min.','Add taco seasoning and broth. Stir and simmer 3–4 min until sauce thickens.','Warm black beans and corn in a small pot or microwave.','Build bowls: rice → turkey → beans → corn → avocado → pico → toppings of choice.'],
+    tip:'The yellow mustard trick from the Food That Smacks book works here too — a small squeeze keeps lean turkey juicy.'},
+
+  // Spicy Peanut Noodles with Shrimp
+  'spicy-peanut-noodles-shrimp':{title:'Spicy Peanut Noodles with Shrimp',type:'main',tag:'julie',
+    video:null,
+    note:'Thai-style peanut sauce over noodles with shrimp — 25 min, big flavor',
+    macros:[{v:'482',l:'Cal'},{v:'13g',l:'Fat'},{v:'62g',l:'Carbs'},{v:'33g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1 lb','large shrimp, peeled and deveined'],['8 oz','rice noodles or soba noodles'],['sauce: 3 tbsp peanut butter, 2 tbsp soy sauce, 1 tbsp rice vinegar, 1 tbsp honey, 1 tbsp sriracha, 1 tsp sesame oil, 2 garlic cloves minced, 2 tbsp warm water',''],['1 cup','shredded carrots'],['1 cup','edamame'],['3','green onions, sliced'],['¼ cup','cilantro'],['2 tbsp','crushed peanuts'],['lime wedges','to serve']],
+    steps:['Cook noodles per package. Drain and rinse with cold water.','Whisk all sauce ingredients together until smooth.','Season shrimp with salt and pepper. Cook in a hot oiled skillet 1–2 min per side until pink. Set aside.','Toss noodles with peanut sauce, carrots, and edamame. Plate.','Top with shrimp, green onions, cilantro, and crushed peanuts. Serve with lime.'],
+    tip:'If the peanut sauce is too thick, add warm water 1 tbsp at a time until it coats the noodles easily.'},
+
+  // Honey Chipotle Chicken Bowls
+  'honey-chipotle-chicken-bowl':{title:'Honey Chipotle Chicken Rice Bowl',type:'main',tag:'eric',
+    video:null,
+    note:'Sticky sweet-spicy chipotle chicken over rice with corn salsa — 25 min',
+    macros:[{v:'454',l:'Cal'},{v:'6g',l:'Fat'},{v:'54g',l:'Carbs'},{v:'44g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1.5 lbs','chicken breast, thinly sliced'],['3 tbsp','honey'],['2 tbsp','adobo sauce (from canned chipotles)'],['1 chipotle pepper','finely minced'],['2 tbsp','lime juice'],['1 tsp each','garlic powder, cumin, smoked paprika'],['2 cups','rice, cooked'],['corn salsa: 1 cup corn, ½ red onion diced, 1 jalapeño diced, cilantro, lime juice, salt',''],['1','avocado, sliced'],['shredded cheese, Greek yogurt, cilantro','toppings']],
+    steps:['Mix honey, adobo sauce, chipotle, lime juice, garlic powder, cumin, and paprika together.','Season chicken with salt. Heat oil in a skillet over medium-high. Cook chicken 4–5 min per side until cooked through.','Pour sauce over chicken in the last 2 min of cooking. Toss to coat until sticky and caramelized.','Make corn salsa: mix all ingredients together.','Build bowls: rice → chicken → corn salsa → avocado → toppings.'],
+    tip:'The chipotle heat is adjustable — use just the adobo sauce and no chipotle pepper for a milder version.'},
+
+  // ── TRADER JOE'S RECIPES ─────────────────────────────
+  // tj:true flags these for the red badge on the meal card
+
+  // 1. TJ Hot Honey Chicken Meatball Bowls (broccyourbody.com)
+  'tj-hot-honey-meatball-bowl':{title:'Hot Honey Chicken Meatball Bowls',type:'main',tag:'eric',tj:true,
+    video:'https://broccyourbody.com/hot-honey-chicken-meatball-bowls/',
+    note:'Ground chicken meatballs in a sticky sriracha-honey glaze over rice — 20 min',
+    macros:[{v:'480',l:'Cal'},{v:'12g',l:'Fat'},{v:'52g',l:'Carbs'},{v:'40g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1 lb','ground chicken (TJ\'s fresh ground chicken)'],['1','egg'],['½ cup','almond flour or breadcrumbs'],['2 cloves','garlic, minced'],['1','green onion, chopped'],['½ tsp','kosher salt, ¼ tsp black pepper'],['1 tbsp','avocado oil'],['hot honey sauce: ⅓ cup sriracha, ⅓ cup honey, 2 tbsp low-sodium soy sauce, 2 cloves garlic minced, 1 tbsp white wine vinegar',''],['2 cups','cooked rice (TJ\'s frozen brown rice, microwaved)'],['2 cups','roasted broccoli or veggie of choice']],
+    steps:['Whisk all sauce ingredients in a small bowl until smooth. Set aside.','Mix ground chicken, egg, almond flour, garlic, green onion, salt, and pepper until combined. Form into golf ball-size meatballs.','Heat avocado oil in a large skillet over medium. Cook meatballs 3–4 min per side until cooked through.','Pour sauce over meatballs. Simmer 2 min until sauce thickens and glazes everything.','Serve over rice with roasted broccoli. Garnish with green onion and extra sauce.'],
+    tip:'TJ\'s frozen brown rice microwaves in 3 minutes and is genuinely great — have it ready before the meatballs are done.'},
+
+  // 2. TJ Teriyaki Chicken Meatballs with Soyaki (broccyourbody.com)
+  'tj-teriyaki-meatball-bowl':{title:'Teriyaki Chicken Meatball Bowls',type:'main',tag:'both',tj:true,
+    video:'https://broccyourbody.com/teriyaki-chicken-meatballs/',
+    note:'Baked ground chicken meatballs drenched in TJ\'s Soyaki over rice — 25 min',
+    macros:[{v:'445',l:'Cal'},{v:'10g',l:'Fat'},{v:'50g',l:'Carbs'},{v:'38g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1 lb','ground chicken (TJ\'s fresh ground chicken)'],['1','egg'],['½ cup','almond flour or breadcrumbs'],['2 cloves','garlic, minced'],['1','green onion, chopped'],['½ tsp','salt, ¼ tsp pepper'],['⅓–½ cup',"TJ's Soyaki sauce"],['2 cups','cooked rice (TJ\'s frozen brown rice)'],['broccolini or zucchini','sautéed, to serve']],
+    steps:['Preheat oven to 400°F. Line a baking sheet with parchment paper.','Mix ground chicken, egg, almond flour, garlic, green onion, salt, and pepper. Form into 16–18 small meatballs.','Bake 15 min (20 min for larger meatballs) until cooked through.','Transfer to a bowl and toss generously with TJ\'s Soyaki sauce.','Serve over rice with sautéed broccolini or zucchini. Top with sesame seeds and scallions.'],
+    tip:'While the meatballs bake, sauté your veg — everything finishes at the same time with almost zero cleanup.'},
+
+  // 3. TJ Beef & Broccoli (broccyourbody.com)
+  'tj-beef-broccoli':{title:'Better-Than-Takeout Beef & Broccoli',type:'main',tag:'eric',tj:true,
+    video:'https://broccyourbody.com/better-than-takeout-beef-broccoli/',
+    note:'Shaved beef + broccoli in a garlicky soy-honey sauce — one pan, 20 min',
+    macros:[{v:'410',l:'Cal'},{v:'11g',l:'Fat'},{v:'43g',l:'Carbs'},{v:'35g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1 lb',"TJ's shaved beef steak (or any steak cut into bite-size pieces)"],['8 oz','broccoli florets'],['1 tbsp','avocado oil'],['1 tbsp','sesame oil'],['sauce: ½ cup soy sauce, ½ cup water, 1 tbsp fresh ginger grated, 3 cloves garlic minced, 1 tbsp honey, 1 tsp chili onion crunch or sriracha, 1 tbsp cornstarch',''],['cooked rice','to serve'],['sesame seeds','to garnish']],
+    steps:['Whisk all sauce ingredients together until cornstarch dissolves. Set aside.','Heat avocado oil in a large deep skillet over medium. Add broccoli and 2 tbsp water. Sauté 5 min. Remove and set aside.','Add sesame oil to the pan over medium-high. Season beef with salt and pepper. Brown 2 min per side.','Turn heat to medium, pour in sauce. Simmer until beef is cooked through.','Stir in broccoli. Serve over rice with sesame seeds.'],
+    tip:"TJ's shaved beef is the shortcut here — it cooks in literally 2 minutes per side and absorbs the sauce beautifully."},
+
+  // 4. TJ Egg Roll Bowls (broccyourbody.com)
+  'tj-egg-roll-bowl':{title:'One-Pot Egg Roll Bowl',type:'main',tag:'both',tj:true,
+    video:'https://broccyourbody.com/one-pot-egg-roll-bowls/',
+    note:'Ground turkey + TJ\'s cruciferous slaw mix + Soyaki in one pot — 20 min',
+    macros:[{v:'395',l:'Cal'},{v:'9g',l:'Fat'},{v:'42g',l:'Carbs'},{v:'35g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1 lb','lean ground turkey (or beef/chicken)'],['1 bag',"TJ's cruciferous crunch or broccoli slaw mix"],['¾ cup','shredded carrots'],['½','yellow onion, diced'],['2 green onions','chopped'],['1 tbsp','fresh ginger, grated (or TJ\'s frozen ginger cubes)'],['1 bag',"TJ's frozen brown rice"],['sauce: ½ cup low-sodium soy sauce, 3 tbsp water, 3 cloves garlic minced, 2 tsp honey, 1 tsp sesame oil, 1 tsp sriracha or TJ\'s chili onion crunch',''],['sesame seeds, TJ\'s sweet chili sauce, TJ\'s chili onion crunch','to serve']],
+    steps:['Whisk all sauce ingredients together. Set aside.','Brown ground turkey in a large deep skillet over medium. Season with salt and pepper. Break into crumbles.','Add ginger, onion, green onion, and carrots. Stir 3–4 min.','Add cabbage/slaw mix, stir 1 min. Add cooked rice and sauce. Stir to combine.','Cook 5 min, stirring occasionally, until cabbage is tender. Top with sesame seeds and a drizzle of sweet chili sauce.'],
+    tip:"Use TJ's Soyaki as a quick swap for the homemade sauce if you're really in a pinch — about ⅓–½ cup does the job."},
+
+  // 5. TJ Sheet Pan Panko Salmon & Crispy Broccoli (broccyourbody.com)
+  'tj-panko-salmon':{title:'Sheet Pan Panko Salmon & Crispy Broccoli',type:'main',tag:'julie',tj:true,
+    video:'https://broccyourbody.com/sheet-pan-panko-salmon-crispy-broccoli/',
+    note:'Dijon-panko crusted salmon + roasted broccoli on one sheet pan — 425°F, 15 min',
+    macros:[{v:'480',l:'Cal'},{v:'18g',l:'Fat'},{v:'22g',l:'Carbs'},{v:'52g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1–1.5 lbs','salmon fillet (TJ\'s wild Atlantic salmon)'],['2 tbsp','dijon mustard'],['juice of ½ lemon',''],['seasoning mix: 2 tsp coconut sugar, 1 tsp paprika, ½ tsp each kosher salt, garlic powder, black pepper, dried oregano',''],['panko crust: ½ cup panko breadcrumbs, 3 tbsp fresh parsley chopped, 2 tbsp olive oil, 1 tbsp parmesan',''],['12 oz','broccoli florets'],['1 tbsp','olive oil'],['juice of ½ lemon','for broccoli'],['TJ\'s frozen brown rice','to serve']],
+    steps:['Preheat oven to 425°F.','Whisk dijon mustard + lemon juice together. In another bowl mix the seasoning blend. In a third bowl combine panko, parsley, olive oil, and parmesan.','Place salmon skin-side down on one half of a large sheet pan. Coat with dijon mixture, sprinkle seasoning, then press panko crust on top.','Add broccoli to the other half of the pan, toss with olive oil, lemon juice, salt, and pepper.','Bake 15–17 min until salmon flakes easily. Serve with TJ\'s microwaved brown rice.'],
+    tip:"Each serving has 40g protein with a 6oz portion. TJ's microwaveable brown rice takes 3 minutes and makes this a complete one-pan-plus-one-bag meal."},
+
+  // 6. TJ Green Goddess Salmon & Potatoes (broccyourbody.com)
+  'tj-green-goddess-salmon':{title:'Green Goddess Sheet Pan Salmon & Potatoes',type:'main',tag:'julie',tj:true,
+    video:'https://broccyourbody.com/green-goddess-sheet-pan-salmon-potatoes/',
+    note:'TJ\'s Green Goddess dressing glazed salmon with crispy potatoes — 30 min',
+    macros:[{v:'510',l:'Cal'},{v:'22g',l:'Fat'},{v:'38g',l:'Carbs'},{v:'42g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1–1.5 lbs','salmon fillet (TJ\'s wild Atlantic salmon)'],['1 lb','baby potatoes, halved'],['¼ cup',"TJ's Green Goddess Salad Dressing (plus more to serve)"],['2 tbsp','olive oil'],['salt and pepper','to taste'],['fresh dill and lemon wedges','to serve']],
+    steps:['Preheat oven to 425°F.','Toss halved potatoes with olive oil, salt, and pepper. Spread on a sheet pan. Roast 15 min.','Push potatoes to the edges. Add salmon to center. Spoon TJ\'s Green Goddess dressing generously over the salmon.','Roast another 12–15 min until salmon flakes easily and potatoes are golden.','Serve with extra Green Goddess on the side and fresh dill and lemon wedges.'],
+    tip:"TJ's Green Goddess dressing is the only sauce you need here — don't skip the extra drizzle at the end."},
+
+  // 7. TJ Mediterranean Salmon Bite Bowls (broccyourbody.com)
+  'tj-med-salmon-bowls':{title:'Mediterranean Salmon Bite Bowls',type:'main',tag:'julie',tj:true,
+    video:'https://broccyourbody.com/mediterranean-inspired-salmon-bite-bowls/',
+    note:'Pan-seared salmon bites over couscous with cucumber, olives & feta — fresh & light',
+    macros:[{v:'490',l:'Cal'},{v:'20g',l:'Fat'},{v:'38g',l:'Carbs'},{v:'40g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'bowl',portionFor2:2,
+    ings:[['1.5 lbs','salmon fillet, cut into 1-inch cubes (TJ\'s wild Atlantic salmon)'],['1 tbsp','olive oil'],['1 tsp each','garlic powder, smoked paprika, dried oregano, salt'],['1 cup',"TJ's pearl couscous, cooked per package"],['1','cucumber, diced'],['½ cup','kalamata olives, halved'],['½ cup','cherry tomatoes, halved'],['¼ cup','crumbled feta'],['lemon juice + olive oil dressing','(2 tbsp olive oil, 1 tbsp lemon juice, salt, dried oregano)'],["TJ's tzatziki","to serve"]],
+    steps:['Cook pearl couscous per package. Fluff and set aside.','Make cucumber-olive-tomato salad: toss with lemon-olive oil dressing. Set aside.','Pat salmon cubes dry. Season with garlic powder, paprika, oregano, and salt.','Heat olive oil in a skillet over medium-high. Sear salmon cubes 2–3 min per side until golden.','Build bowls: couscous → salmon bites → cucumber salad → feta → a big scoop of tzatziki.'],
+    tip:"TJ's pearl couscous and tzatziki are both regulars on the shelves — they transform this into a 25-minute restaurant-quality meal."},
+
+  // 8. TJ Cheesesteak Skillet (broccyourbody.com / Eric pick)
+  'tj-cheesesteak-skillet':{title:'Cheesesteak Skillet',type:'main',tag:'eric',tj:true,
+    video:'https://broccyourbody.com/cheesesteak-skillet/',
+    note:'TJ\'s shaved beef + peppers + onions + provolone in one skillet — 20 min',
+    macros:[{v:'420',l:'Cal'},{v:'16g',l:'Fat'},{v:'28g',l:'Carbs'},{v:'40g',l:'Protein'}],
+    serving:'¼ recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['1 lb',"TJ's shaved beef steak"],['2','bell peppers (any color), thinly sliced'],['1','large yellow onion, thinly sliced'],['2 cloves','garlic, minced'],['1 tbsp','avocado oil'],['1 tbsp','Worcestershire sauce'],['salt, pepper, garlic powder, onion powder','to season'],['4 slices','provolone cheese'],['hoagie rolls or rice or low-carb tortillas','to serve']],
+    steps:['Heat avocado oil in a large cast iron or skillet over medium-high. Add peppers and onions. Season with salt, pepper, garlic powder, and onion powder. Cook 8–10 min, stirring, until soft and beginning to caramelize.','Add garlic. Cook 1 min.','Push veg to sides. Add shaved beef to center. Season and cook, breaking up, 2–3 min until browned.','Drizzle Worcestershire sauce over everything. Mix it all together.','Lay provolone slices on top, cover with a lid for 1–2 min until melted. Serve in hoagie rolls, over rice, or in tortillas.'],
+    tip:'TJ\'s shaved beef is perfect for this — no slicing required and it cooks in 2 minutes. The Worcestershire is small but mighty.'},
+
+  // ── SIDES ────────────────────────────────────────────
+  'mozz-sticks':{title:'Flamin Hot Cheetos Mozzarella Sticks',type:'side',tag:'eric',video:null,
+    note:'Freeze earlier in the day — air fry while mains rest',
+    macros:[{v:'150',l:'Cal'},{v:'8g',l:'Fat'},{v:'11g',l:'Carbs'},{v:'10g',l:'Protein'}],serving:'Per stick · 12 total',totalServings:12,unitLabel:'stick',portionFor2:6,
+    ings:[['12','light mozzarella sticks'],['100g (use 50g)','all-purpose flour'],['dash','sea salt, garlic powder'],['150g','Flamin Hot Cheetos, food processed to powder'],['1 large','egg'],['100g','egg whites']],
+    steps:['3 bowls: flour+seasoning, egg+egg whites whisked, Cheeto powder.','Double-coat each stick: flour→egg→Cheetos→egg→Cheetos.','Freeze on plate for at least 2 hours until completely solid.','Preheat air fryer to 390°F. Spray tray, add sticks (not touching), spray tops.','Air fry 5 min. Enjoy the cheese pulls.'],
+    tip:'Must freeze 2+ hours AND preheat the fryer — skip either and the cheese melts out.'},
+
+  'onion-rings':{title:'Onion Rings',type:'side',tag:'eric',video:null,
+    note:'Classic bar side — air fry in batches alongside main',
+    macros:[{v:'37',l:'Cal'},{v:'0g',l:'Fat'},{v:'7g',l:'Carbs'},{v:'2g',l:'Protein'}],serving:'Per ring · ~25 rings',totalServings:25,unitLabel:'ring',portionFor2:12,
+    ings:[['1 large (300g)','yellow onion'],['60g (use 30g)','all-purpose flour'],['to taste','salt, pepper, garlic powder'],['100g (use 75g)','panko bread crumbs'],['1 large','egg'],['50g','egg whites']],
+    steps:['Slice onion into ~2cm horizontal rings. Skip flimsy outer layers.','3 stations: flour+seasoning / egg+egg whites / panko.','Coat each ring: flour→egg→panko. Left dry, right wet.','Nest smaller rings inside larger in fryer (not touching). Spray tops.','Air fry at 360°F for 7–8 min. Repeat batches.'],
+    tip:null},
+
+  'pizza-fries':{title:'Pepperoni Pizza Fries',type:'side',tag:'eric',video:null,
+    note:'Crinkle fries loaded with marinara, mozzarella & pepperoni',
+    macros:[{v:'276',l:'Cal'},{v:'5g',l:'Fat'},{v:'48g',l:'Carbs'},{v:'12g',l:'Protein'}],serving:'1/4 recipe · 4 servings',totalServings:4,unitLabel:'serving',portionFor2:2,
+    ings:[['4 medium (~1000g)','russet potatoes'],['as needed','non-stick cooking spray'],['to taste','sea salt, garlic powder, black pepper'],['120g','marinara sauce'],['56g','part-skim mozzarella'],['1 oz','turkey pepperoni']],
+    steps:['Crinkle-cut fries, soak in cold water 15 min.','Air fry half at 400°F for 15 min, spraying and shaking. Repeat second half.','Toss all with salt, garlic powder, black pepper.','Spread on foil-lined pan. Top with marinara, mozzarella, pepperoni.','Bake at 450°F for 6–8 min until bubbly.'],
+    tip:null},
+
+  'pizza-rolls':{title:'Pepperoni Pizza Rolls',type:'side',tag:'eric',video:'https://vimeo.com/799250999/60ce4cc4b3',
+    note:'Lavash bread folded with pepperoni + mozzarella, air fried golden',
+    macros:[{v:'85',l:'Cal'},{v:'3g',l:'Fat'},{v:'9g',l:'Carbs'},{v:'5g',l:'Protein'}],serving:'Per roll · 12 total',totalServings:12,unitLabel:'roll',portionFor2:6,
+    ings:[["3 Joseph's lavash breads",''],['1 bag','turkey pepperonis, quartered'],['84g','part-skim mozzarella'],['to taste','oregano, basil, garlic powder'],['as needed','non-stick cooking spray']],
+    steps:['Quarter the pepperonis. Mix with mozzarella, oregano, basil in a bowl.','Slice each lavash bread into 4 pieces (12 total).','Add 1/12th of filling to each piece and fold shut (see technique).','Press with a small ramekin to seal.','Spray tops with cooking spray. Air fry at 400°F for 3–4 min until golden.','Serve with marinara dipping sauce.'],
+    tip:null},
+
+  'sweet-potato-fries':{title:'Purple Sweet Potato Crinkle Fries',type:'side',tag:'julie',video:null,
+    note:'Soak, spray, air fry — great for dipping',
+    macros:[{v:'182',l:'Cal'},{v:'1g',l:'Fat'},{v:'40g',l:'Carbs'},{v:'4g',l:'Protein'}],serving:'1/3 recipe · 3 servings',totalServings:3,unitLabel:'serving',portionFor2:2,
+    ings:[['1 large (600g)','purple sweet potato'],['as needed','non-stick butter spray'],['to taste','sea salt']],
+    steps:['Crinkle-cut into fries.','Soak in cold water 30–60 min.','Spray with butter spray 4x, tossing between each. Same with salt.','Air fry at 400°F for 17 min, shaking every 5 min.'],
+    tip:'Long soak = crispy fries. Don\'t skip it.'},
+
+  'tuna-salad':{title:'Tuna Salad',type:'side',tag:'julie',video:null,
+    note:'Ahi tuna, avocado, Laughing Cow — zero cooking, 2 min',
+    macros:[{v:'445',l:'Cal'},{v:'26g',l:'Fat'},{v:'16g',l:'Carbs'},{v:'37g',l:'Protein'}],serving:'Whole bowl',totalServings:1,unitLabel:'bowl',portionFor2:1,
+    ings:[['1 can','Safe Catch Ahi Tuna'],['1 medium (4oz)','avocado'],['2 wedges','Laughing Cow cheese'],['to taste','Everything But The Bagel seasoning']],
+    steps:['Add everything to a bowl.','Mix. Done. Serve with rice cakes, crackers, or on an English muffin.'],
+    tip:null},
+};
+
+// ═══════════════════════════════════════════════════════
+// WEEK DATA — 4 weeks, each slot has eric / julie / both
+// ═══════════════════════════════════════════════════════
+const WEEKS = [
+  // ── WEEK 1 ───────────────────────────────────────────
+  { label:'Week 1 — Current', days:[
+    { name:'Sunday', pref:50, slots:[
+      { eric:'tj-hot-honey-meatball-bowl',    julie:'honey-sriracha-salmon-bowl', both:'ebf-greek-turkey-meatballs' },
+      { eric:'buffalo-cauliflower',           julie:'sweet-potato-bites',         both:'garlic-brussels' },
+      { eric:'mozz-sticks',                   julie:'sweet-potato-fries',         both:'onion-rings' }
+    ]},
+    { name:'Monday', pref:50, slots:[
+      { eric:'crunch-wrap-pizza',             julie:'ebf-shrimp-tacos',           both:'ground-turkey-taco-bowl' },
+      { eric:'garlic-brussels',               julie:'roasted-carrots',            both:'smash-brussels' },
+      { eric:'onion-rings',                   julie:'tuna-salad',                 both:'pizza-fries' }
+    ]},
+    { name:'Tuesday', pref:50, slots:[
+      { eric:'tj-beef-broccoli',              julie:'salmon-burger',              both:'ebf-fish-tacos' },
+      { eric:'smash-brussels',               julie:'cauliflower-mac',            both:'garlic-brussels' },
+      { eric:'pizza-fries',                   julie:'sweet-potato-fries',         both:'pizza-rolls' }
+    ]},
+    { name:'Wednesday', pref:50, slots:[
+      { eric:'marry-me-chicken',              julie:'ebf-salmon-orzo',            both:'tj-egg-roll-bowl' },
+      { eric:'garlic-brussels',               julie:'sweet-potato-bites',         both:'roasted-carrots' },
+      { eric:'mozz-sticks',                   julie:'tuna-salad',                 both:'onion-rings' }
+    ]},
+    { name:'Thursday', pref:50, slots:[
+      { eric:'korean-beef-bowl',              julie:'tj-panko-salmon',            both:'spicy-shrimp-tacos-lime-slaw' },
+      { eric:'buffalo-cauliflower',           julie:'cauliflower-mac',            both:'smash-brussels' },
+      { eric:'pizza-rolls',                   julie:'sweet-potato-fries',         both:'pizza-fries' }
+    ]},
+  ]},
+  // ── WEEK 2 ───────────────────────────────────────────
+  { label:'Week 2 — Coming up', days:[
+    { name:'Sunday', pref:50, slots:[
+      { eric:'buffalo-chicken-sliders',       julie:'tj-med-salmon-bowls',        both:'honey-garlic-shrimp' },
+      { eric:'buffalo-cauliflower',           julie:'sweet-potato-bites',         both:'garlic-brussels' },
+      { eric:'mozz-sticks',                   julie:'sweet-potato-fries',         both:'onion-rings' }
+    ]},
+    { name:'Monday', pref:50, slots:[
+      { eric:'kfc-popcorn-chicken',           julie:'spicy-peanut-noodles-shrimp',both:'tj-teriyaki-meatball-bowl' },
+      { eric:'smash-brussels',               julie:'cauliflower-mac',            both:'roasted-carrots' },
+      { eric:'onion-rings',                   julie:'tuna-salad',                 both:'pizza-fries' }
+    ]},
+    { name:'Tuesday', pref:50, slots:[
+      { eric:'tuscan-chicken-pasta',          julie:'ebf-salmon-orzo',            both:'ebf-greek-turkey-meatballs' },
+      { eric:'garlic-brussels',               julie:'sweet-potato-bites',         both:'smash-brussels' },
+      { eric:'pizza-fries',                   julie:'sweet-potato-fries',         both:'pizza-rolls' }
+    ]},
+    { name:'Wednesday', pref:50, slots:[
+      { eric:'tj-cheesesteak-skillet',        julie:'chicken-birria-ramen',       both:'ebf-shrimp-stir-fry' },
+      { eric:'buffalo-cauliflower',           julie:'cauliflower-mac',            both:'garlic-brussels' },
+      { eric:'pizza-rolls',                   julie:'tuna-salad',                 both:'onion-rings' }
+    ]},
+    { name:'Thursday', pref:50, slots:[
+      { eric:'triple-burger-wrap',            julie:'blackened-salmon-tacos',     both:'black-bean-tacos' },
+      { eric:'smash-brussels',               julie:'sweet-potato-bites',         both:'roasted-carrots' },
+      { eric:'mozz-sticks',                   julie:'sweet-potato-fries',         both:'pizza-fries' }
+    ]},
+  ]},
+  // ── WEEK 3 ───────────────────────────────────────────
+  { label:'Week 3 — Ahead', days:[
+    { name:'Sunday', pref:50, slots:[
+      { eric:'tj-hot-honey-meatball-bowl',    julie:'tj-green-goddess-salmon',    both:'cauliflower-fried-rice' },
+      { eric:'buffalo-cauliflower',           julie:'cauliflower-mac',            both:'garlic-brussels' },
+      { eric:'pizza-fries',                   julie:'sweet-potato-fries',         both:'mozz-sticks' }
+    ]},
+    { name:'Monday', pref:50, slots:[
+      { eric:'buffalo-chicken-tenders',       julie:'pesto-salmon',               both:'ebf-shrimp-stir-fry' },
+      { eric:'smash-brussels',               julie:'sweet-potato-bites',         both:'roasted-carrots' },
+      { eric:'onion-rings',                   julie:'tuna-salad',                 both:'pizza-rolls' }
+    ]},
+    { name:'Tuesday', pref:50, slots:[
+      { eric:'honey-chipotle-chicken-bowl',   julie:'spicy-peanut-noodles-shrimp',both:'tj-egg-roll-bowl' },
+      { eric:'garlic-brussels',               julie:'cauliflower-mac',            both:'smash-brussels' },
+      { eric:'pizza-rolls',                   julie:'sweet-potato-fries',         both:'onion-rings' }
+    ]},
+    { name:'Wednesday', pref:50, slots:[
+      { eric:'ebf-greek-chicken',             julie:'tj-med-salmon-bowls',        both:'ebf-fish-tacos' },
+      { eric:'buffalo-cauliflower',           julie:'sweet-potato-bites',         both:'garlic-brussels' },
+      { eric:'pizza-fries',                   julie:'tuna-salad',                 both:'sweet-potato-fries' }
+    ]},
+    { name:'Thursday', pref:50, slots:[
+      { eric:'pizza-sliders',                 julie:'ebf-shrimp-tacos',           both:'smash-turkey-burgers' },
+      { eric:'smash-brussels',               julie:'cauliflower-mac',            both:'roasted-carrots' },
+      { eric:'mozz-sticks',                   julie:'sweet-potato-fries',         both:'pizza-fries' }
+    ]},
+  ]},
+  // ── WEEK 4 ───────────────────────────────────────────
+  { label:'Week 4 — Next month', days:[
+    { name:'Sunday', pref:50, slots:[
+      { eric:'tj-cheesesteak-skillet',        julie:'ebf-salmon-burrito-bowl',    both:'ebf-greek-turkey-meatballs' },
+      { eric:'buffalo-cauliflower',           julie:'sweet-potato-bites',         both:'garlic-brussels' },
+      { eric:'pizza-fries',                   julie:'sweet-potato-fries',         both:'onion-rings' }
+    ]},
+    { name:'Monday', pref:50, slots:[
+      { eric:'tj-beef-broccoli',              julie:'blackened-salmon-tacos',     both:'honey-garlic-shrimp' },
+      { eric:'smash-brussels',               julie:'cauliflower-mac',            both:'roasted-carrots' },
+      { eric:'onion-rings',                   julie:'tuna-salad',                 both:'pizza-rolls' }
+    ]},
+    { name:'Tuesday', pref:50, slots:[
+      { eric:'chicken-chalupas',              julie:'spicy-peanut-noodles-shrimp',both:'fdl-12in-pizza' },
+      { eric:'garlic-brussels',               julie:'sweet-potato-bites',         both:'smash-brussels' },
+      { eric:'mozz-sticks',                   julie:'tuna-salad',                 both:'pizza-fries' }
+    ]},
+    { name:'Wednesday', pref:50, slots:[
+      { eric:'tuscan-chicken-pasta',          julie:'tj-panko-salmon',            both:'grilled-chicken-fajitas' },
+      { eric:'buffalo-cauliflower',           julie:'cauliflower-mac',            both:'garlic-brussels' },
+      { eric:'pizza-rolls',                   julie:'sweet-potato-fries',         both:'sweet-potato-fries' }
+    ]},
+    { name:'Thursday', pref:50, slots:[
+      { eric:'tj-teriyaki-meatball-bowl',     julie:'ebf-air-fryer-salmon',       both:'tj-egg-roll-bowl' },
+      { eric:'smash-brussels',               julie:'sweet-potato-bites',         both:'roasted-carrots' },
+      { eric:'pizza-fries',                   julie:'tuna-salad',                 both:'onion-rings' }
+    ]},
+  ]},
+];
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let currentWeek = 0;
+let pendingAlt = null;
+// selections[wi][di][si] = current recipe id shown
+const selections = WEEKS.map(w => w.days.map(d => d.slots.map(s => pickForPref(s, 50))));
+// checked grocery items: Set of "wi-di-ingredient-text"
+const groceryChecked = {};
+
+// ─── PREF LOGIC ───────────────────────────────────────
+// pref 0=full Eric, 100=full Julie, 50=balanced
+// 0–33: eric, 34–66: both, 67–100: julie
+function pickForPref(slot, pref) {
+  if (pref <= 33) return slot.eric;
+  if (pref >= 67) return slot.julie;
+  return slot.both;
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════
+function init() {
+  const container = document.getElementById('weeks-container');
+  WEEKS.forEach((week, wi) => {
+    const div = document.createElement('div');
+    div.className = 'week-view' + (wi===0?' active':'');
+    div.id = 'week-'+wi;
+    div.innerHTML = week.days.map((day,di) => renderDay(wi,di,day)).join('');
+    container.appendChild(div);
+  });
+
+  const dotsEl = document.getElementById('wdots');
+  WEEKS.forEach((_,wi) => {
+    const d = document.createElement('div');
+    d.className = 'wdot'+(wi===0?' active':'');
+    d.onclick = () => goToWeek(wi);
+    dotsEl.appendChild(d);
+  });
+
+  updateNav();
+  wireSliders();
+}
+
+function renderDay(wi, di, day) {
+  const pref = day.pref;
+  const fillStyle = buildFillStyle(pref);
+  const ericLabelOpacity = pref <= 40 ? 1 : 0.35;
+  const julieLabelOpacity = pref >= 60 ? 1 : 0.35;
+  const slots = day.slots.map((slot,si) => renderSlot(wi,di,si,selections[wi][di][si])).join('');
+  return `
+<div class="day-block" id="day-${wi}-${di}">
+  <div class="pref-header">
+    <div class="day-name-cell"><div class="day-name">${day.name}</div></div>
+    <div class="pref-controls">
+      <div class="person-chip">
+        <div class="avatar e">E</div>
+        <div class="pname e">Eric</div>
+      </div>
+      <div class="slider-col">
+        <div class="track-wrap" id="tw-${wi}-${di}">
+          <div class="track-bg"></div>
+          <div class="track-fill" id="tf-${wi}-${di}" style="${fillStyle}"></div>
+          <div class="thumb" id="th-${wi}-${di}" style="left:${pref}%"></div>
+          <input class="pref-range" type="range" min="0" max="100" value="${pref}" id="pr-${wi}-${di}">
+        </div>
+        <div class="mood-row">
+          <span class="mood-label e" id="ml-e-${wi}-${di}" style="opacity:${ericLabelOpacity}">Eric's night</span>
+          <span class="mood-center" id="mc-${wi}-${di}">${getMood(pref)}</span>
+          <span class="mood-label j" id="ml-j-${wi}-${di}" style="opacity:${julieLabelOpacity}">Julie's night</span>
+        </div>
+      </div>
+      <div class="person-chip">
+        <div class="pname j">Julie</div>
+        <div class="avatar j">J</div>
+      </div>
+    </div>
+  </div>
+  <div class="meals-row" id="mr-${wi}-${di}">${slots}</div>
+</div>`;
+}
+
+const TJ_SVG = `<svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg>`;
+
+function renderSlot(wi, di, si, rid) {
+  const r = R[rid];
+  if (!r) return '';
+  const typeLbl = {main:'Main',veg:'Vegetable',side:'Side'}[r.type];
+  const tagLbl = {eric:"Eric's pick",julie:"Julie's pick",both:'Both'}[r.tag]||r.tag;
+  const tjBadge = r.tj ? `<span class="tj-badge">${TJ_SVG} Trader Joe's</span>` : '';
+  return `<div class="meal-cell">
+  <div class="ctype ${r.type}">${typeLbl}</div>
+  <div class="cname">${r.title}${tjBadge}</div>
+  <div class="cnote">${r.note}</div>
+  <span class="ctag ${r.tag}">${tagLbl}</span>
+  <div class="cell-btns">
+    <button class="cbtn recipe" onclick="openRecipe('${rid}')">Recipe →</button>
+    <button class="cbtn swap" onclick="openAlts(${wi},${di},${si})">Swap</button>
+  </div>
+</div>`;
+}
+
+function buildFillStyle(pref) {
+  if (pref < 50) {
+    const right = 100 - pref;
+    const left = 50;
+    // fill from pref to 50, amber color
+    return `left:${pref}%;right:${right}%;background:var(--amber);`;
+  } else if (pref > 50) {
+    const left2 = 50;
+    const right2 = 100 - pref;
+    return `left:${left2}%;right:${right2}%;background:var(--teal);`;
+  }
+  return 'left:50%;right:50%;background:var(--amber);';
+}
+
+function getMood(v) {
+  if (v <= 15) return "🍺 Eric's night";
+  if (v <= 33) return "Leaning Eric";
+  if (v <= 66) return "Balanced";
+  if (v <= 85) return "Leaning Julie";
+  return "Julie's night 🐟";
+}
+
+// ═══════════════════════════════════════════════════════
+// SLIDER — wire after DOM creation
+// ═══════════════════════════════════════════════════════
+function wireSliders() {
+  WEEKS.forEach((_,wi) => {
+    WEEKS[wi].days.forEach((_,di) => {
+      const input = document.getElementById('pr-'+wi+'-'+di);
+      if (input) {
+        input.addEventListener('input', function() {
+          handlePrefChange(wi, di, parseInt(this.value));
+        });
+      }
+    });
+  });
+}
+
+function handlePrefChange(wi, di, pref) {
+  // 1. Store new pref
+  WEEKS[wi].days[di].pref = pref;
+
+  // 2. Update every slot to the best-matching recipe
+  WEEKS[wi].days[di].slots.forEach((slot, si) => {
+    selections[wi][di][si] = pickForPref(slot, pref);
+  });
+
+  // 3. Update visual elements
+  const fillEl = document.getElementById('tf-'+wi+'-'+di);
+  const thumbEl = document.getElementById('th-'+wi+'-'+di);
+  const moodEl = document.getElementById('mc-'+wi+'-'+di);
+  const eLbl = document.getElementById('ml-e-'+wi+'-'+di);
+  const jLbl = document.getElementById('ml-j-'+wi+'-'+di);
+  const mealsEl = document.getElementById('mr-'+wi+'-'+di);
+
+  if (fillEl) fillEl.style.cssText = buildFillStyle(pref);
+  if (thumbEl) thumbEl.style.left = pref + '%';
+  if (moodEl) moodEl.textContent = getMood(pref);
+  if (eLbl) eLbl.style.opacity = pref <= 40 ? 1 : 0.35;
+  if (jLbl) jLbl.style.opacity = pref >= 60 ? 1 : 0.35;
+  if (mealsEl) mealsEl.innerHTML = WEEKS[wi].days[di].slots.map((slot,si) => renderSlot(wi,di,si,selections[wi][di][si])).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// WEEK NAV
+// ═══════════════════════════════════════════════════════
+function changeWeek(d) { goToWeek(currentWeek + d); }
+function goToWeek(wi) {
+  if (wi<0||wi>=WEEKS.length) return;
+  document.getElementById('week-'+currentWeek).classList.remove('active');
+  document.querySelectorAll('.wdot')[currentWeek].classList.remove('active');
+  currentWeek = wi;
+  document.getElementById('week-'+currentWeek).classList.add('active');
+  document.querySelectorAll('.wdot')[currentWeek].classList.add('active');
+  updateNav();
+}
+function updateNav() {
+  document.getElementById('prev-btn').disabled = currentWeek===0;
+  document.getElementById('next-btn').disabled = currentWeek===WEEKS.length-1;
+  document.getElementById('wlabel').textContent = WEEKS[currentWeek].label;
+}
+
+// ═══════════════════════════════════════════════════════
+// RECIPE MODAL
+// ═══════════════════════════════════════════════════════
+function openRecipe(rid) {
+  const r = R[rid]; if (!r) return;
+  const tLbl = {main:'Main Dish',veg:'Vegetable',side:'Side Dish'}[r.type];
+  const badge = document.getElementById('rm-badge');
+  badge.className='mbadge '+r.type;
+  badge.textContent=tLbl;
+  document.getElementById('rm-title').textContent=r.title;
+
+  // ── TJ badge ──────────────────────────────────────────
+  let tjEl = document.getElementById('rm-tj-badge');
+  if (!tjEl) {
+    tjEl = document.createElement('div');
+    tjEl.id = 'rm-tj-badge';
+    document.getElementById('rm-title').after(tjEl);
+  }
+  if (r.tj) {
+    tjEl.className = 'modal-tj-badge';
+    tjEl.innerHTML = `${TJ_SVG} Uses Trader Joe's ingredients`;
+    tjEl.style.display = 'inline-flex';
+  } else {
+    tjEl.style.display = 'none';
+  }
+
+  // ── Serving / portion info ──────────────────────────
+  const total = r.totalServings || 1;
+  const unit  = r.unitLabel || 'serving';
+  const p2    = r.portionFor2 || total;
+  const metaEl = document.getElementById('rm-meta');
+  metaEl.textContent = r.serving || '';
+
+  const servingRow = document.createElement('div');
+  servingRow.className = 'serving-row';
+
+  // Recipe makes X
+  const makesPill = `<span class="serving-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Makes ${total} ${unit}${total!==1?'s':''}</span>`;
+  // Portion for 2
+  const por2Pill = `<span class="serving-pill" style="border-color:rgba(212,132,58,.3);color:var(--amber-text)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>For 2: ${p2} ${unit}${p2!==1?'s':''} (${Math.round(p2/2*10)/10} each)</span>`;
+  servingRow.innerHTML = makesPill + por2Pill;
+
+  metaEl.after(servingRow);
+
+  // ── Per-portion macros for 2 ────────────────────────
+  // Scale macros: if macros are per-unit, multiply by portionFor2
+  // then show both total-for-2 and per-person
+  function scaleMacro(vStr, multiplier) {
+    const num = parseFloat(vStr);
+    if (isNaN(num)) return {for2: vStr, each: vStr};
+    const for2 = Math.round(num * multiplier * 10) / 10;
+    const each = Math.round(num * multiplier / 2 * 10) / 10;
+    // Format: drop .0 if whole number
+    const fmt = n => n % 1 === 0 ? String(n) : String(n);
+    return {for2: fmt(for2), each: fmt(each)};
+  }
+
+  const unitMacroLabels = {Cal:'Cal', Fat:'Fat', Carbs:'Carbs', Protein:'Protein'};
+  document.getElementById('rm-macros').innerHTML = r.macros.map(m => {
+    const scaled = scaleMacro(m.v, p2);
+    const unitVal = m.v.replace(/[^0-9.]/g,'') || m.v;
+    const suffix  = m.v.replace(/[0-9.]/g,'') || '';
+    return `<div class="mcard">
+  <span class="mval">${scaled.for2}${suffix}</span>
+  <span class="mlbl">${m.l}</span>
+  <span class="macro-label-sub">${scaled.each}${suffix} each</span>
+</div>`;
+  }).join('');
+
+  // ── Video ───────────────────────────────────────────
+  const videoWrap = document.getElementById('rm-video-wrap');
+  if (r.video) {
+    const isYT = r.video.includes('youtube');
+    const icon = isYT
+      ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.6 2 12 2 12 2s-4.6 0-7.3.1c-.6.1-1.9.1-3 1.3C.8 4.2.5 6.2.5 6.2S.2 8.5.2 10.8v2.1c0 2.3.3 4.6.3 4.6s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.2 21.7 12 21.8 12 21.8s4.6 0 7.3-.2c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.3.3-4.6v-2.1c0-2.3-.3-4.6-.3-4.6zM9.7 15.5V8.4l8.1 3.6-8.1 3.5z"/></svg>`
+      : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>`;
+    const label = isYT ? 'Watch on YouTube' : 'Watch on Vimeo';
+    videoWrap.innerHTML = `<a class="watch-btn" href="${r.video}" target="_blank" rel="noopener">${icon} ${label}</a>`;
+  } else {
+    videoWrap.innerHTML = '';
+  }
+
+  document.getElementById('rm-ings').innerHTML=r.ings.map(([amt,name])=>`<li><span>${name}</span><span class="iamt">${amt}</span></li>`).join('');
+  document.getElementById('rm-steps').innerHTML=r.steps.map((s,i)=>`<li class="step"><span class="stepn">${i+1}</span><span class="stept">${s}</span></li>`).join('');
+  const tipEl=document.getElementById('rm-tip');
+  if(r.tip){tipEl.style.display='block';tipEl.innerHTML=`<strong>Pro tip</strong>${r.tip}`;}
+  else tipEl.style.display='none';
+  openModal('recipe-modal');
+}
+
+// ═══════════════════════════════════════════════════════
+// ALT MODAL
+// ═══════════════════════════════════════════════════════
+function openAlts(wi, di, si) {
+  pendingAlt = {wi,di,si};
+  const slot = WEEKS[wi].days[di].slots[si];
+  const currentId = selections[wi][di][si];
+  const r = R[currentId];
+  const badge = document.getElementById('am-badge');
+  badge.className='mbadge '+(r?r.type:'main');
+  badge.textContent=r?{main:'Main Dish',veg:'Vegetable',side:'Side Dish'}[r.type]:'';
+  document.getElementById('am-meta').textContent='Currently: '+(r?r.title:'');
+
+  // show all 3 options (eric, both, julie)
+  const allOpts = [...new Set([slot.eric, slot.both, slot.julie])];
+  document.getElementById('am-grid').innerHTML = allOpts.map(rid => {
+    const rec=R[rid]; if(!rec) return '';
+    const tl={eric:"Eric's pick",julie:"Julie's pick",both:'Both'}[rec.tag]||rec.tag;
+    const isCur=rid===currentId;
+    return `<div class="alt-card${isCur?' sel':''}" onclick="selectAlt('${rid}')">
+  <div><div class="aname">${rec.title}</div><div class="anote">${rec.note}</div>${isCur?'<div style="font-size:10px;color:var(--amber-text);margin-top:3px;font-weight:500">✓ Selected</div>':''}</div>
+  <span class="atag ${rec.tag}">${tl}</span>
+</div>`;
+  }).join('');
+  openModal('alt-modal');
+}
+function selectAlt(rid) {
+  if (!pendingAlt) return;
+  const {wi,di,si}=pendingAlt;
+  selections[wi][di][si]=rid;
+  document.getElementById('mr-'+wi+'-'+di).innerHTML=
+    WEEKS[wi].days[di].slots.map((s,idx)=>renderSlot(wi,di,idx,selections[wi][di][idx])).join('');
+  closeModal('alt-modal');
+}
+
+// ═══════════════════════════════════════════════════════
+// GROCERY MODAL
+// ═══════════════════════════════════════════════════════
+
+// Normalize an ingredient name to a stable key for cross-day deduplication
+function ingKey(name) {
+  return name.toLowerCase()
+    .replace(/[^a-z0-9 ]/g, '')   // strip punctuation
+    .replace(/\s+/g, ' ')
+    .trim()
+    // strip common filler words so "sea salt" == "sea salt, garlic powder" won't match,
+    // but "sea salt" == "Sea Salt" will
+    .split(',')[0]                 // take only first item in comma-separated strings
+    .trim();
+}
+
+const CHECK_SVG = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><polyline points="2,5 4,7 8,3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function openGrocery() {
+  const wi = currentWeek;
+  document.getElementById('gm-week').textContent = wi+1;
+  document.getElementById('gm-meta').textContent = WEEKS[wi].label;
+  if (!groceryChecked[wi]) groceryChecked[wi] = new Set();
+
+  // Collect all ingredients grouped by day, keyed by normalized name
+  let html = '';
+  WEEKS[wi].days.forEach((day, di) => {
+    const dayRecipes = selections[wi][di].map(rid => R[rid]).filter(Boolean);
+    const seenInDay = new Set();
+    const items = [];
+    dayRecipes.forEach(rec => {
+      rec.ings.forEach(([amt, name]) => {
+        if (!name || name.trim() === '') return;
+        const nk = ingKey(name);
+        if (!seenInDay.has(nk)) {
+          seenInDay.add(nk);
+          items.push({amt, name, nk});
+        }
+      });
+    });
+
+    html += `<div class="grocery-day">
+  <div class="gday-title">${day.name}</div>
+  <div class="grocery-items">`;
+    items.forEach(({amt, name, nk}) => {
+      const isChecked = groceryChecked[wi].has(nk);
+      html += `<div class="gitem${isChecked?' checked':''}" data-wi="${wi}" data-nk="${nk}" onclick="toggleGrocery(event)">
+  <div class="gcheck">${isChecked ? CHECK_SVG : ''}</div>
+  <span class="gtext">${name}</span>
+  <span class="gamt">${amt}</span>
+</div>`;
+    });
+    html += `</div></div>`;
+  });
+
+  document.getElementById('gm-body').innerHTML = html;
+  openModal('grocery-modal');
+}
+
+function toggleGrocery(event) {
+  const el = event.currentTarget;
+  const wi = parseInt(el.dataset.wi);
+  const nk = el.dataset.nk;
+  if (!groceryChecked[wi]) groceryChecked[wi] = new Set();
+
+  const wasChecked = groceryChecked[wi].has(nk);
+  if (wasChecked) {
+    groceryChecked[wi].delete(nk);
+  } else {
+    groceryChecked[wi].add(nk);
+  }
+
+  // Sync ALL items with the same ingredient key across all days
+  document.querySelectorAll(`#gm-body .gitem[data-nk="${CSS.escape(nk)}"]`).forEach(item => {
+    if (wasChecked) {
+      item.classList.remove('checked');
+      item.querySelector('.gcheck').innerHTML = '';
+    } else {
+      item.classList.add('checked');
+      item.querySelector('.gcheck').innerHTML = CHECK_SVG;
+    }
+  });
+}
+
+function checkAll(checked) {
+  const wi = currentWeek;
+  if (!groceryChecked[wi]) groceryChecked[wi] = new Set();
+  document.querySelectorAll('#gm-body .gitem').forEach(el => {
+    const nk = el.dataset.nk;
+    if (!nk) return;
+    if (checked) {
+      groceryChecked[wi].add(nk);
+      el.classList.add('checked');
+      el.querySelector('.gcheck').innerHTML = CHECK_SVG;
+    } else {
+      groceryChecked[wi].delete(nk);
+      el.classList.remove('checked');
+      el.querySelector('.gcheck').innerHTML = '';
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// SHARE — GitHub Pages publish + Netlify Drop fallback
+// ═══════════════════════════════════════════════════════
+const REPO_NAME = 'dinner-plan';
+
+function getHtmlBlob() {
+  return new Blob([document.documentElement.outerHTML], { type: 'text/html' });
+}
+
+function downloadFile() {
+  const url = URL.createObjectURL(getHtmlBlob());
+  const a = document.createElement('a');
+  a.href = url; a.download = 'dinner-plan.html'; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+function setStatus(msg, color) {
+  const el = document.getElementById('gh-status');
+  if (el) { el.textContent = msg; el.style.color = color || 'var(--text3)'; }
+}
+
+async function doGitHub() {
+  const token = document.getElementById('gh-token').value.trim();
+  if (!token) { setStatus('Paste your GitHub token first', 'var(--amber-text)'); return; }
+
+  setStatus('Checking your GitHub account…');
+
+  try {
+    // 1. Get username
+    const me = await ghFetch('https://api.github.com/user', token);
+    const username = me.login;
+    setStatus(`Signed in as ${username} — setting up repo…`);
+
+    // 2. Create or confirm repo exists
+    const repoUrl = `https://api.github.com/repos/${username}/${REPO_NAME}`;
+    let repoExists = false;
+    try {
+      await ghFetch(repoUrl, token);
+      repoExists = true;
+    } catch(e) { /* doesn't exist yet */ }
+
+    if (!repoExists) {
+      setStatus('Creating repository…');
+      await ghFetch('https://api.github.com/user/repos', token, 'POST', {
+        name: REPO_NAME,
+        private: false,
+        auto_init: false,
+        description: "Eric & Julie's Dinner Plan"
+      });
+    }
+
+    // 3. Get current file SHA if it exists (needed for update)
+    setStatus('Uploading page…');
+    let sha = null;
+    try {
+      const existing = await ghFetch(`${repoUrl}/contents/index.html`, token);
+      sha = existing.sha;
+    } catch(e) { /* file doesn't exist yet */ }
+
+    // 4. Capture clean HTML — close all modals and clear the token first
+    ['share-modal','recipe-modal','alt-modal','grocery-modal'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('open');
+    });
+    document.body.style.overflow = '';
+    document.getElementById('gh-token').value = '';
+    document.getElementById('gh-status').textContent = '';
+
+    await new Promise(r => setTimeout(r, 50));
+
+    // 5. Build the HTML string and inject a unique build timestamp
+    // This ensures GitHub always sees a content change, preventing "revert" behaviour
+    const buildTime = new Date().toISOString();
+    let cleanHtml = document.documentElement.outerHTML;
+
+    // Replace or inject the build comment just inside <head>
+    const buildComment = `<!-- built:${buildTime} -->`;
+    if (cleanHtml.includes('<!-- built:')) {
+      cleanHtml = cleanHtml.replace(/<!-- built:[^>]+ -->/, buildComment);
+    } else {
+      cleanHtml = cleanHtml.replace('<head>', `<head>\n${buildComment}`);
+    }
+
+    // Restore the modal
+    document.getElementById('share-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setStatus('Uploading…');
+
+    // 6. Upload index.html
+    const content = btoa(unescape(encodeURIComponent(cleanHtml)));
+    const commitMsg = `Update dinner plan — ${new Date().toLocaleString('en-US', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}`;
+    const body = {
+      message: commitMsg,
+      content,
+      ...(sha ? { sha } : {})
+    };
+    await ghFetch(`${repoUrl}/contents/index.html`, token, 'PUT', body);
+
+    // 7. Enable GitHub Pages on main branch if not already on
+    setStatus('Enabling GitHub Pages…');
+    try {
+      await ghFetch(`${repoUrl}/pages`, token, 'POST', {
+        source: { branch: 'main', path: '/' }
+      });
+    } catch(e) {
+      // May already be enabled — that's fine
+    }
+
+    // 8. Show the result URL
+    const pageUrl = `https://${username}.github.io/${REPO_NAME}/`;
+    document.getElementById('gh-step1').style.display = 'none';
+    document.getElementById('gh-result').style.display = 'block';
+    document.getElementById('gh-url-out').value = pageUrl;
+    setStatus('');
+
+  } catch(e) {
+    console.error(e);
+    if (e.message.includes('401') || e.message.includes('403')) {
+      setStatus('Token invalid or expired — make sure "repo" scope is checked', 'var(--amber-text)');
+    } else if (e.message.includes('422')) {
+      setStatus('No changes detected — the page is already up to date', 'var(--teal-text)');
+      // Still show the result URL if we know the username
+      try {
+        const me2 = await ghFetch('https://api.github.com/user', token);
+        const pageUrl = `https://${me2.login}.github.io/${REPO_NAME}/`;
+        document.getElementById('gh-step1').style.display = 'none';
+        document.getElementById('gh-result').style.display = 'block';
+        document.getElementById('gh-url-out').value = pageUrl;
+      } catch(_) {}
+    } else {
+      setStatus('Error: ' + e.message, 'var(--amber-text)');
+    }
+  }
+}
+
+async function ghFetch(url, token, method = 'GET', body = null) {
+  const opts = {
+    method,
+    headers: {
+      'Authorization': `token ${token}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return res.json();
+}
+
+function copyGhUrl() {
+  const val = document.getElementById('gh-url-out').value;
+  navigator.clipboard.writeText(val).then(() => showToast('✓ Link copied!'));
+}
+
+function doNetlifyDrop() {
+  downloadFile();
+  setTimeout(() => window.open('https://app.netlify.com/drop', '_blank'), 400);
+  closeModal('share-modal');
+  showToast('File downloaded — drag it onto the Netlify page that just opened');
+}
+
+// ═══════════════════════════════════════════════════════
+// MODAL UTILS
+// ═══════════════════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow='';
+  // Clean up dynamically inserted serving row so it doesn't stack on re-open
+  if (id === 'recipe-modal') {
+    document.querySelectorAll('#recipe-modal .serving-row').forEach(el => el.remove());
+  }
+}
+function overlayClose(e,id) { if(e.target===document.getElementById(id)) closeModal(id); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') ['recipe-modal','alt-modal','grocery-modal','share-modal'].forEach(closeModal); });
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3500);
+}
+
+init();
+</script>
+</body>
+</html>
