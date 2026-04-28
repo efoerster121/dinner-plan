@@ -1458,7 +1458,7 @@ footer em{font-style:italic;font-family:'Libre Baskerville',serif;color:var(--te
               Publish →
             </button>
           </div>
-          <div id="gh-status" style="font-size: 11px; color: var(--text3); margin-top: 8px; min-height: 16px;"></div>
+          <div id="gh-status" style="font-size:11px;color:var(--text3);margin-top:8px;min-height:16px"></div>
         </div>
 
         <!-- Result -->
@@ -2665,7 +2665,7 @@ async function doGitHub() {
     let cleanHtml = document.documentElement.outerHTML;
 
     // Replace or inject the build comment just inside <head>
-    const buildComment = `<!-- built:2026-04-28T13:49:17.196Z -->`;
+    const buildComment = `<!-- built:2026-04-28T13:57:47.451Z -->`;
     if (cleanHtml.includes('<!-- built:')) {
       cleanHtml = cleanHtml.replace(/<!-- built:[^>]+ -->/, buildComment);
     } else {
