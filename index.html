@@ -523,7 +523,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <div class="logo-sub">Weekly Kitchen Guide</div>
   </div>
   <div class="sidebar-nav">
-    <div class="nav-item" data-view="plan" onclick="switchView('plan',this)">
+    <div class="nav-item active" data-view="plan" onclick="switchView('plan',this)">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
       Weekly Plan
     </div>
@@ -535,7 +535,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
       Custom Day Builder
     </div>
-    <div class="nav-item active" data-view="settings" onclick="switchView('settings',this)">
+    <div class="nav-item" data-view="settings" onclick="switchView('settings',this)">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       Settings
     </div>
@@ -564,7 +564,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <button class="hamburger" onclick="toggleSidebar()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
       </button>
-      <div class="topbar-title" id="topbar-title">Settings</div>
+      <div class="topbar-title" id="topbar-title">Weekly Plan</div>
     </div>
     <div class="topbar-right">
       <button class="topbar-btn" onclick="openGrocery()">
@@ -577,7 +577,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="page-content">
 
     <!-- ── WEEKLY PLAN VIEW ────────────────────── -->
-    <div class="view" id="view-plan">
+    <div class="view active" id="view-plan">
       <div class="week-header">
         <div class="week-tabs" id="week-tabs"><button class="week-tab active" onclick="setWeek(0)">1</button><button class="week-tab" onclick="setWeek(1)">2</button><button class="week-tab" onclick="setWeek(2)">3</button><button class="week-tab" onclick="setWeek(3)">4</button></div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -2611,7 +2611,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     </div>
 
     <!-- ── SETTINGS VIEW ───────────────────────── -->
-    <div class="view active" id="view-settings">
+    <div class="view" id="view-settings">
       <div class="settings-grid">
         <div class="settings-card">
           <h3>Publish to GitHub Pages</h3>
@@ -2620,7 +2620,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
             <input type="password" class="gh-input" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
             <button class="gh-btn" onclick="doGitHub()">Publish →</button>
             <div class="gh-status" id="gh-status" style="color: var(--text3);"></div>
-            <div class="gh-result" id="gh-result">
+            <div class="gh-result" id="gh-result" style="display: none;">
               <div style="font-size:12px;color:var(--teal-text)">✓ Published! Your link:</div>
               <div class="gh-url-row">
                 <input class="gh-url-out" id="gh-url-out" readonly="">
@@ -4678,17 +4678,33 @@ async function doGitHub() {
     try { const ex = await ghFetch(`${repoUrl}/contents/index.html`, token); sha = ex.sha; } catch(e) {}
     setGhStatus('Uploading…');
 
-    // Close all modals + clean state before capture
-    document.querySelectorAll('.overlay.open').forEach(o => o.classList.remove('open'));
+    // ── Reset DOM to clean default state before capturing HTML ─────
+    // Everything we set here becomes the initial state of the published page.
+    // Order matters: do this BEFORE outerHTML capture.
+
+    // 1. Close all modals and overlays
+    document.querySelectorAll('.overlay').forEach(o => o.classList.remove('open'));
     document.body.style.overflow = '';
+
+    // 2. Switch to Weekly Plan view — this is what the published page will open to
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-plan').classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelector('[data-view="plan"]').classList.add('active');
+    document.getElementById('topbar-title').textContent = 'Weekly Plan';
+
+    // 3. Clear sensitive fields
     document.getElementById('gh-token-input').value = '';
     document.getElementById('gh-status').textContent = '';
-    await new Promise(r => setTimeout(r, 60));
+    document.getElementById('gh-result').style.display = 'none';
+
+    // 4. Wait a tick for DOM to settle
+    await new Promise(r => setTimeout(r, 80));
 
     // Inject unique build timestamp to guarantee GitHub sees a diff every time
     const buildTime = new Date().toISOString();
     let cleanHtml = document.documentElement.outerHTML;
-    const buildComment = `<!-- built:2026-04-28T19:27:06.051Z -->`;
+    const buildComment = `<!-- built:2026-04-28T19:31:00.521Z -->`;
     if (cleanHtml.includes('<!-- built:')) cleanHtml = cleanHtml.replace(/<!-- built:[^>]+ -->/, buildComment);
     else cleanHtml = cleanHtml.replace('<head>', `<head>\n${buildComment}`);
 
@@ -4698,11 +4714,16 @@ async function doGitHub() {
     try { await ghFetch(`${repoUrl}/pages`, token, 'POST', { source: { branch: 'main', path: '/' } }); } catch(e) {}
 
     const pageUrl = `https://${username}.github.io/${REPO_NAME}/`;
+
+    // Restore settings view so user can see the result link
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-settings').classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelector('[data-view="settings"]').classList.add('active');
+    document.getElementById('topbar-title').textContent = 'Settings';
     document.getElementById('gh-result').style.display = 'flex';
     document.getElementById('gh-url-out').value = pageUrl;
-    // Return to Weekly Plan view after publishing
-    switchView('plan', document.querySelector('[data-view="plan"]'));
-    showToast(`✓ Published! Link: ${pageUrl} — takes ~30s to go live`);
+    showToast(`✓ Published! Takes ~30s to go live`);
   } catch(e) {
     setGhStatus(e.message.includes('401')||e.message.includes('403') ? 'Token invalid — check "repo" scope' : 'Error: ' + e.message, 'var(--red-text)');
   }
