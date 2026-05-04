@@ -546,11 +546,104 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   .pantry-item{padding:10px 8px;min-height:44px;}
 
   .builder-grid{grid-template-columns:1fr;}
+  #fridge-layout{grid-template-columns:1fr !important;}
 }
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:150;}
 .sidebar-overlay.show{display:block;}
+
+/* ── FRIDGE FINDER VIEW ───────────────────────────── */
+.fridge-section{margin-bottom:1.25rem;}
+.fridge-section-label{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.fridge-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.fridge-tag{
+  padding:6px 13px;border-radius:999px;border:1px solid var(--border);
+  background:transparent;color:var(--text2);font-size:12px;font-weight:500;
+  font-family:'DM Sans',sans-serif;cursor:pointer;transition:all var(--transition);
+  display:flex;align-items:center;gap:5px;
+}
+.fridge-tag:hover{border-color:var(--border2);color:var(--text);background:var(--surface2);}
+.fridge-tag.selected{background:var(--gold-dim);border-color:var(--gold);color:var(--gold-text);}
+.fridge-tag.selected.protein{background:var(--teal-dim);border-color:var(--teal);color:var(--teal-text);}
+.fridge-results-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem;
+}
+.fridge-count{font-size:12px;color:var(--text3);}
+.fridge-count strong{color:var(--text);}
+.fridge-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1rem;display:flex;flex-direction:column;gap:0.5rem;
+  transition:all var(--transition);
+}
+.fridge-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.fridge-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.fridge-match{
+  display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:999px;flex-shrink:0;
+}
+.fridge-match.full{background:var(--teal-dim);color:var(--teal-text);border:1px solid rgba(61,158,140,0.3);}
+.fridge-match.partial{background:var(--gold-dim);color:var(--gold-text);border:1px solid rgba(201,168,76,0.3);}
+.fridge-ings-matched{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px;}
+.fridge-ing-pill{
+  font-size:9px;padding:1px 6px;border-radius:999px;
+  background:var(--surface2);border:1px solid var(--border);color:var(--text3);
+}
+.fridge-ing-pill.hit{background:var(--teal-dim);border-color:rgba(61,158,140,0.3);color:var(--teal-text);}
+.fridge-empty{
+  grid-column:1/-1;text-align:center;padding:3rem 1rem;
+  color:var(--text3);font-size:13px;line-height:1.6;
+}
+
+/* ── HISTORY VIEW ─────────────────────────────────── */
+.history-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+@media(max-width:700px){.history-grid{grid-template-columns:1fr;}}
+.history-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;}
+.history-card h3{font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);margin-bottom:1rem;display:flex;align-items:center;gap:6px;}
+.history-empty{font-size:12px;color:var(--text3);padding:0.5rem 0;}
+
+/* Frequency leaderboard */
+.freq-list{display:flex;flex-direction:column;gap:6px;}
+.freq-item{display:flex;align-items:center;gap:10px;padding:7px 8px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border);}
+.freq-rank{font-size:11px;font-weight:700;color:var(--text3);width:18px;text-align:center;flex-shrink:0;}
+.freq-rank.gold{color:var(--gold-text);}
+.freq-info{flex:1;min-width:0;}
+.freq-title{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.freq-meta{font-size:10px;color:var(--text3);margin-top:1px;}
+.freq-badge{font-size:11px;font-weight:700;color:var(--gold-text);background:var(--gold-dim);border:1px solid rgba(201,168,76,0.3);padding:2px 8px;border-radius:999px;flex-shrink:0;}
+.freq-badge.high{color:var(--teal-text);background:var(--teal-dim);border-color:rgba(61,158,140,0.3);}
+
+/* Log timeline */
+.log-list{display:flex;flex-direction:column;gap:0;}
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);position:relative;}
+.log-item:last-child{border-bottom:none;}
+.log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.log-dot.main{background:var(--gold);}
+.log-dot.veg{background:var(--teal);}
+.log-dot.side{background:var(--plum);}
+.log-info{flex:1;min-width:0;}
+.log-title{font-size:12px;font-weight:600;color:var(--text);}
+.log-date{font-size:10px;color:var(--text3);margin-top:1px;}
+.log-tag{font-size:9px;font-weight:700;padding:1px 6px;border-radius:999px;flex-shrink:0;margin-top:2px;}
+.log-tag.eric{background:var(--gold-dim);color:var(--gold-text);border:1px solid rgba(201,168,76,0.3);}
+.log-tag.julie{background:var(--teal-dim);color:var(--teal-text);border:1px solid rgba(61,158,140,0.3);}
+.log-tag.both{background:var(--plum-dim);color:var(--plum-text);border:1px solid rgba(124,63,142,0.3);}
+
+/* Try-something-new suggestions */
+.suggest-list{display:flex;flex-direction:column;gap:6px;}
+.suggest-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all var(--transition);}
+.suggest-item:hover{border-color:var(--gold);box-shadow:var(--glow);}
+.suggest-info{flex:1;min-width:0;}
+.suggest-title{font-size:12px;font-weight:600;color:var(--text);}
+.suggest-note{font-size:10px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.suggest-age{font-size:10px;color:var(--text3);flex-shrink:0;text-align:right;line-height:1.3;}
+
+/* Stats strip */
+.history-stats{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;}
+.hstat{flex:1;min-width:80px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0.65rem;text-align:center;}
+.hstat-val{font-size:22px;font-weight:700;color:var(--gold-text);}
+.hstat-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;}
 </style>
-</head>
+<script id="__baked-state__">var __BAKED_STATE__ = {"selections":[[["tj-hot-honey-meatball-bowl","buffalo-cauliflower","mozz-sticks"],["crunch-wrap-pizza","garlic-brussels","onion-rings"],["tj-beef-broccoli","smash-brussels","pizza-fries"],["marry-me-chicken","zucchini-fries","mozz-sticks"],["korean-beef-bowl","sweet-potato-bites","high-protein-cheese-dip"]],[["buffalo-chicken-sliders","buffalo-cauliflower","mozz-sticks"],["tj-teriyaki-meatball-bowl","roasted-carrots","pizza-fries"],["ebf-greek-turkey-meatballs","smash-brussels","pizza-rolls"],["ebf-shrimp-stir-fry","garlic-brussels","onion-rings"],["triple-burger-wrap","smash-brussels","mozz-sticks"]],[["cauliflower-fried-rice","garlic-brussels","mozz-sticks"],["ebf-shrimp-stir-fry","roasted-carrots","pizza-rolls"],["tj-egg-roll-bowl","smash-brussels","onion-rings"],["ebf-fish-tacos","garlic-brussels","sweet-potato-fries"],["smash-turkey-burgers","roasted-carrots","pizza-fries"]],[["ebf-greek-turkey-meatballs","garlic-brussels","onion-rings"],["honey-garlic-shrimp","roasted-carrots","pizza-rolls"],["fdl-12in-pizza","smash-brussels","pizza-fries"],["grilled-chicken-fajitas","garlic-brussels","sweet-potato-fries"],["tj-egg-roll-bowl","roasted-carrots","onion-rings"]]],"eaten":["0-0-0","0-0-1"],"prefs":{"dimEaten":true,"showMacros":true,"showTJ":true},"pantryList":[{"label":"ground turkey","key":"ground turkey","checked":false},{"label":"red onion, finely chopped","key":"red onion finely chopped","checked":false},{"label":"garlic, minced","key":"garlic minced","checked":false},{"label":"fresh parsley, chopped","key":"fresh parsley chopped","checked":false},{"label":"fresh dill, chopped","key":"fresh dill chopped","checked":false},{"label":"Italian breadcrumbs","key":"italian breadcrumbs","checked":false},{"label":"egg","key":"egg","checked":false},{"label":"crumbled feta","key":"crumbled feta","checked":false},{"label":"lemon juice + 1 tsp zest","key":"lemon juice 1 tsp zest","checked":false},{"label":"dried oregano","key":"dried oregano","checked":false},{"label":"to taste","key":"to taste","checked":false},{"label":"to serve","key":"to serve","checked":false},{"label":"sweet potatoes","key":"sweet potatoes","checked":false},{"label":"butter spray, sea salt","key":"butter spray sea salt","checked":false},{"label":"yellow onion","key":"yellow onion","checked":false},{"label":"all-purpose flour","key":"allpurpose flour","checked":false},{"label":"salt, pepper, garlic powder","key":"salt pepper garlic powder","checked":false},{"label":"panko bread crumbs","key":"panko bread crumbs","checked":false},{"label":"egg whites","key":"egg whites","checked":false},{"label":"flour tortilla","key":"flour tortilla","checked":false},{"label":"turkey pepperonis","key":"turkey pepperonis","checked":false},{"label":"part-skim mozzarella","key":"partskim mozzarella","checked":false},{"label":"Brussels sprouts","key":"brussels sprouts","checked":false},{"label":"parmesan","key":"parmesan","checked":false},{"label":"garlic powder, sea salt, everything bagel seasoning","key":"garlic powder sea salt everything bagel seasoning","checked":false},{"label":"olive oil spray","key":"olive oil spray","checked":false},{"label":"TJ's shaved beef steak (or any steak cut into bite-size pieces)","key":"tjs shaved beef steak or any steak cut into bitesize pieces","checked":false},{"label":"broccoli florets","key":"broccoli florets","checked":false},{"label":"avocado oil","key":"avocado oil","checked":false},{"label":"sesame oil","key":"sesame oil","checked":false},{"label":"to garnish","key":"to garnish","checked":false},{"label":"vinegar","key":"vinegar","checked":false},{"label":"sea salt","key":"sea salt","checked":false},{"label":"olive oil spray, parmesan","key":"olive oil spray parmesan","checked":false},{"label":"russet potatoes","key":"russet potatoes","checked":false},{"label":"non-stick cooking spray","key":"nonstick cooking spray","checked":false},{"label":"sea salt, garlic powder, black pepper","key":"sea salt garlic powder black pepper","checked":false},{"label":"marinara sauce","key":"marinara sauce","checked":false},{"label":"turkey pepperoni","key":"turkey pepperoni","checked":false},{"label":"boneless skinless chicken breasts, sliced thin","key":"boneless skinless chicken breasts sliced thin","checked":false},{"label":"olive oil","key":"olive oil","checked":false},{"label":"finely chopped","key":"finely chopped","checked":false},{"label":"chicken broth","key":"chicken broth","checked":false},{"label":"half-and-half or light cream","key":"halfandhalf or light cream","checked":false},{"label":"cream cheese, softened","key":"cream cheese softened","checked":false},{"label":"sun-dried tomatoes, drained and chopped","key":"sundried tomatoes drained and chopped","checked":false},{"label":"baby spinach","key":"baby spinach","checked":false},{"label":"parmesan, grated","key":"parmesan grated","checked":false},{"label":"Italian seasoning","key":"italian seasoning","checked":false},{"label":"red pepper flakes","key":"red pepper flakes","checked":false},{"label":"light mozzarella sticks","key":"light mozzarella sticks","checked":false},{"label":"sea salt, garlic powder","key":"sea salt garlic powder","checked":false},{"label":"Flamin Hot Cheetos, food processed to powder","key":"flamin hot cheetos food processed to powder","checked":false},{"label":"96/4 lean ground beef","key":"964 lean ground beef","checked":false},{"label":"onion, finely diced","key":"onion finely diced","checked":false},{"label":"fresh ginger, grated","key":"fresh ginger grated","checked":false},{"label":"jasmine rice, cooked","key":"jasmine rice cooked","checked":false},{"label":"cucumber, thinly sliced","key":"cucumber thinly sliced","checked":false},{"label":"green onions, sliced","key":"green onions sliced","checked":false},{"label":"cauliflower","key":"cauliflower","checked":false},{"label":"Frank's Red Hot","key":"franks red hot","checked":false},{"label":"panko","key":"panko","checked":false},{"label":"nutritional yeast","key":"nutritional yeast","checked":false},{"label":"turkey pepperonis, quartered","key":"turkey pepperonis quartered","checked":false},{"label":"oregano, basil, garlic powder","key":"oregano basil garlic powder","checked":false},{"label":"chicken breast","key":"chicken breast","checked":false},{"label":"reduced sodium chicken broth","key":"reduced sodium chicken broth","checked":false},{"label":"ranch seasoning","key":"ranch seasoning","checked":false},{"label":"plain nonfat greek yogurt","key":"plain nonfat greek yogurt","checked":false},{"label":"fat free cottage cheese","key":"fat free cottage cheese","checked":false},{"label":"Frank's Red Hot Buffalo Sauce","key":"franks red hot buffalo sauce","checked":false},{"label":"green onion","key":"green onion","checked":false},{"label":"brioche dinner rolls","key":"brioche dinner rolls","checked":false},{"label":"2% sharp cheddar","key":"2 sharp cheddar","checked":false},{"label":"ground chicken (TJ's fresh ground chicken)","key":"ground chicken tjs fresh ground chicken","checked":false},{"label":"almond flour or breadcrumbs","key":"almond flour or breadcrumbs","checked":false},{"label":"green onion, chopped","key":"green onion chopped","checked":false},{"label":"salt, ¼ tsp pepper","key":"salt tsp pepper","checked":false},{"label":"TJ's Soyaki sauce","key":"tjs soyaki sauce","checked":false},{"label":"cooked rice (TJ's frozen brown rice)","key":"cooked rice tjs frozen brown rice","checked":false},{"label":"sautéed, to serve","key":"sauted to serve","checked":false},{"label":"fresh carrots","key":"fresh carrots","checked":false},{"label":"butter spray, sea salt, garlic powder","key":"butter spray sea salt garlic powder","checked":false},{"label":"large shrimp, peeled and deveined","key":"large shrimp peeled and deveined","checked":false},{"label":"avocado or sesame oil (divided)","key":"avocado or sesame oil divided","checked":false},{"label":"yellow onion, sliced","key":"yellow onion sliced","checked":false},{"label":"sliced","key":"sliced","checked":false},{"label":"snap peas","key":"snap peas","checked":false},{"label":"flour tortillas","key":"flour tortillas","checked":false},{"label":"2% sharp cheddar cheese","key":"2 sharp cheddar cheese","checked":false},{"label":"green beans, trimmed","key":"green beans trimmed","checked":false},{"label":"garlic powder, sea salt, black pepper","key":"garlic powder sea salt black pepper","checked":false},{"label":"parmesan, red pepper flakes","key":"parmesan red pepper flakes","checked":false},{"label":"self-rising flour","key":"selfrising flour","checked":false},{"label":"plain Greek yogurt","key":"plain greek yogurt","checked":false},{"label":"egg white (for wash)","key":"egg white for wash","checked":false},{"label":"everything bagel seasoning","key":"everything bagel seasoning","checked":false},{"label":"chili powder, cumin, onion powder, garlic powder","key":"chili powder cumin onion powder garlic powder","checked":false},{"label":"cayenne pepper","key":"cayenne pepper","checked":false},{"label":"shredded cabbage","key":"shredded cabbage","checked":false},{"label":"tortillas","key":"tortillas","checked":false},{"label":"avocado, smashed","key":"avocado smashed","checked":false},{"label":"sea salt, black pepper, red pepper flakes","key":"sea salt black pepper red pepper flakes","checked":false},{"label":"optional finish","key":"optional finish","checked":false},{"label":"wonton wrappers","key":"wonton wrappers","checked":false},{"label":"cooking spray","key":"cooking spray","checked":false},{"label":"salmon fillet (TJ's wild Atlantic salmon)","key":"salmon fillet tjs wild atlantic salmon","checked":false},{"label":"dijon mustard","key":"dijon mustard","checked":false},{"label":"for broccoli","key":"for broccoli","checked":false},{"label":"medium shrimp, peeled and deveined","key":"medium shrimp peeled and deveined","checked":false},{"label":"garlic powder, salt, paprika","key":"garlic powder salt paprika","checked":false},{"label":"99/1 or 93/7 lean ground turkey","key":"991 or 937 lean ground turkey","checked":false},{"label":"(cumin, chili powder, garlic powder, onion powder, paprika, oregano, salt)","key":"cumin chili powder garlic powder onion powder paprika oregano salt","checked":false},{"label":"chicken broth or water","key":"chicken broth or water","checked":false},{"label":"rice, cooked","key":"rice cooked","checked":false},{"label":"black beans, rinsed","key":"black beans rinsed","checked":false},{"label":"corn (frozen is fine)","key":"corn frozen is fine","checked":false},{"label":"avocado, diced","key":"avocado diced","checked":false},{"label":"pico de gallo or fresh salsa","key":"pico de gallo or fresh salsa","checked":false},{"label":"toppings","key":"toppings","checked":false},{"label":"lean ground turkey","key":"lean ground turkey","checked":false},{"label":"coleslaw mix (shredded cabbage + carrots)","key":"coleslaw mix shredded cabbage carrots","checked":false},{"label":"soy sauce","key":"soy sauce","checked":false},{"label":"garlic powder, ginger powder","key":"garlic powder ginger powder","checked":false},{"label":"egg roll wrappers","key":"egg roll wrappers","checked":false},{"label":"for dipping","key":"for dipping","checked":false},{"label":"white fish (tilapia, cod, mahi-mahi, or halibut)","key":"white fish tilapia cod mahimahi or halibut","checked":false},{"label":"garlic powder, cumin","key":"garlic powder cumin","checked":false},{"label":"cayenne, sea salt","key":"cayenne sea salt","checked":false},{"label":"red onion, thinly sliced","key":"red onion thinly sliced","checked":false},{"label":"cilantro, lime juice, honey, dijon mustard","key":"cilantro lime juice honey dijon mustard","checked":false},{"label":"avocado","key":"avocado","checked":false},{"label":"Greek yogurt","key":"greek yogurt","checked":false},{"label":"cilantro","key":"cilantro","checked":false},{"label":"lime juice","key":"lime juice","checked":false},{"label":"cauliflower, bite-size pieces","key":"cauliflower bitesize pieces","checked":false},{"label":"garlic powder, onion powder, smoked paprika, cumin","key":"garlic powder onion powder smoked paprika cumin","checked":false},{"label":"sea salt, black pepper","key":"sea salt black pepper","checked":false},{"label":"frozen spinach, thawed and squeezed VERY dry","key":"frozen spinach thawed and squeezed very dry","checked":false},{"label":"artichoke hearts, chopped","key":"artichoke hearts chopped","checked":false},{"label":"low-fat cottage cheese, blended smooth","key":"lowfat cottage cheese blended smooth","checked":false},{"label":"sea salt, red pepper flakes","key":"sea salt red pepper flakes","checked":false}],"groceryChecked":{},"historyLog":[]};</script></head>
 <body>
 <!-- SIDEBAR OVERLAY (mobile) -->
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
@@ -573,6 +666,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <div class="nav-item" data-view="builder" onclick="switchView('builder',this)">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
       Custom Day Builder
+    </div>
+    <div class="nav-item" data-view="fridge" onclick="switchView('fridge',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"></rect><line x1="5" y1="10" x2="19" y2="10"></line><line x1="9" y1="6" x2="9" y2="8"></line><line x1="9" y1="14" x2="9" y2="20"></line></svg>
+      What Can I Make?
+    </div>
+    <div class="nav-item" data-view="history" onclick="switchView('history',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      Meal History
     </div>
     <div class="nav-item" data-view="settings" onclick="switchView('settings',this)">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -635,37 +736,37 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="day-card-header">
     <div>
       <div class="day-name">Sunday</div>
-      <div class="day-pref-indicator" style="color:var(--text3)">Custom mix</div>
+      <div class="day-pref-indicator" style="color:var(--gold-text)">Eric's picks</div>
     </div>
     <div class="day-pref-mini">
-      <button class="day-pref-btn eric" onclick="applyDayPref(0,0,0,this)">E</button>
+      <button class="day-pref-btn eric active" onclick="applyDayPref(0,0,0,this)">E</button>
       <button class="day-pref-btn both" onclick="applyDayPref(0,0,50,this)">B</button>
       <button class="day-pref-btn julie" onclick="applyDayPref(0,0,100,this)">J</button>
     </div>
   </div>
-  <div class="meal-slot" style="">
+  <div class="meal-slot" style="opacity:0.45;">
   <div class="slot-type main">Main</div>
   <div class="slot-inner">
-    <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,0,0,this)">
+    <input type="checkbox" class="eaten-check" checked="" onchange="toggleEaten(0,0,0,this)">
     <div class="slot-info">
-      <div class="slot-name">Pepperoni Pizza Crunch Wrap</div>
-      <div class="slot-macros">350 cal · 25g protein</div>
+      <div class="slot-name eaten">Hot Honey Chicken Meatball Bowls<span class="tj-pill">TJ</span></div>
+      <div class="slot-macros">480 cal · 40g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('crunch-wrap-pizza')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('tj-hot-honey-meatball-bowl')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,0,0)">⇄</button>
     </div>
   </div>
-</div><div class="meal-slot" style="">
+</div><div class="meal-slot" style="opacity:0.45;">
   <div class="slot-type veg">Vegetable</div>
   <div class="slot-inner">
-    <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,0,1,this)">
+    <input type="checkbox" class="eaten-check" checked="" onchange="toggleEaten(0,0,1,this)">
     <div class="slot-info">
-      <div class="slot-name">Crispy Roasted Green Beans</div>
-      <div class="slot-macros">45 cal · 2g protein</div>
+      <div class="slot-name eaten">Buffalo Cauliflower Wings</div>
+      <div class="slot-macros">191 cal · 13g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('roasted-green-beans')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('buffalo-cauliflower')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,0,1)">⇄</button>
     </div>
   </div>
@@ -674,11 +775,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="slot-inner">
     <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,0,2,this)">
     <div class="slot-info">
-      <div class="slot-name">Everything Bagel Pretzel Bites</div>
-      <div class="slot-macros">95 cal · 4g protein</div>
+      <div class="slot-name">Flamin Hot Cheetos Mozzarella Sticks</div>
+      <div class="slot-macros">150 cal · 10g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('everything-bagel-bites')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('mozz-sticks')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,0,2)">⇄</button>
     </div>
   </div>
@@ -687,10 +788,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="day-card-header">
     <div>
       <div class="day-name">Monday</div>
-      <div class="day-pref-indicator" style="color:var(--text3)">Custom mix</div>
+      <div class="day-pref-indicator" style="color:var(--gold-text)">Eric's picks</div>
     </div>
     <div class="day-pref-mini">
-      <button class="day-pref-btn eric" onclick="applyDayPref(0,1,0,this)">E</button>
+      <button class="day-pref-btn eric active" onclick="applyDayPref(0,1,0,this)">E</button>
       <button class="day-pref-btn both" onclick="applyDayPref(0,1,50,this)">B</button>
       <button class="day-pref-btn julie" onclick="applyDayPref(0,1,100,this)">J</button>
     </div>
@@ -700,11 +801,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="slot-inner">
     <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,1,0,this)">
     <div class="slot-info">
-      <div class="slot-name">Spicy Shrimp Tacos with Garlic Cilantro Lime Slaw</div>
-      <div class="slot-macros">520 cal · 34g protein</div>
+      <div class="slot-name">Pepperoni Pizza Crunch Wrap</div>
+      <div class="slot-macros">350 cal · 25g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('spicy-shrimp-tacos-lime-slaw')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('crunch-wrap-pizza')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,1,0)">⇄</button>
     </div>
   </div>
@@ -713,11 +814,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="slot-inner">
     <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,1,1,this)">
     <div class="slot-info">
-      <div class="slot-name">Crispy Garlic Air Fryer Broccoli</div>
-      <div class="slot-macros">55 cal · 4g protein</div>
+      <div class="slot-name">Garlic Parmesan Brussels Sprouts</div>
+      <div class="slot-macros">61 cal · 4g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('air-fryer-broccoli')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('garlic-brussels')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,1,1)">⇄</button>
     </div>
   </div>
@@ -726,11 +827,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="slot-inner">
     <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,1,2,this)">
     <div class="slot-info">
-      <div class="slot-name">Crispy Baked Wonton Cups</div>
-      <div class="slot-macros">55 cal · 3g protein</div>
+      <div class="slot-name">Onion Rings</div>
+      <div class="slot-macros">37 cal · 2g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('wonton-soup-cups')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('onion-rings')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,1,2)">⇄</button>
     </div>
   </div>
@@ -739,10 +840,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="day-card-header">
     <div>
       <div class="day-name">Tuesday</div>
-      <div class="day-pref-indicator" style="color:var(--text3)">Custom mix</div>
+      <div class="day-pref-indicator" style="color:var(--gold-text)">Eric's picks</div>
     </div>
     <div class="day-pref-mini">
-      <button class="day-pref-btn eric" onclick="applyDayPref(0,2,0,this)">E</button>
+      <button class="day-pref-btn eric active" onclick="applyDayPref(0,2,0,this)">E</button>
       <button class="day-pref-btn both" onclick="applyDayPref(0,2,50,this)">B</button>
       <button class="day-pref-btn julie" onclick="applyDayPref(0,2,100,this)">J</button>
     </div>
@@ -752,11 +853,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="slot-inner">
     <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,2,0,this)">
     <div class="slot-info">
-      <div class="slot-name">Sheet Pan Panko Salmon &amp; Crispy Broccoli<span class="tj-pill">TJ</span></div>
-      <div class="slot-macros">480 cal · 52g protein</div>
+      <div class="slot-name">Better-Than-Takeout Beef &amp; Broccoli<span class="tj-pill">TJ</span></div>
+      <div class="slot-macros">410 cal · 35g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('tj-panko-salmon')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('tj-beef-broccoli')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,2,0)">⇄</button>
     </div>
   </div>
@@ -765,11 +866,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="slot-inner">
     <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,2,1,this)">
     <div class="slot-info">
-      <div class="slot-name">Sweet Potato Bites</div>
-      <div class="slot-macros">150 cal · 3g protein</div>
+      <div class="slot-name">Smash Brussels Sprouts</div>
+      <div class="slot-macros">88 cal · 6g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('sweet-potato-bites')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('smash-brussels')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,2,1)">⇄</button>
     </div>
   </div>
@@ -778,11 +879,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="slot-inner">
     <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,2,2,this)">
     <div class="slot-info">
-      <div class="slot-name">Bang Bang Shrimp Bites</div>
-      <div class="slot-macros">175 cal · 18g protein</div>
+      <div class="slot-name">Pepperoni Pizza Fries</div>
+      <div class="slot-macros">276 cal · 12g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('bang-bang-shrimp')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('pizza-fries')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,2,2)">⇄</button>
     </div>
   </div>
@@ -804,11 +905,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="slot-inner">
     <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,3,0,this)">
     <div class="slot-info">
-      <div class="slot-name">Ground Turkey Taco Bowl</div>
-      <div class="slot-macros">450 cal · 36g protein</div>
+      <div class="slot-name">Marry Me Chicken</div>
+      <div class="slot-macros">286 cal · 30g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('ground-turkey-taco-bowl')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('marry-me-chicken')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,3,0)">⇄</button>
     </div>
   </div>
@@ -817,11 +918,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="slot-inner">
     <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,3,1,this)">
     <div class="slot-info">
-      <div class="slot-name">Garlic Parmesan Brussels Sprouts</div>
-      <div class="slot-macros">61 cal · 4g protein</div>
+      <div class="slot-name">Crispy Parmesan Zucchini Fries</div>
+      <div class="slot-macros">95 cal · 6g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('garlic-brussels')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('zucchini-fries')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,3,1)">⇄</button>
     </div>
   </div>
@@ -830,11 +931,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="slot-inner">
     <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,3,2,this)">
     <div class="slot-info">
-      <div class="slot-name">Air Fryer Egg Rolls</div>
-      <div class="slot-macros">120 cal · 9g protein</div>
+      <div class="slot-name">Flamin Hot Cheetos Mozzarella Sticks</div>
+      <div class="slot-macros">150 cal · 10g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('air-fryer-egg-rolls')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('mozz-sticks')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,3,2)">⇄</button>
     </div>
   </div>
@@ -856,11 +957,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="slot-inner">
     <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,4,0,this)">
     <div class="slot-info">
-      <div class="slot-name">Healthy Fish Tacos with Avocado Crema</div>
-      <div class="slot-macros">311 cal · 26g protein</div>
+      <div class="slot-name">Korean Ground Beef Rice Bowl</div>
+      <div class="slot-macros">394 cal · 30g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('ebf-fish-tacos')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('korean-beef-bowl')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,4,0)">⇄</button>
     </div>
   </div>
@@ -869,11 +970,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="slot-inner">
     <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,4,1,this)">
     <div class="slot-info">
-      <div class="slot-name">Crispy Air Fryer Cauliflower Bites</div>
-      <div class="slot-macros">90 cal · 4g protein</div>
+      <div class="slot-name">Sweet Potato Bites</div>
+      <div class="slot-macros">150 cal · 3g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('air-fryer-cauliflower')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('sweet-potato-bites')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,4,1)">⇄</button>
     </div>
   </div>
@@ -882,11 +983,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="slot-inner">
     <input type="checkbox" class="eaten-check" onchange="toggleEaten(0,4,2,this)">
     <div class="slot-info">
-      <div class="slot-name">Lightened Spinach Artichoke Dip</div>
-      <div class="slot-macros">130 cal · 11g protein</div>
+      <div class="slot-name">High Protein Queso Dip</div>
+      <div class="slot-macros">140 cal · 15g protein</div>
     </div>
     <div class="slot-btns">
-      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('spinach-artichoke-dip')">↗</button>
+      <button class="slot-btn recipe" onclick="event.stopPropagation();openRecipe('high-protein-cheese-dip')">↗</button>
       <button class="slot-btn" onclick="event.stopPropagation();openSwap(0,4,2)">⇄</button>
     </div>
   </div>
@@ -2641,9 +2742,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
               This Week's Stats
             </h3>
             <div class="stats-row" id="builder-stats">
-    <div class="stat-box"><div class="stat-val">800</div><div class="stat-lbl">Avg Cal/Day</div></div>
-    <div class="stat-box"><div class="stat-val">64g</div><div class="stat-lbl">Avg Protein/Day</div></div>
-    <div class="stat-box"><div class="stat-val">0/15</div><div class="stat-lbl">Meals Eaten</div></div></div>
+    <div class="stat-box"><div class="stat-val">700</div><div class="stat-lbl">Avg Cal/Day</div></div>
+    <div class="stat-box"><div class="stat-val">59g</div><div class="stat-lbl">Avg Protein/Day</div></div>
+    <div class="stat-box"><div class="stat-val">2/15</div><div class="stat-lbl">Meals Eaten</div></div></div>
           </div>
         </div>
       </div>
@@ -2699,6 +2800,118 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
             <button class="grocery-btn" style="width:auto;padding:5px 12px" onclick="exportGrocery()">Export</button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- ── FRIDGE FINDER VIEW ────────────────────── -->
+    <div class="view" id="view-fridge">
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:1.25rem;align-items:start;" id="fridge-layout">
+
+        <!-- Left: ingredient selectors -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;position:sticky;top:1rem;">
+          <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:500;color:var(--text);margin-bottom:1rem;">What's in the fridge?</div>
+
+          <div class="fridge-section">
+            <div class="fridge-section-label">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+              Proteins
+            </div>
+            <div class="fridge-tags" id="fridge-proteins"></div>
+          </div>
+
+          <div class="fridge-section">
+            <div class="fridge-section-label">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2h18l-2 7H5L3 2z"></path><path d="M5 9v13h14V9"></path></svg>
+              Other Ingredients
+            </div>
+            <div class="fridge-tags" id="fridge-extras"></div>
+          </div>
+
+          <div style="display:flex;gap:6px;margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border)">
+            <button class="apply-btn" style="margin-top:0;font-size:12px;padding:7px" onclick="runFridgeFinder()">Find Recipes</button>
+            <button class="grocery-btn" style="flex:0 0 auto;width:auto;padding:7px 10px;font-size:11px" onclick="clearFridgeTags()">Clear</button>
+          </div>
+        </div>
+
+        <!-- Right: results -->
+        <div>
+          <div class="fridge-results-header">
+            <div class="fridge-count" id="fridge-count">Select ingredients to find matching recipes</div>
+          </div>
+          <div class="recipe-grid" id="fridge-results"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── HISTORY VIEW ──────────────────────────── -->
+    <div class="view" id="view-history">
+      <div class="history-stats" id="history-stats">
+    <div class="hstat"><div class="hstat-val">0</div><div class="hstat-lbl">Meals Logged</div></div>
+    <div class="hstat"><div class="hstat-val">0</div><div class="hstat-lbl">Unique Recipes</div></div>
+    <div class="hstat"><div class="hstat-val">0</div><div class="hstat-lbl">This Week</div></div>
+    <div class="hstat" style="flex:2"><div class="hstat-val" style="font-size:14px;margin-top:4px">—</div><div class="hstat-lbl">Last Meal</div></div></div>
+      <div class="history-grid">
+        <div class="history-card">
+          <h3>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            Most Cooked
+          </h3>
+          <div id="history-freq"><div class="history-empty">No meals logged yet. Check off meals in your weekly plan to start tracking!</div></div>
+        </div>
+        <div class="history-card">
+          <h3>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            Recent Meals
+          </h3>
+          <div id="history-log"><div class="history-empty">No history yet — check off meals as you eat them and they'll appear here.</div></div>
+        </div>
+        <div class="history-card" style="grid-column:1/-1">
+          <h3>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+            Try Something New — Haven't Made Recently
+          </h3>
+          <div id="history-suggest"><div class="suggest-list"><div class="suggest-item" onclick="openRecipe('buffalo-wings')">
+        <div class="suggest-info">
+          <div class="suggest-title">Buffalo Chicken Wings</div>
+          <div class="suggest-note">Eric's · Frozen wings, Frank's, air fryer — barely any effort</div>
+        </div>
+        <div class="suggest-age">Never made<br><span style="color:var(--text3)">0× total</span></div>
+      </div><div class="suggest-item" onclick="openRecipe('crunch-wrap-pizza')">
+        <div class="suggest-info">
+          <div class="suggest-title">Pepperoni Pizza Crunch Wrap</div>
+          <div class="suggest-note">Eric's · Fold, air fry, done — fastest dinner of the week</div>
+        </div>
+        <div class="suggest-age">Never made<br><span style="color:var(--text3)">0× total</span></div>
+      </div><div class="suggest-item" onclick="openRecipe('crunchwrap')">
+        <div class="suggest-info">
+          <div class="suggest-title">Crunchwrap Supremes</div>
+          <div class="suggest-note">Eric's · Ground beef, tostada, avocado, sriracha — the crowd pleaser</div>
+        </div>
+        <div class="suggest-age">Never made<br><span style="color:var(--text3)">0× total</span></div>
+      </div><div class="suggest-item" onclick="openRecipe('buffalo-chicken-tenders')">
+        <div class="suggest-info">
+          <div class="suggest-title">Buffalo Chicken Tenders</div>
+          <div class="suggest-note">Eric's · Panko-crusted tenders tossed in Frank's — CRUNCHY CRUNCHY</div>
+        </div>
+        <div class="suggest-age">Never made<br><span style="color:var(--text3)">0× total</span></div>
+      </div><div class="suggest-item" onclick="openRecipe('chicken-smash')">
+        <div class="suggest-info">
+          <div class="suggest-title">Chicken Smash Burgers</div>
+          <div class="suggest-note">Eric's · Hand-minced chicken with cheddar, avocado, sriracha</div>
+        </div>
+        <div class="suggest-age">Never made<br><span style="color:var(--text3)">0× total</span></div>
+      </div><div class="suggest-item" onclick="openRecipe('triple-burger-wrap')">
+        <div class="suggest-info">
+          <div class="suggest-title">Triple Cheeseburger Crunch Wrap</div>
+          <div class="suggest-note">Eric's · Three smash patties + cheddar folded in a tortilla</div>
+        </div>
+        <div class="suggest-age">Never made<br><span style="color:var(--text3)">0× total</span></div>
+      </div></div></div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:0.5rem">
+        <button class="grocery-btn" style="width:auto;padding:5px 14px;font-size:11px" onclick="clearHistory()">Clear All History</button>
       </div>
     </div>
 
@@ -3689,13 +3902,20 @@ const WEEKS = [
 // ═══════════════════════════════════════════════════════════════════
 // localStorage PERSISTENCE
 // All user state is stored under the key "dp_v4" as a JSON object.
-// Shape: { selections, eaten, customDays, prefs }
+// Shape: { selections, eaten, customDays, prefs, historyLog }
+//
+// __BAKED_STATE__ is injected at publish time so the GitHub Pages URL
+// always opens with the exact meals that were configured — not random ones.
+// localStorage always wins over baked state once the user makes any change.
 // ═══════════════════════════════════════════════════════════════════
 const STORE_KEY = 'dp_v4';
 
 function loadStore() {
   try {
-    return JSON.parse(localStorage.getItem(STORE_KEY)) || {};
+    const baked = (typeof __BAKED_STATE__ !== 'undefined') ? __BAKED_STATE__ : {};
+    const fromLS = JSON.parse(localStorage.getItem(STORE_KEY)) || {};
+    // localStorage overrides baked state key-by-key
+    return { ...baked, ...fromLS };
   } catch(e) { return {}; }
 }
 
@@ -3708,21 +3928,16 @@ function saveStore(data) {
 // ── SELECTIONS ──────────────────────────────────────────────────────
 // selections[wi][di][si] = recipe id string
 // Initialised from WEEKS defaults then overridden by localStorage
-// ─── DEFAULT SELECTIONS: 1 Eric day, 1 Julie day, rest Both (random order) ───
+// ─── DEFAULT SELECTIONS: deterministic "Both" for all days ───────────────────
+// Using a fixed 'both' default means every fresh browser load (or GitHub Pages
+// visitor) always sees the same meals — not a random set.  Once someone makes
+// any change it is saved to localStorage and takes over from here.
 function makeDefaultSelections() {
-  return WEEKS.map((w, wi) => {
-    const numDays = w.days.length; // typically 5
-    // Build pref array: 1 eric, 1 julie, rest both — shuffled
-    const prefs = [0, 100, ...Array(Math.max(0, numDays - 2)).fill(50)];
-    // Fisher-Yates shuffle
-    for (let i = prefs.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [prefs[i], prefs[j]] = [prefs[j], prefs[i]];
-    }
-    return w.days.map((d, di) =>
-      d.slots.map(s => pickForPref(s, prefs[di] ?? 50))
-    );
-  });
+  return WEEKS.map((w) =>
+    w.days.map((d) =>
+      d.slots.map(s => s.both)
+    )
+  );
 }
 
 let selections = makeDefaultSelections();
@@ -3762,6 +3977,19 @@ function saveEaten() {
 }
 
 function eatenKey(wi, di, si) { return `${wi}-${di}-${si}`; }
+
+// ── MEAL HISTORY LOG ─────────────────────────────────────────────────
+// historyLog: array of { rid, title, type, tag, date (ISO string), weekLabel }
+// Entries are appended when a meal is checked as eaten, removed if unchecked.
+let historyLog = [];
+
+function loadHistory() {
+  historyLog = loadStore().historyLog || [];
+}
+
+function saveHistory() {
+  saveStore({ historyLog });
+}
 
 // ── PREFERENCES ──────────────────────────────────────────────────────
 let prefs = { dimEaten: true, showMacros: true, showTJ: true };
@@ -3805,7 +4033,8 @@ function init() {
   loadSelections();
   loadEaten();
   loadPrefs();
-  loadPantry();  // loads pantryList from localStorage
+  loadPantry();
+  loadHistory();
   renderWeekTabs();
   renderPlan();
   renderLibrary();
@@ -3817,7 +4046,7 @@ function init() {
 // ═══════════════════════════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════════════════════════
-const VIEW_TITLES = { plan:'Weekly Plan', library:'Recipe Library', builder:'Custom Day Builder', settings:'Settings' };
+const VIEW_TITLES = { plan:'Weekly Plan', library:'Recipe Library', builder:'Custom Day Builder', fridge:'What Can I Make?', history:'Meal History', settings:'Settings' };
 
 function switchView(id, el) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -3827,6 +4056,8 @@ function switchView(id, el) {
   document.getElementById('topbar-title').textContent = VIEW_TITLES[id] || id;
   closeSidebar();
   if (id === 'builder') { renderBuilderStats(); }
+  if (id === 'history') { renderHistory(); }
+  if (id === 'fridge') { initFridgeFinder(); }
 }
 
 function toggleSidebar() {
@@ -3935,7 +4166,31 @@ function renderPlan() {
 
 function toggleEaten(wi, di, si, checkbox) {
   const ek = eatenKey(wi, di, si);
-  if (checkbox.checked) eatenSet.add(ek); else eatenSet.delete(ek);
+  const rid = selections[wi][di][si];
+  const r = R[rid];
+  if (checkbox.checked) {
+    eatenSet.add(ek);
+    // Record to history log
+    if (r) {
+      historyLog.push({
+        rid,
+        title: r.title,
+        type: r.type,
+        tag: r.tag,
+        weekLabel: WEEKS[wi]?.label || `Week ${wi+1}`,
+        date: new Date().toISOString()
+      });
+      saveHistory();
+    }
+  } else {
+    eatenSet.delete(ek);
+    // Remove the most recent matching entry from history (in case of accidental check)
+    const idx = [...historyLog].reverse().findIndex(h => h.rid === rid);
+    if (idx !== -1) {
+      historyLog.splice(historyLog.length - 1 - idx, 1);
+      saveHistory();
+    }
+  }
   saveEaten();
   renderPlan();
 }
@@ -4689,6 +4944,301 @@ function isInPantry(ingredientName) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// FRIDGE FINDER — "What Can I Make?"
+// ═══════════════════════════════════════════════════════════════════
+
+// Each tag has: label, emoji, keywords (searched in ing name + title + note)
+const FRIDGE_PROTEINS = [
+  { id:'chicken',      label:'Chicken',        emoji:'🍗', keywords:['chicken'] },
+  { id:'ground-beef',  label:'Ground Beef',    emoji:'🥩', keywords:['ground beef'] },
+  { id:'ground-turkey',label:'Ground Turkey',  emoji:'🦃', keywords:['ground turkey'] },
+  { id:'salmon',       label:'Salmon',         emoji:'🐟', keywords:['salmon'] },
+  { id:'shrimp',       label:'Shrimp',         emoji:'🦐', keywords:['shrimp'] },
+  { id:'tuna',         label:'Tuna',           emoji:'🐠', keywords:['tuna'] },
+  { id:'cod',          label:'Cod / Fish',     emoji:'🐡', keywords:['cod','fish stick'] },
+  { id:'turkey-pep',   label:'Turkey Pepperoni',emoji:'🍕', keywords:['pepperoni'] },
+];
+
+const FRIDGE_EXTRAS = [
+  { id:'avocado',      label:'Avocado',        emoji:'🥑', keywords:['avocado'] },
+  { id:'cheese',       label:'Cheese',         emoji:'🧀', keywords:['cheddar','mozzarella','cheese','laughing cow','cottage cheese'] },
+  { id:'eggs',         label:'Eggs',           emoji:'🥚', keywords:['egg'] },
+  { id:'tortillas',    label:'Tortillas',      emoji:'🫓', keywords:['tortilla','pita'] },
+  { id:'panko',        label:'Panko',          emoji:'🍞', keywords:['panko','bread crumb'] },
+  { id:'sriracha',     label:'Sriracha / Hot Sauce', emoji:'🌶️', keywords:['sriracha','buffalo','hot sauce','cholula','frank'] },
+  { id:'brioche',      label:'Buns / Rolls',   emoji:'🍔', keywords:['brioche','bun','roll','bagel'] },
+  { id:'cauliflower',  label:'Cauliflower',    emoji:'🥦', keywords:['cauliflower'] },
+  { id:'pasta',        label:'Pasta / Noodles',emoji:'🍝', keywords:['pasta','noodle','ramen','spaghetti'] },
+  { id:'rice',         label:'Rice',           emoji:'🍚', keywords:['rice'] },
+  { id:'sweet-potato', label:'Sweet Potato',   emoji:'🍠', keywords:['sweet potato'] },
+];
+
+// Track which tags are selected
+let fridgeSelected = new Set();
+let fridgeInitialized = false;
+
+function initFridgeFinder() {
+  if (fridgeInitialized) return;
+  fridgeInitialized = true;
+
+  const proteinEl = document.getElementById('fridge-proteins');
+  const extraEl   = document.getElementById('fridge-extras');
+
+  proteinEl.innerHTML = FRIDGE_PROTEINS.map(t =>
+    `<button class="fridge-tag protein" data-id="${t.id}" onclick="toggleFridgeTag(this,'${t.id}')">${t.emoji} ${t.label}</button>`
+  ).join('');
+
+  extraEl.innerHTML = FRIDGE_EXTRAS.map(t =>
+    `<button class="fridge-tag" data-id="${t.id}" onclick="toggleFridgeTag(this,'${t.id}')">${t.emoji} ${t.label}</button>`
+  ).join('');
+
+  // Also handle mobile: collapse to single column on narrow screens
+  const layout = document.getElementById('fridge-layout');
+  function checkWidth() {
+    if (window.innerWidth < 720) {
+      layout.style.gridTemplateColumns = '1fr';
+      layout.querySelector('div[style*="sticky"]').style.position = 'relative';
+      layout.querySelector('div[style*="sticky"]').style.top = 'auto';
+    } else {
+      layout.style.gridTemplateColumns = '280px 1fr';
+      layout.querySelector('div[style*="sticky"]').style.position = 'sticky';
+      layout.querySelector('div[style*="sticky"]').style.top = '1rem';
+    }
+  }
+  checkWidth();
+  window.addEventListener('resize', checkWidth);
+}
+
+function toggleFridgeTag(btn, id) {
+  if (fridgeSelected.has(id)) {
+    fridgeSelected.delete(id);
+    btn.classList.remove('selected');
+  } else {
+    fridgeSelected.add(id);
+    btn.classList.add('selected');
+  }
+  runFridgeFinder();
+}
+
+function clearFridgeTags() {
+  fridgeSelected.clear();
+  document.querySelectorAll('.fridge-tag.selected').forEach(b => b.classList.remove('selected'));
+  document.getElementById('fridge-count').textContent = 'Select ingredients to find matching recipes';
+  document.getElementById('fridge-results').innerHTML = '';
+}
+
+function runFridgeFinder() {
+  if (fridgeSelected.size === 0) {
+    document.getElementById('fridge-count').textContent = 'Select ingredients to find matching recipes';
+    document.getElementById('fridge-results').innerHTML = '';
+    return;
+  }
+
+  // Build a flat keyword list for all selected tags
+  const allTags = [...FRIDGE_PROTEINS, ...FRIDGE_EXTRAS];
+  const selectedKeywords = [];  // [{id, keywords[]}]
+  fridgeSelected.forEach(id => {
+    const tag = allTags.find(t => t.id === id);
+    if (tag) selectedKeywords.push(tag);
+  });
+
+  // Score each recipe
+  const results = Object.entries(R).map(([rid, r]) => {
+    // Build searchable text for this recipe
+    const ingText = r.ings.map(([amt, name]) => (amt + ' ' + name).toLowerCase()).join(' ');
+    const fullText = (r.title + ' ' + r.note + ' ' + ingText).toLowerCase();
+
+    // Which selected tags match?
+    const matched = selectedKeywords.filter(tag =>
+      tag.keywords.some(kw => fullText.includes(kw.toLowerCase()))
+    );
+
+    return { rid, r, matched, score: matched.length };
+  }).filter(x => x.score > 0)
+    .sort((a, b) => b.score - a.score || a.r.title.localeCompare(b.r.title));
+
+  const countEl = document.getElementById('fridge-count');
+  countEl.innerHTML = results.length === 0
+    ? 'No recipes match those ingredients yet'
+    : `<strong>${results.length}</strong> recipe${results.length !== 1 ? 's' : ''} match${results.length === 1 ? 'es' : ''} your fridge`;
+
+  const gridEl = document.getElementById('fridge-results');
+  if (results.length === 0) {
+    gridEl.innerHTML = `<div class="fridge-empty">
+      None of the recipes in your library use those exact ingredients — try a different combination, or add more recipes to your library!
+    </div>`;
+    return;
+  }
+
+  gridEl.innerHTML = results.map(({ rid, r, matched, score }) => {
+    const isFull = score === fridgeSelected.size;
+    const matchLabel = isFull
+      ? `✓ All ${score} match`
+      : `${score} of ${fridgeSelected.size} match`;
+    const typeLabel = {main:'Main',veg:'Vegetable',side:'Side'}[r.type];
+    const tagLbl = {eric:"Eric's",julie:"Julie's",both:'Both'}[r.tag] || r.tag;
+    const tjBadge = r.tj ? `<span class="tj-pill">TJ</span>` : '';
+
+    // Show ingredient pills — highlight the ones that matched
+    const matchedKws = new Set(matched.flatMap(t => t.keywords));
+    const ingText = r.ings.map(([, name]) => (name || '').toLowerCase()).join(' ');
+    const relevantIngs = r.ings
+      .map(([, name]) => name)
+      .filter(name => name && name.trim())
+      .filter((_, i) => i < 6) // cap display
+      .map(name => {
+        const hit = [...matchedKws].some(kw => name.toLowerCase().includes(kw));
+        return `<span class="fridge-ing-pill${hit ? ' hit' : ''}">${name}</span>`;
+      });
+
+    return `<div class="fridge-card" onclick="openRecipe('${rid}')">
+  <div class="fridge-card-top">
+    <div style="flex:1;min-width:0">
+      <div class="rc-type ${r.type}" style="margin-bottom:3px">${typeLabel}</div>
+      <div class="rc-title">${r.title}${tjBadge}</div>
+    </div>
+    <span class="fridge-match ${isFull ? 'full' : 'partial'}">${matchLabel}</span>
+  </div>
+  <div class="rc-note">${r.note}</div>
+  <div class="fridge-ings-matched">${relevantIngs.join('')}</div>
+  <div class="rc-macros" style="margin-top:4px">
+    ${r.macros.map(m => `<div class="rc-macro"><div class="mv">${m.v}</div><div class="ml">${m.l}</div></div>`).join('')}
+  </div>
+  <div class="rc-btns" style="margin-top:auto;padding-top:8px">
+    <button class="rc-btn" onclick="event.stopPropagation();openRecipe('${rid}')">View Recipe</button>
+    <button class="rc-btn primary" onclick="event.stopPropagation();addToBuilderFromLibrary('${rid}')">+ Add to Plan</button>
+  </div>
+</div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MEAL HISTORY DASHBOARD
+// ═══════════════════════════════════════════════════════════════════
+function renderHistory() {
+  const log = [...historyLog].reverse(); // most recent first
+
+  // ── Stats strip ───────────────────────────────────────────────────
+  const totalMeals = historyLog.length;
+  const uniqueRecipes = new Set(historyLog.map(h => h.rid)).size;
+  const thisWeekCutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const thisWeek = historyLog.filter(h => new Date(h.date) > thisWeekCutoff).length;
+  const mostRecent = log[0] ? timeAgo(log[0].date) : '—';
+
+  document.getElementById('history-stats').innerHTML = `
+    <div class="hstat"><div class="hstat-val">${totalMeals}</div><div class="hstat-lbl">Meals Logged</div></div>
+    <div class="hstat"><div class="hstat-val">${uniqueRecipes}</div><div class="hstat-lbl">Unique Recipes</div></div>
+    <div class="hstat"><div class="hstat-val">${thisWeek}</div><div class="hstat-lbl">This Week</div></div>
+    <div class="hstat" style="flex:2"><div class="hstat-val" style="font-size:14px;margin-top:4px">${mostRecent}</div><div class="hstat-lbl">Last Meal</div></div>`;
+
+  // ── Frequency leaderboard ─────────────────────────────────────────
+  const freq = {};
+  historyLog.forEach(h => {
+    if (!freq[h.rid]) freq[h.rid] = { title: h.title, type: h.type, tag: h.tag, count: 0, lastDate: h.date };
+    freq[h.rid].count++;
+    if (h.date > freq[h.rid].lastDate) freq[h.rid].lastDate = h.date;
+  });
+  const sorted = Object.entries(freq).sort((a, b) => b[1].count - a[1].count).slice(0, 8);
+
+  const freqEl = document.getElementById('history-freq');
+  if (!sorted.length) {
+    freqEl.innerHTML = '<div class="history-empty">No meals logged yet. Check off meals in your weekly plan to start tracking!</div>';
+  } else {
+    const medals = ['🥇','🥈','🥉'];
+    freqEl.innerHTML = `<div class="freq-list">${sorted.map(([rid, d], i) => {
+      const rank = medals[i] || `${i+1}`;
+      const isGold = i === 0;
+      const tagLbl = {eric:"Eric's",julie:"Julie's",both:'Both'}[d.tag] || d.tag;
+      return `<div class="freq-item" onclick="openRecipe('${rid}')" style="cursor:pointer">
+        <div class="freq-rank${isGold?' gold':''}">${rank}</div>
+        <div class="freq-info">
+          <div class="freq-title">${d.title}</div>
+          <div class="freq-meta">${tagLbl} · last ${timeAgo(d.lastDate)}</div>
+        </div>
+        <div class="freq-badge${d.count >= 5?' high':''}">${d.count}×</div>
+      </div>`;
+    }).join('')}</div>`;
+  }
+
+  // ── Recent log ────────────────────────────────────────────────────
+  const logEl = document.getElementById('history-log');
+  const recent = log.slice(0, 20);
+  if (!recent.length) {
+    logEl.innerHTML = '<div class="history-empty">No history yet — check off meals as you eat them and they\'ll appear here.</div>';
+  } else {
+    logEl.innerHTML = `<div class="log-list">${recent.map(h => {
+      const tagLbl = {eric:"Eric's",julie:"Julie's",both:'Both'}[h.tag] || h.tag;
+      return `<div class="log-item">
+        <div class="log-dot ${h.type}"></div>
+        <div class="log-info">
+          <div class="log-title">${h.title}</div>
+          <div class="log-date">${formatDate(h.date)} · ${h.weekLabel}</div>
+        </div>
+        <span class="log-tag ${h.tag}">${tagLbl}</span>
+      </div>`;
+    }).join('')}</div>`;
+  }
+
+  // ── Try Something New ──────────────────────────────────────────────
+  // Find mains you haven't eaten recently (or ever)
+  const suggestEl = document.getElementById('history-suggest');
+  const recentIds = new Set(historyLog.filter(h => {
+    return new Date(h.date) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  }).map(h => h.rid));
+
+  const allMains = Object.entries(R).filter(([,r]) => r.type === 'main');
+  // Score: never eaten = highest priority, then by days since last eaten
+  const scored = allMains.map(([rid, r]) => {
+    const entries = historyLog.filter(h => h.rid === rid);
+    const lastEaten = entries.length ? Math.max(...entries.map(h => new Date(h.date).getTime())) : 0;
+    const daysSince = lastEaten ? Math.floor((Date.now() - lastEaten) / 86400000) : 9999;
+    return { rid, r, daysSince, count: entries.length };
+  }).filter(x => !recentIds.has(x.rid))
+    .sort((a, b) => b.daysSince - a.daysSince)
+    .slice(0, 6);
+
+  if (!scored.length) {
+    suggestEl.innerHTML = '<div class="history-empty">You\'ve tried everything recently — great variety! Check back after a few more weeks.</div>';
+  } else {
+    suggestEl.innerHTML = `<div class="suggest-list">${scored.map(({ rid, r, daysSince, count }) => {
+      const ageText = count === 0 ? 'Never made' : `${daysSince}d ago`;
+      const tagLbl = {eric:"Eric's",julie:"Julie's",both:'Both'}[r.tag] || r.tag;
+      return `<div class="suggest-item" onclick="openRecipe('${rid}')">
+        <div class="suggest-info">
+          <div class="suggest-title">${r.title}</div>
+          <div class="suggest-note">${tagLbl} · ${r.note}</div>
+        </div>
+        <div class="suggest-age">${ageText}<br><span style="color:var(--text3)">${count}× total</span></div>
+      </div>`;
+    }).join('')}</div>`;
+  }
+}
+
+function clearHistory() {
+  if (!confirm('Clear all meal history? This cannot be undone.')) return;
+  historyLog = [];
+  saveHistory();
+  renderHistory();
+  showToast('History cleared');
+}
+
+function timeAgo(isoDate) {
+  const ms = Date.now() - new Date(isoDate).getTime();
+  const days = Math.floor(ms / 86400000);
+  if (days === 0) return 'today';
+  if (days === 1) return 'yesterday';
+  if (days < 7) return `${days}d ago`;
+  if (days < 30) return `${Math.floor(days/7)}w ago`;
+  if (days < 365) return `${Math.floor(days/30)}mo ago`;
+  return `${Math.floor(days/365)}y ago`;
+}
+
+function formatDate(isoDate) {
+  const d = new Date(isoDate);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: d.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined });
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // GITHUB PAGES PUBLISH
 // ═══════════════════════════════════════════════════════════════════
 const REPO_NAME = 'dinner-plan';
@@ -4737,13 +5287,32 @@ async function doGitHub() {
     document.getElementById('gh-status').textContent = '';
     document.getElementById('gh-result').style.display = 'none';
 
-    // 4. Wait a tick for DOM to settle
+    // 4. Bake current state into the HTML so anyone opening the GitHub Pages link
+    //    sees the exact meals configured here — not random defaults.
+    //    loadStore() checks window.__BAKED_STATE__ before generating defaults,
+    //    but localStorage always takes priority once a user makes their own changes.
+    const stateScript = document.createElement('script');
+    stateScript.id = '__baked-state__';
+    stateScript.textContent = `var __BAKED_STATE__ = ${JSON.stringify({
+      selections,
+      eaten: [...eatenSet],
+      prefs,
+      pantryList,
+      groceryChecked,
+      historyLog
+    })};`;
+    // Remove any previously baked state script before adding new one
+    const oldScript = document.getElementById('__baked-state__');
+    if (oldScript) oldScript.remove();
+    document.head.appendChild(stateScript);
+
+    // 5. Wait a tick for DOM to settle
     await new Promise(r => setTimeout(r, 80));
 
     // Inject unique build timestamp to guarantee GitHub sees a diff every time
     const buildTime = new Date().toISOString();
     let cleanHtml = document.documentElement.outerHTML;
-    const buildComment = `<!-- built:2026-04-28T19:36:50.403Z -->`;
+    const buildComment = `<!-- built:2026-05-04T00:50:49.866Z -->`;
     if (cleanHtml.includes('<!-- built:')) cleanHtml = cleanHtml.replace(/<!-- built:[^>]+ -->/, buildComment);
     else cleanHtml = cleanHtml.replace('<head>', `<head>\n${buildComment}`);
 
